@@ -11,12 +11,14 @@
   };
 
   outputs = { self, nixpkgs, ... }@inputs: {
-    nixosConfigurations.default = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs;};
-      modules = [
-        ./configuration.nix
-        # inputs.home-manager.nixosModules.default
-      ];
+    nixosConfigurations = {
+      xps = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/xps/configuration.nix
+          # inputs.home-manager.nixosModules.default
+        ];
+      };
     };
   };
 }
