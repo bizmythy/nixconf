@@ -1,0 +1,2 @@
+# nixconf
+Nix Configuration Files
