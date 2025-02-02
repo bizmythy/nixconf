@@ -68,7 +68,19 @@
   #  /etc/profiles/per-user/drew/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    # EDITOR = "emacs";
+    EDITOR = "nvim";
+  };
+
+  programs.git.userEmail = "andrew.p.council@gmail.com";
+  programs.git.userName = "AndrewCouncil";
+
+  wayland.windowManager.hyprland = {
+    enable = true;
+
+    settings = {
+      "$mod" = "SUPER";
+      "$terminal" = "alacritty";
+    };
   };
 
   # Let Home Manager install and manage itself.
