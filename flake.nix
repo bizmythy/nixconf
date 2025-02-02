@@ -8,6 +8,8 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    catppuccin.url = "github:catppuccin/nix";
   };
 
   outputs =
@@ -17,6 +19,7 @@
         xps = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
+            catppuccin.nixosModules.catppuccin
             ./hosts/xps/configuration.nix
             inputs.home-manager.nixosModules.default
           ];
