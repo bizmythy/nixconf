@@ -66,7 +66,7 @@
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -113,8 +113,10 @@
   '';
 
   # Enable automatic login for the user.
-  services.xserver.displayManager.autoLogin.enable = true;
-  services.xserver.displayManager.autoLogin.user = "drew";
+  services.displayManager.autoLogin = {
+    enable = true;
+    user = "drew";
+  };
 
   # Install firefox.
   programs.firefox.enable = true;
