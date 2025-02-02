@@ -5,11 +5,10 @@
 { config, pkgs, inputs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      inputs.home-manager.nixosModules.default
-    ];
+  imports = [ # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    inputs.home-manager.nixosModules.default
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -61,7 +60,8 @@
   services.printing.enable = true;
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
-  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+  hardware.bluetooth.powerOnBoot =
+    true; # powers up the default Bluetooth controller on boot
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
@@ -87,18 +87,17 @@
     isNormalUser = true;
     description = "drew";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      kdePackages.kate
-    #  thunderbird
-    ];
+    packages = with pkgs;
+      [
+        kdePackages.kate
+        #  thunderbird
+      ];
   };
 
   home-manager = {
     # also pass inputs to home-manager modules
-    extraSpecialArgs = {inherit inputs;};
-    users = {
-      "drew" = import ./home.nix;
-    };
+    extraSpecialArgs = { inherit inputs; };
+    users = { "drew" = import ./home.nix; };
   };
 
   # Remap CAPS lock to ESC
@@ -145,10 +144,12 @@
     ports = [ 22 ];
     settings = {
       PasswordAuthentication = true;
-      AllowUsers = null; # Allows all users by default. Can be [ "user1" "user2" ]
+      AllowUsers =
+        null; # Allows all users by default. Can be [ "user1" "user2" ]
       UseDns = true;
       X11Forwarding = false;
-      PermitRootLogin = "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
+      PermitRootLogin =
+        "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
     };
   };
 
