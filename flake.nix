@@ -13,7 +13,7 @@
   };
 
   outputs =
-    { self, nixpkgs, ... }@inputs:
+    { self, nixpkgs, catppuccin, home-manager, ... }@inputs:
     {
       nixosConfigurations = {
         xps = nixpkgs.lib.nixosSystem {
@@ -21,7 +21,17 @@
           modules = [
             catppuccin.nixosModules.catppuccin
             ./hosts/xps/configuration.nix
-            inputs.home-manager.nixosModules.default
+
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.users.drew = {
+                imports = [
+                  ./home.nix
+                  catppuccin.homeManagerModules.catppuccin
+                ];
+              };
+            }
+
           ];
         };
       };

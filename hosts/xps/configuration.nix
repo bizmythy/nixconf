@@ -98,19 +98,6 @@
     ];
   };
 
-  home-manager = {
-    # also pass inputs to home-manager modules
-    extraSpecialArgs = { inherit inputs; };
-    users = {
-      "drew" = {
-        imports = [
-          ./home.nix
-          inputs.catppuccin.homeManagerModules.catppuccin
-        ];
-      };
-    };
-  };
-
   # Remap CAPS lock to ESC
   # TODO: find more nixos-way to do this, maybe use Kanata?
   services.udev.extraHwdb = ''
