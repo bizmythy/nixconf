@@ -141,6 +141,8 @@
     nix-output-monitor
   ];
 
+  catppuccin.enable = true;
+
   services.openssh = {
     enable = true;
     ports = [ 22 ];
