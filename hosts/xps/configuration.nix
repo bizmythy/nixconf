@@ -129,6 +129,7 @@
     manix
     alacritty
     kitty
+    code-cursor
   ];
 
   services.openssh = {
