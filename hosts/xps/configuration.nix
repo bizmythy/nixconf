@@ -105,10 +105,10 @@
   '';
 
   # Enable automatic login for the user.
-  services.displayManager.autoLogin = {
-    enable = true;
-    user = "drew";
-  };
+  # services.displayManager.autoLogin = {
+  #   enable = true;
+  #   user = "drew";
+  # };
 
   # Install firefox.
   programs.firefox.enable = true;
