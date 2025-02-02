@@ -14,7 +14,8 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
-    ../../modules/kde.nix
+    # ../../modules/kde.nix
+    ../../modules/hyprland.nix
   ];
 
   # Bootloader.
