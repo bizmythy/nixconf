@@ -101,6 +101,13 @@
     };
   };
 
+  # Remap CAPS lock to ESC
+  # TODO: find more nixos-way to do this, maybe use Kanata?
+  services.udev.extraHwdb = ''
+    evdev:atkbd:*
+      KEYBOARD_KEY_3a=esc
+  '';
+
   # Enable automatic login for the user.
   services.xserver.displayManager.autoLogin.enable = true;
   services.xserver.displayManager.autoLogin.user = "drew";
@@ -130,6 +137,7 @@
     alacritty
     kitty
     code-cursor
+    nixfmt
   ];
 
   services.openssh = {
