@@ -143,6 +143,7 @@
     code-cursor
     nixfmt-rfc-style
     nh
+    nix-output-monitor
   ];
 
   services.openssh = {
