@@ -2,10 +2,16 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
-  imports = [ # Include the results of the hardware scan.
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
     ../../modules/kde.nix
@@ -57,8 +63,7 @@
   services.printing.enable = true;
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
-  hardware.bluetooth.powerOnBoot =
-    true; # powers up the default Bluetooth controller on boot
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
@@ -83,17 +88,21 @@
   users.users.drew = {
     isNormalUser = true;
     description = "drew";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs;
-      [
-        #  thunderbird
-      ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
+    packages = with pkgs; [
+      #  thunderbird
+    ];
   };
 
   home-manager = {
     # also pass inputs to home-manager modules
     extraSpecialArgs = { inherit inputs; };
-    users = { "drew" = import ./home.nix; };
+    users = {
+      "drew" = import ./home.nix;
+    };
   };
 
   # Remap CAPS lock to ESC
@@ -132,7 +141,8 @@
     alacritty
     kitty
     code-cursor
-    nixfmt
+    nixfmt-rfc-style
+    nh
   ];
 
   services.openssh = {
@@ -140,16 +150,17 @@
     ports = [ 22 ];
     settings = {
       PasswordAuthentication = true;
-      AllowUsers =
-        null; # Allows all users by default. Can be [ "user1" "user2" ]
+      AllowUsers = null; # Allows all users by default. Can be [ "user1" "user2" ]
       UseDns = true;
       X11Forwarding = false;
-      PermitRootLogin =
-        "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
+      PermitRootLogin = "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
     };
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

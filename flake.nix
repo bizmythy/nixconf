@@ -10,15 +10,17 @@
     };
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: {
-    nixosConfigurations = {
-      xps = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/xps/configuration.nix
-          inputs.home-manager.nixosModules.default
-        ];
+  outputs =
+    { self, nixpkgs, ... }@inputs:
+    {
+      nixosConfigurations = {
+        xps = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./hosts/xps/configuration.nix
+            inputs.home-manager.nixosModules.default
+          ];
+        };
       };
     };
-  };
 }
