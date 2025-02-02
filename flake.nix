@@ -13,7 +13,13 @@
   };
 
   outputs =
-    { self, nixpkgs, catppuccin, home-manager, ... }@inputs:
+    {
+      self,
+      nixpkgs,
+      catppuccin,
+      home-manager,
+      ...
+    }@inputs:
     {
       nixosConfigurations = {
         xps = nixpkgs.lib.nixosSystem {

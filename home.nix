@@ -83,6 +83,9 @@
     };
   };
 
+  programs.alacritty = {
+    enable = true;
+  };
   catppuccin.enable = true;
 
   # Let Home Manager install and manage itself.
