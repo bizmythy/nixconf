@@ -24,11 +24,14 @@
 
             home-manager.nixosModules.home-manager
             {
-              home-manager.users.drew = {
-                imports = [
-                  ./home.nix
-                  catppuccin.homeManagerModules.catppuccin
-                ];
+              home-manager = {
+                backupFileExtension = "backup";
+                users.drew = {
+                  imports = [
+                    ./home.nix
+                    catppuccin.homeManagerModules.catppuccin
+                  ];
+                };
               };
             }
 
