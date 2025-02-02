@@ -4,10 +4,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
 
-    # home-manager = {
-    #   url = "github:nix-community/home-manager";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, ... }@inputs: {
@@ -16,7 +16,7 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/xps/configuration.nix
-          # inputs.home-manager.nixosModules.default
+          inputs.home-manager.nixosModules.default
         ];
       };
     };
