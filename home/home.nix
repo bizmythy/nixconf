@@ -56,7 +56,6 @@
     };
     sessionVariables = {
       EDITOR = "nvim";
-      TEST123 = "TEST123";
       FLAKE = vars.flakePath;
     };
   };
