@@ -60,6 +60,7 @@
     };
   };
 
+  # NOTE: if any of these start to get large, break into separate module.
   programs = {
     zsh.enable = true;
     bash.enable = true;
@@ -78,8 +79,8 @@
     };
 
     lazygit.enable = true;
-
     zellij.enable = true;
+    starship.enable = true;
 
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
