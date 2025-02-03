@@ -129,15 +129,12 @@
     zellij
     ripgrep
     lazygit
-    atuin
     bat
-    manix
-    alacritty
-    kitty
-    code-cursor
-    nixfmt-rfc-style
     nh
     nix-output-monitor
+    alacritty
+    kitty
+    nixfmt-rfc-style
   ];
 
   catppuccin.enable = true;

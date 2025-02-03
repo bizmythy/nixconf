@@ -34,7 +34,7 @@
                 backupFileExtension = "backup";
                 users.drew = {
                   imports = [
-                    ./home.nix
+                    ./home/home.nix
                     catppuccin.homeManagerModules.catppuccin
                   ];
                 };

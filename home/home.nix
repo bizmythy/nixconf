@@ -15,25 +15,15 @@
   # release notes.
   home.stateVersion = "24.11"; # Please read the comment before changing.
 
-  # The home.packages option allows you to install Nix packages into your
-  # environment.
-  home.packages = [
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
 
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
+  home.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
 
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
+    atuin
+    manix
+    code-cursor
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -51,22 +41,15 @@
     # '';
   };
 
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. These will be explicitly sourced when using a
-  # shell provided by Home Manager. If you don't want to manage your shell
-  # through Home Manager then you have to manually source 'hm-session-vars.sh'
-  # located at either
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/drew/etc/profile.d/hm-session-vars.sh
-  #
+  programs.zsh = {
+    enable = true;
+    initExtra = ''
+      eval "$(atuin init zsh)"
+    '';
+  };
+  programs.bash.enable = true;
+  programs.nushell.enable = true;
+
   home.sessionVariables = {
     EDITOR = "nvim";
   };
@@ -86,6 +69,11 @@
   programs.alacritty = {
     enable = true;
   };
+
+  programs.zellij = {
+    enable = true;
+  };
+
   catppuccin.enable = true;
 
   # Let Home Manager install and manage itself.
