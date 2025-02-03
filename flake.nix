@@ -20,10 +20,15 @@
       home-manager,
       ...
     }@inputs:
+    let
+      vars = {
+        flakePath = "/home/drew/nixconf";
+      };
+    in
     {
       nixosConfigurations = {
         xps = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs vars; };
           modules = [
             catppuccin.nixosModules.catppuccin
             ./hosts/xps/configuration.nix
@@ -31,6 +36,7 @@
             home-manager.nixosModules.home-manager
             {
               home-manager = {
+                extraSpecialArgs = { inherit vars; };
                 backupFileExtension = "backup";
                 users.drew = {
                   imports = [
@@ -40,7 +46,6 @@
                 };
               };
             }
-
           ];
         };
       };

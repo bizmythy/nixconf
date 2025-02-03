@@ -6,6 +6,7 @@
   config,
   pkgs,
   inputs,
+  vars,
   ...
 }:
 
@@ -92,9 +93,8 @@
       "networkmanager"
       "wheel"
     ];
-    packages = with pkgs; [
-      #  thunderbird
-    ];
+    # packages = with pkgs; [
+    # ];
   };
 
   # Remap CAPS lock to ESC
@@ -129,6 +129,7 @@
     git
     ripgrep
     bat
+    eza
 
     # extra terminal tools
     zellij
@@ -137,15 +138,23 @@
     manix
 
     # nix tools
-    nh
     nix-output-monitor
     nixfmt-rfc-style
+    nil
 
     # graphical programs
     alacritty
     kitty
     code-cursor
   ];
+
+  # https://github.com/viperML/nh
+  programs.nh = {
+    enable = true;
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 10d";
+    flake = vars.flakePath;
+  };
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
