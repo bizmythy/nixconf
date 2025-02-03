@@ -123,18 +123,13 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    # basic terminal requirements
+    # terminal tools
     neovim
     wget
     git
     ripgrep
     bat
     eza
-
-    # extra terminal tools
-    zellij
-    lazygit
-    atuin
     manix
 
     # nix tools
