@@ -24,10 +24,9 @@
   nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
-    atuin
-    manix
-    code-cursor
   ];
+
+  fonts.fontconfig.enable = true;
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -60,7 +59,6 @@
   programs.git.userEmail = "andrew.p.council@gmail.com";
   programs.git.userName = "AndrewCouncil";
 
-  fonts.fontconfig.enable = true;
 
   programs.zellij = {
     enable = true;

@@ -133,6 +133,8 @@
     # extra terminal tools
     zellij
     lazygit
+    atuin
+    manix
 
     # nix tools
     nh
@@ -142,6 +144,7 @@
     # graphical programs
     alacritty
     kitty
+    code-cursor
   ];
 
   fonts.packages = with pkgs; [
