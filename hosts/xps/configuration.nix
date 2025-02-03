@@ -131,6 +131,7 @@
     bat
     eza
     manix
+    yazi
 
     # nix tools
     nix-output-monitor
