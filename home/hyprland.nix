@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  catppuccin.hyprland.enable = true;
+
   wayland.windowManager.hyprland = {
     enable = true;
 
@@ -21,11 +23,15 @@
         "$mainMod, P, pseudo," # dwindle
         "$mainMod, J, togglesplit," # dwindle
 
-        # Move focus with mainMod + arrow keys
+        # Move focus with mainMod + arrow keys or VIM keys
         "$mainMod, left, movefocus, l"
-        "$mainMod, right, movefocus, r"
+        "$mainMod, H, movefocus, l"
+        "$mainMod, right, movefocus, r" 
+        "$mainMod, L, movefocus, r"
         "$mainMod, up, movefocus, u"
+        "$mainMod, K, movefocus, u"
         "$mainMod, down, movefocus, d"
+        "$mainMod, J, movefocus, d"
 
         # Switch workspaces with mainMod + [0-9]
         "$mainMod, 1, workspace, 1"
