@@ -51,9 +51,6 @@
 
   programs.zsh = {
     enable = true;
-    initExtra = ''
-      eval "$(atuin init zsh)"
-    '';
   };
   programs.bash.enable = true;
   programs.nushell.enable = true;
@@ -68,6 +65,17 @@
       TEST123 = "TEST123";
       FLAKE = vars.flakePath;
     };
+  };
+
+  programs.atuin = {
+    enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+    enableNushellIntegration = true;
+  };
+
+  programs.lazygit = {
+    enable = true;
   };
 
   programs.git.userEmail = "andrew.p.council@gmail.com";

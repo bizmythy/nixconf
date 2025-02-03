@@ -9,4 +9,8 @@
       "$terminal" = "alacritty";
     };
   };
+
+  programs.fuzzel = {
+    enable = true;
+  };
 }
