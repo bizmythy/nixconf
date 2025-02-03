@@ -7,6 +7,8 @@
     settings = {
       "$mainMod" = "SUPER";
       "$terminal" = "alacritty";
+      "$fileManager" = "dolphin";
+      "$menu" = "fuzzel";
 
       bind = [
         # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
