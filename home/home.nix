@@ -1,4 +1,10 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  vars,
+  ...
+}:
 
 {
   imports = [
@@ -23,8 +29,8 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  home.packages = with pkgs; [
-  ];
+  # home.packages = with pkgs; [
+  # ];
 
   fonts.fontconfig.enable = true;
 
@@ -52,13 +58,20 @@
   programs.bash.enable = true;
   programs.nushell.enable = true;
 
-  home.sessionVariables = {
-    EDITOR = "nvim";
+  home = {
+    shellAliases = {
+      ls = "eza";
+      lg = "lazygit";
+    };
+    sessionVariables = {
+      EDITOR = "nvim";
+      TEST123 = "TEST123";
+      FLAKE = vars.flakePath;
+    };
   };
 
   programs.git.userEmail = "andrew.p.council@gmail.com";
   programs.git.userName = "AndrewCouncil";
-
 
   programs.zellij = {
     enable = true;
