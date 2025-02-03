@@ -49,12 +49,6 @@
     # '';
   };
 
-  programs.zsh = {
-    enable = true;
-  };
-  programs.bash.enable = true;
-  programs.nushell.enable = true;
-
   home = {
     shellAliases = {
       ls = "eza";
@@ -67,26 +61,30 @@
     };
   };
 
-  programs.atuin = {
-    enable = true;
-    enableZshIntegration = true;
-    enableBashIntegration = true;
-    enableNushellIntegration = true;
-  };
+  programs = {
+    zsh.enable = true;
+    bash.enable = true;
+    nushell.enable = true;
 
-  programs.lazygit = {
-    enable = true;
-  };
+    git = {
+      userEmail = "andrew.p.council@gmail.com";
+      userName = "AndrewCouncil";
+    };
 
-  programs.git.userEmail = "andrew.p.council@gmail.com";
-  programs.git.userName = "AndrewCouncil";
+    atuin = {
+      enable = true;
+      enableZshIntegration = true;
+      enableBashIntegration = true;
+      enableNushellIntegration = true;
+    };
 
-  programs.zellij = {
-    enable = true;
+    lazygit.enable = true;
+
+    zellij.enable = true;
+
+    # Let Home Manager install and manage itself.
+    home-manager.enable = true;
   };
 
   catppuccin.enable = true;
-
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
 }
