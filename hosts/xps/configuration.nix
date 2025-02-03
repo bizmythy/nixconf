@@ -123,18 +123,32 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    # basic terminal requirements
     neovim
     wget
     git
-    zellij
     ripgrep
-    lazygit
     bat
+
+    # extra terminal tools
+    zellij
+    lazygit
+
+    # nix tools
     nh
     nix-output-monitor
+    nixfmt-rfc-style
+
+    # graphical programs
     alacritty
     kitty
-    nixfmt-rfc-style
+  ];
+
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.hack
+    nerd-fonts.fira-code
+    nerd-fonts.ubuntu-mono
   ];
 
   catppuccin.enable = true;
