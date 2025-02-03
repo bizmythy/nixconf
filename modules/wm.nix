@@ -13,8 +13,8 @@
   specialisation = {
     hyprwm.configuration = {
       # Disable KDE Plasma
-      services.displayManager.sddm.enable = lib.mkOverride false;
-      services.desktopManager.plasma6.enable = lib.mkOverride false;
+      services.displayManager.sddm.enable = false;
+      services.desktopManager.plasma6.enable = false;
 
       # Enable Hyprland
       programs.hyprland.enable = true;
