@@ -37,7 +37,7 @@
             {
               home-manager = {
                 extraSpecialArgs = { inherit vars; };
-                backupFileExtension = "backup";
+                backupFileExtension = "backuplog";
                 users.drew = {
                   imports = [
                     ./home/home.nix
