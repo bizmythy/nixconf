@@ -1,14 +1,13 @@
 { config, pkgs, ... }:
 
+let
+  font_family = "JetBrainsMono Nerd Font";
+in
 {
   programs.alacritty = {
     enable = true;
     settings = {
-      font =
-        let
-          font_family = "JetBrainsMono Nerd Font";
-        in
-        {
+        font = {
           normal = {
             family = font_family;
             style = "Regular";
@@ -25,8 +24,8 @@
             family = font_family;
             style = "Bold Italic";
           };
-          size = 12;
-        };
+        size = 12;
+      };
     };
   };
 }
