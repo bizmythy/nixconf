@@ -7,17 +7,13 @@
 }:
 
 {
-  services.displayManager.sddm.enable = lib.mkDefault true;
-  services.desktopManager.plasma6.enable = lib.mkDefault true;
+  # Enable Simple Desktop Display Manager
+  services.displayManager.sddm.enable = true;
 
-  specialisation = {
-    hyprwm.configuration = {
-      # Disable KDE Plasma
-      services.displayManager.sddm.enable = false;
-      services.desktopManager.plasma6.enable = false;
+  # Enable Hyprland
+  programs.hyprland.enable = true;
 
-      # Enable Hyprland
-      programs.hyprland.enable = true;
-    };
-  };
+  # Enable KDE Plasma 6
+  services.desktopManager.plasma6.enable = true;
+
 }
