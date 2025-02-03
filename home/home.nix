@@ -1,6 +1,11 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ./alacritty.nix
+    ./hyprland.nix
+  ];
+
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "drew";
@@ -19,8 +24,6 @@
   nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-
     atuin
     manix
     code-cursor
@@ -57,39 +60,7 @@
   programs.git.userEmail = "andrew.p.council@gmail.com";
   programs.git.userName = "AndrewCouncil";
 
-  wayland.windowManager.hyprland = {
-    enable = true;
-
-    settings = {
-      "$mod" = "SUPER";
-      "$terminal" = "alacritty";
-    };
-  };
-
-  programs.alacritty = {
-    enable = true;
-    settings = {
-      font = {
-        normal = {
-          family = "JetBrainsMono Nerd Font";
-          style = "Regular";
-        };
-        bold = {
-          family = "JetBrainsMono Nerd Font";
-          style = "Bold";
-        };
-        italic = {
-          family = "JetBrainsMono Nerd Font";
-          style = "Italic";
-        };
-        bold_italic = {
-          family = "JetBrainsMono Nerd Font";
-          style = "Bold Italic";
-        };
-        size = 12;
-      };
-    };
-  };
+  fonts.fontconfig.enable = true;
 
   programs.zellij = {
     enable = true;
