@@ -13,8 +13,8 @@
       bind = [
         # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
         "$mainMod, RETURN, exec, $terminal"
-        "$mainMod, C, killactive,"
-        "$mainMod, SHIFT, M, exit,"
+        "$mainMod, W, killactive,"
+        "$mainMod, M, exit,"
         "$mainMod, E, exec, $fileManager"
         "$mainMod, V, togglefloating,"
         "$mainMod, SPACE, exec, $menu"
