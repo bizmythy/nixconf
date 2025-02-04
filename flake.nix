@@ -10,6 +10,8 @@
     };
 
     catppuccin.url = "github:catppuccin/nix";
+
+    stylix.url = "github:danth/stylix";
   };
 
   outputs =
@@ -17,6 +19,7 @@
       self,
       nixpkgs,
       catppuccin,
+      stylix,
       home-manager,
       ...
     }@inputs:
@@ -30,6 +33,7 @@
         xps = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs vars; };
           modules = [
+            stylix.nixosModules.stylix
             catppuccin.nixosModules.catppuccin
             ./hosts/xps/configuration.nix
 
@@ -40,8 +44,9 @@
                 backupFileExtension = "backuplog";
                 users.drew = {
                   imports = [
-                    ./home/home.nix
+                    stylix.homeManagerModules.stylix
                     catppuccin.homeManagerModules.catppuccin
+                    ./home/home.nix
                   ];
                 };
               };

@@ -86,5 +86,24 @@
     home-manager.enable = true;
   };
 
+  # Theming
   catppuccin.enable = true;
+
+  # stylix = {
+  #   enable = true;
+  #   polarity = "dark";
+  #   base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+
+  #   fonts = let
+  #     jetbrains = {
+  #       package = pkgs.nerd-fonts.jetbrains-mono;
+  #       name = "JetBrainsMono Nerd Font";
+  #     };
+  #   in {
+  #     serif = jetbrains;
+  #     sansSerif = jetbrains; 
+  #     monospace = jetbrains;
+  #   };
+  # };
 }
+
