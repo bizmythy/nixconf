@@ -130,13 +130,14 @@
     ripgrep
     bat
     eza
-    manix
     yazi
 
     # nix tools
     nix-output-monitor
     nixfmt-rfc-style
     nil
+    nurl
+    manix
 
     # graphical programs
     alacritty
