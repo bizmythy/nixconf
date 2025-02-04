@@ -33,7 +33,6 @@
         xps = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs vars; };
           modules = [
-            stylix.nixosModules.stylix
             catppuccin.nixosModules.catppuccin
             ./hosts/xps/configuration.nix
 
