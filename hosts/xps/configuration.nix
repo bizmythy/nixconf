@@ -18,6 +18,11 @@
     ../../modules/wm.nix
   ];
 
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -181,10 +186,11 @@
     };
   };
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  fileSystems."/mnt/tungsten-vault" = {
+    device = "192.168.1.237:/mnt/tungsten/tungsten-vault";
+    fsType = "nfs";
+    options = [ "x-systemd.automount" "noauto" ];
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
