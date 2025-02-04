@@ -3,6 +3,12 @@
 {
   catppuccin.hyprland.enable = true;
 
+  home.pointerCursor = {
+    name = "phinger-cursors-dark";
+    package = pkgs.phinger-cursors;
+    size = 32;
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
 
@@ -26,7 +32,7 @@
         # Move focus with mainMod + arrow keys or VIM keys
         "$mainMod, left, movefocus, l"
         "$mainMod, H, movefocus, l"
-        "$mainMod, right, movefocus, r" 
+        "$mainMod, right, movefocus, r"
         "$mainMod, L, movefocus, r"
         "$mainMod, up, movefocus, u"
         "$mainMod, K, movefocus, u"
