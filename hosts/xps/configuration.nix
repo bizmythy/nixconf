@@ -131,6 +131,7 @@
     bat
     eza
     yazi
+    unzip
 
     # nix tools
     nix-output-monitor
@@ -143,6 +144,12 @@
     alacritty
     kitty
     code-cursor
+    kdePackages.qtwayland
+    kdePackages.qtsvg
+    kdePackages.dolphin
+    qalculate-qt
+    vlc
+    gimp
   ];
 
   # https://github.com/viperML/nh
