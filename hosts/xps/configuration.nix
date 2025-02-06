@@ -156,6 +156,8 @@
     kdePackages.qtsvg
     kdePackages.dolphin
     kdePackages.qt6ct
+    kdePackages.kio-fuse
+    kdePackages.kio-extras
     qalculate-qt
     vlc
     gimp
