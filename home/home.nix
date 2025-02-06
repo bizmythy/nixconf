@@ -76,6 +76,10 @@
       enableZshIntegration = true;
       enableBashIntegration = true;
       enableNushellIntegration = true;
+      settings = {
+        auto_sync = true;
+        filter_mode_shell_up_key_binding = "session";
+      };
     };
 
     lazygit.enable = true;
