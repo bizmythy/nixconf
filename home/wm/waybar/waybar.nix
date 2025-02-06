@@ -3,7 +3,7 @@
 {
   catppuccin.waybar = {
     enable = true;
-    mode = "prependImport";
+    mode = "createLink";
   };
 
   programs.waybar = {
@@ -11,5 +11,8 @@
     style = ./waybar.css;
   };
 
-  xdg.configFile."waybar/config".source = ./config.jsonc;
+  xdg.configFile = {
+    "waybar/config.jsonc".source = ./config.jsonc;
+    "waybar/power_menu.xml".source = ./power_menu.xml;
+  };
 }
