@@ -16,9 +16,8 @@
     ],
     "modules-right": [
         "mpd",
-        "idle_inhibitor",
-        "pulseaudio",
         "network",
+        "pulseaudio",
         "battery",
         "battery#bat2",
         "clock",
