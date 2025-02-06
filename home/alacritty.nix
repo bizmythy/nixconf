@@ -7,6 +7,14 @@ in
   programs.alacritty = {
     enable = true;
     settings = {
+      window = {
+        opacity = 0.9;
+      };
+
+      scrolling.history = 10000;
+
+      selection.save_to_clipboard = true;
+
       font = {
         normal = {
           family = font_family;
