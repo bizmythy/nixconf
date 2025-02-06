@@ -1,7 +1,16 @@
 { config, pkgs, ... }:
 
+let
+  wallpaper = pkgs.fetchurl {
+    url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/purple_crystals.jpg";
+    sha256 = "0fyrzlbx6ii9nzpn2vpl45vdq9hh87af18d3sjpvv66cbsc9vwga";
+  };
+in
 {
-  catppuccin.hyprland.enable = true;
+  catppuccin.hyprland = {
+    enable = true;
+    accent = "mauve";
+  };
 
   home.pointerCursor = {
     name = "phinger-cursors-dark";
@@ -9,11 +18,32 @@
     size = 32;
   };
 
+  services.hyprpaper = {
+    enable = true;
+    settings = {
+      preload = wallpaper.outPath;
+      wallpaper = " , ${wallpaper.outPath}";
+    };
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
 
     settings = {
+      exec-once = [
+        "hyprpaper"
+      ];
+
+      general = {
+        "col.active_border" = "$accent";
+      };
+
+      decoration = {
+        "rounding" = 14;
+      };
+
       "$mainMod" = "SUPER";
+
       "$terminal" = "alacritty";
       "$fileManager" = "dolphin";
       "$menu" = "fuzzel";
