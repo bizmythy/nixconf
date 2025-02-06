@@ -102,6 +102,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "docker"
     ];
     # packages = with pkgs; [
     # ];
@@ -159,10 +160,11 @@
     code-cursor
     kdePackages.qtwayland
     kdePackages.qtsvg
-    kdePackages.dolphin
     kdePackages.qt6ct
     kdePackages.kio-fuse
     kdePackages.kio-extras
+    kdePackages.dolphin
+    kdePackages.okular
     qalculate-qt
     vlc
     gimp
@@ -178,6 +180,10 @@
     packages = [
       "com.obsproject.Studio"
       "app.zen_browser.zen"
+      "com.slack.Slack"
+      "org.signal.Signal"
+      "com.spotify.Client"
+      "com.discordapp.Discord"
     ];
   };
 
@@ -188,6 +194,13 @@
     # require enabling PolKit integration on some desktop environments (e.g. Plasma).
     polkitPolicyOwners = [ "drew" ];
   };
+
+programs.steam = {
+  enable = true;
+  remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+  dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+  localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+};
 
   # https://github.com/viperML/nh
   programs.nh = {
@@ -231,6 +244,14 @@
       UseDns = true;
       X11Forwarding = false;
       PermitRootLogin = "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
+    };
+  };
+
+  virtualisation.docker = {
+    enable = true;
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
     };
   };
 
