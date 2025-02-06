@@ -1,8 +1,9 @@
 @import "catppuccin.css";
+
+/* modified from https://github.com/sephid86/fulleaf/blob/master/skel/.config/waybar/style.css */
+
 * {
-  /* `otf-font-awesome` is required to be installed for icons */
-  font-family: "Noto Sans CJK KR Regular";
-  /*font-family: "D2CodingLigature Nerd Mono";*/
+  font-family: "JetBrainsMono Nerd Font";
   font-size: 13px;
   min-height: 0;
 }
@@ -11,7 +12,7 @@ window#waybar {
   background: transparent;
   /*    background-color: rgba(43, 48, 59, 0.5); */
   /*    border-bottom: 3px solid rgba(100, 114, 125, 0.5); */
-  color: #ffffff;
+  color: @base;
   transition-property: background-color;
   transition-duration: .5s;
 }
@@ -47,7 +48,7 @@ button {
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 button:hover {
   background: inherit;
-  border-top: 2px solid #c9545d;
+  border-top: 2px solid @mauve;
 }
 
 #workspaces button {
@@ -59,26 +60,26 @@ button:hover {
 }
 
 #workspaces button.focused {
-  /*    box-shadow: inset 0 -2px #c9545d; */
+  /*    box-shadow: inset 0 -2px @mauve; */
   background-color: rgba(0,0,0,0.3);
-  color:#c9545d;
-  border-top: 2px solid #c9545d;
+  color: @mauve;
+  border-top: 2px solid @mauve;
 }
 
 #workspaces button.active {
-  /*    box-shadow: inset 0 -2px #c9545d; */
+  /*    box-shadow: inset 0 -2px @mauve; */
   background-color: rgba(0,0,0,0.3);
-  color:#c9545d;
-  border-top: 2px solid #c9545d;
+  color: @mauve;
+  border-top: 2px solid @mauve;
 }
 
 #workspaces button.urgent {
-  background-color: #eb4d4b;
+  background-color: @red;
 }
 
 #mode {
-  background-color: #64727D;
-  border-bottom: 3px solid #ffffff;
+  background-color: @overlay1;
+  border-bottom: 3px solid @base;
 }
 
 #clock,
@@ -101,7 +102,7 @@ button:hover {
   padding-left: 4px;
   padding-right: 4px;
   background-color: rgba(0,0,0,0.3);
-  color: #ffffff;
+  color: @base;
 }
 
 /* If workspaces is the leftmost module, omit left margin */
@@ -120,12 +121,12 @@ button:hover {
 }
 
 #battery icon {
-  color: red;
+  color: @red;
 }
 
 #battery.charging, #battery.plugged {
-  color: #ffffff;
-  background-color: #26A65B;
+  color: @base;
+  background-color: @green;
 }
 
 @keyframes blink {
@@ -136,18 +137,13 @@ button:hover {
 }
 
 #battery.warning:not(.charging) {
-  background-color: #f53c3c;
-  color: #ffffff;
-  animation-name: blink;
-  animation-duration: 0.5s;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
+  background-color: @red;
+  color: @base;
 }
 
 #battery.critical:not(.charging) {
-  background-color: #f53c3c;
-  color: #ffffff;
+  background-color: @red;
+  color: @base;
   animation-name: blink;
   animation-duration: 0.5s;
   animation-timing-function: linear;
@@ -160,16 +156,16 @@ label:focus {
 }
 
 #network.disconnected {
-  background-color: #f53c3c;
+  background-color: @red;
 }
 
 #temperature.critical {
-  background-color: #eb4d4b;
+  background-color: @red;
 }
 
 #idle_inhibitor.activated {
-  background-color: #ecf0f1;
-  color: #2d3436;
+  background-color: @base;
+  color: @base;
 }
 
 #tray > .passive {
@@ -178,7 +174,7 @@ label:focus {
 
 #tray > .needs-attention {
   -gtk-icon-effect: highlight;
-  background-color: #eb4d4b;
+  background-color: @red;
 }
 
 /*
