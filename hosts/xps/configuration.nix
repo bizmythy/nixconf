@@ -137,6 +137,8 @@
     eza
     yazi
     unzip
+    btop
+    htop
 
     # nix tools
     nix-output-monitor
@@ -146,12 +148,14 @@
     manix
 
     # graphical programs
+    hyprpaper
     alacritty
     kitty
     code-cursor
     kdePackages.qtwayland
     kdePackages.qtsvg
     kdePackages.dolphin
+    kdePackages.qt6ct
     qalculate-qt
     vlc
     gimp
@@ -189,7 +193,10 @@
   fileSystems."/mnt/tungsten-vault" = {
     device = "192.168.1.237:/mnt/tungsten/tungsten-vault";
     fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
+    options = [
+      "x-systemd.automount"
+      "noauto"
+    ];
   };
 
   # Some programs need SUID wrappers, can be configured further or are
