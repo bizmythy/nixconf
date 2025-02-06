@@ -1,11 +1,5 @@
 { config, pkgs, ... }:
 
-let
-  wallpaper = pkgs.fetchurl {
-    url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/purple_crystals.jpg";
-    sha256 = "0fyrzlbx6ii9nzpn2vpl45vdq9hh87af18d3sjpvv66cbsc9vwga";
-  };
-in
 {
   catppuccin.hyprland = {
     enable = true;
@@ -18,13 +12,20 @@ in
     size = 32;
   };
 
-  services.hyprpaper = {
-    enable = true;
-    settings = {
-      preload = wallpaper.outPath;
-      wallpaper = " , ${wallpaper.outPath}";
+  services.hyprpaper =
+    let
+      wallpaper = pkgs.fetchurl {
+        url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/purple_crystals.jpg";
+        sha256 = "0fyrzlbx6ii9nzpn2vpl45vdq9hh87af18d3sjpvv66cbsc9vwga";
+      };
+    in
+    {
+      enable = true;
+      settings = {
+        preload = wallpaper.outPath;
+        wallpaper = " , ${wallpaper.outPath}";
+      };
     };
-  };
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -117,7 +118,5 @@ in
     enable = true;
   };
 
-  programs.waybar = {
-    enable = true;
-  };
+
 }
