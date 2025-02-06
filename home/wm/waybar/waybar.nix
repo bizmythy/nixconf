@@ -1,14 +1,15 @@
-{ config, ... }:
+{ config, lib, ... }:
 
 {
   catppuccin.waybar = {
     enable = true;
-    mode = "createLink";
+    mode = "prependImport";
   };
 
   programs.waybar = {
     enable = true;
     style = ./waybar.css;
-    settings = builtins.fromJSON (builtins.readFile ./waybar.json);
   };
+
+  xdg.configFile."waybar/config".source = ./config.jsonc;
 }

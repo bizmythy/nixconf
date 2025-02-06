@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ./waybar/waybar.nix
+  ];
+
   catppuccin.hyprland = {
     enable = true;
     accent = "mauve";
