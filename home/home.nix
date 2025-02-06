@@ -87,11 +87,13 @@
   };
 
   # Theming
-  catppuccin.enable = true;
-
-  catppuccin.kvantum = {
+  catppuccin = {
     enable = true;
-    apply = true;
+    flavor = "mocha";
+    kvantum = {
+      enable = true;
+      apply = true;
+    };
   };
 
   qt = {
@@ -99,35 +101,4 @@
     platformTheme.name = "kvantum";
     style.name = "kvantum";
   };
-
-  # stylix = {
-  #   targets.qt = {
-  #     platform = "kvantum";
-  #     style.name = "kvantum";
-  #   };
-  #   enable = true;
-  #   polarity = "dark";
-  #   image = pkgs.fetchurl {
-  #     url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/purple_crystals.jpg";
-  #     sha256 = "0fyrzlbx6ii9nzpn2vpl45vdq9hh87af18d3sjpvv66cbsc9vwga";
-  #   };
-  #   base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-  #   cursor = {
-  #     name = "phinger-cursors-dark";
-  #     package = pkgs.phinger-cursors;
-  #     size = 32;
-  #   };
-
-  #   fonts = let
-  #     jetbrains = {
-  #       package = pkgs.nerd-fonts.jetbrains-mono;
-  #       name = "JetBrainsMono Nerd Font";
-  #     };
-  #   in {
-  #     serif = jetbrains;
-  #     sansSerif = jetbrains; 
-  #     monospace = jetbrains;
-  #   };
-  # };
 }
-
