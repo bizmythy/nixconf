@@ -113,4 +113,8 @@ in
   programs.fuzzel = {
     enable = true;
   };
+
+  programs.waybar = {
+    enable = true;
+  };
 }

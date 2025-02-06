@@ -8,7 +8,13 @@
 
 {
   # Enable Hyprland
-  programs.hyprland.enable = true;
+  programs.hyprland = {
+    enable = true;
+  };
+
+  programs.waybar = {
+    enable = true;
+  };
 
   specialisation.kde.configuration = {
     # Enable Simple Desktop Display Manager
