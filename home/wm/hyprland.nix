@@ -33,10 +33,13 @@ in
     settings = {
       exec-once = [
         "hyprpaper"
+        "waybar"
       ];
 
       general = {
         "col.active_border" = "$accent";
+        "gaps_in" = 5;
+        "gaps_out" = 10;
       };
 
       decoration = {
