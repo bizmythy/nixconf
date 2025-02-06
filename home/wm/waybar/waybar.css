@@ -9,10 +9,10 @@
 }
 
 window#waybar {
-  background: transparent;
-  /*    background-color: rgba(43, 48, 59, 0.5); */
+  /*    background: transparent; */
+  background-color: rgba(30, 30, 46, 0.5);
   /*    border-bottom: 3px solid rgba(100, 114, 125, 0.5); */
-  color: @base;
+  color: @text;
   transition-property: background-color;
   transition-duration: .5s;
 }
@@ -32,7 +32,7 @@ window#waybar.hidden {
   margin: 2;
   padding-left: 8;
   padding-right: 8;
-  background-color: rgba(0,0,0,0.3);
+  background: transparent;
   font-size:14px;
   font-weight: bold;
 }
@@ -61,14 +61,14 @@ button:hover {
 
 #workspaces button.focused {
   /*    box-shadow: inset 0 -2px @mauve; */
-  background-color: rgba(0,0,0,0.3);
+  background: transparent;
   color: @mauve;
   border-top: 2px solid @mauve;
 }
 
 #workspaces button.active {
   /*    box-shadow: inset 0 -2px @mauve; */
-  background-color: rgba(0,0,0,0.3);
+  background: transparent;
   color: @mauve;
   border-top: 2px solid @mauve;
 }
@@ -79,7 +79,7 @@ button:hover {
 
 #mode {
   background-color: @overlay1;
-  border-bottom: 3px solid @base;
+  border-bottom: 3px solid @text;
 }
 
 #clock,
@@ -101,8 +101,8 @@ button:hover {
   margin: 2px;
   padding-left: 4px;
   padding-right: 4px;
-  background-color: rgba(0,0,0,0.3);
-  color: @base;
+  background: transparent;
+  color: @text;
 }
 
 /* If workspaces is the leftmost module, omit left margin */
@@ -121,12 +121,11 @@ button:hover {
 }
 
 #battery icon {
-  color: @red;
+  color: @text;
 }
 
 #battery.charging, #battery.plugged {
-  color: @base;
-  background-color: @green;
+  color: @green;
 }
 
 @keyframes blink {
@@ -138,12 +137,12 @@ button:hover {
 
 #battery.warning:not(.charging) {
   background-color: @red;
-  color: @base;
+  color: @text;
 }
 
 #battery.critical:not(.charging) {
   background-color: @red;
-  color: @base;
+  color: @text;
   animation-name: blink;
   animation-duration: 0.5s;
   animation-timing-function: linear;
@@ -164,8 +163,8 @@ label:focus {
 }
 
 #idle_inhibitor.activated {
-  background-color: @base;
-  color: @base;
+  background-color: @text;
+  color: @text;
 }
 
 #tray > .passive {
