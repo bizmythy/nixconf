@@ -161,6 +161,19 @@
     gimp
   ];
 
+  services.flatpak = {
+    enable = true;
+    update.auto = {
+      enable = true;
+      onCalendar = "weekly";
+    };
+
+    packages = [
+      "com.obsproject.Studio"
+      "app.zen_browser.zen"
+    ];
+  };
+
   # https://github.com/viperML/nh
   programs.nh = {
     enable = true;
@@ -169,12 +182,28 @@
     flake = vars.flakePath;
   };
 
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.hack
-    nerd-fonts.fira-code
-    nerd-fonts.ubuntu-mono
-  ];
+  fonts = {
+    enableDefaultPackages = true;
+    packages = with pkgs; [
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.hack
+      nerd-fonts.fira-code
+      nerd-fonts.ubuntu-mono
+
+      noto-fonts
+      noto-fonts-color-emoji
+      ibm-plex
+    ];
+
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        monospace = [ "JetBrainsMono Nerd Font" ];
+        sansSerif = [ "Noto Sans" ];
+        serif = [ "Noto Serif" ];
+      };
+    };
+  };
 
   catppuccin.enable = true;
 

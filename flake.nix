@@ -11,7 +11,7 @@
 
     catppuccin.url = "github:catppuccin/nix";
 
-    stylix.url = "github:danth/stylix";
+    nix-flatpak.url = "github:gmodena/nix-flatpak"; # unstable branch
   };
 
   outputs =
@@ -19,7 +19,7 @@
       self,
       nixpkgs,
       catppuccin,
-      stylix,
+      nix-flatpak,
       home-manager,
       ...
     }@inputs:
@@ -34,6 +34,7 @@
           specialArgs = { inherit inputs vars; };
           modules = [
             catppuccin.nixosModules.catppuccin
+            nix-flatpak.nixosModules.nix-flatpak
             ./hosts/xps/configuration.nix
 
             home-manager.nixosModules.home-manager
@@ -43,7 +44,6 @@
                 backupFileExtension = "backuplog";
                 users.drew = {
                   imports = [
-                    stylix.homeManagerModules.stylix
                     catppuccin.homeManagerModules.catppuccin
                     ./home/home.nix
                   ];
