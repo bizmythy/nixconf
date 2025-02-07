@@ -154,6 +154,8 @@
     manix
 
     # graphical programs
+    playerctl
+    brightnessctl
     hyprpaper
     alacritty
     kitty
