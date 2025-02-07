@@ -145,6 +145,8 @@
     unzip
     btop
     htop
+    lazygit
+    lazydocker
 
     # nix tools
     nix-output-monitor
