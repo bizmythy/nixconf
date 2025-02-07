@@ -168,6 +168,7 @@
     qalculate-qt
     vlc
     gimp
+    inputs.zen-browser.packages.${pkgs.system}.default
   ];
 
   services.flatpak = {
@@ -179,7 +180,6 @@
 
     packages = [
       "com.obsproject.Studio"
-      "app.zen_browser.zen"
       "com.slack.Slack"
       "org.signal.Signal"
       "com.spotify.Client"
@@ -195,12 +195,21 @@
     polkitPolicyOwners = [ "drew" ];
   };
 
-programs.steam = {
-  enable = true;
-  remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-  dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-  localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-};
+  environment.etc = {
+    "1password/custom_allowed_browsers" = {
+      text = ''
+        .zen-wrapped
+      '';
+      mode = "0755";
+    };
+  };
+
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  };
 
   # https://github.com/viperML/nh
   programs.nh = {
