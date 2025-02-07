@@ -39,6 +39,8 @@
       exec-once = [
         "hyprpaper"
         "waybar"
+        "systemctl --user start hyprpolkitagent"
+        "swaync"
       ];
 
       general = {
@@ -64,7 +66,6 @@
         "$mainMod, M, exit,"
         "$mainMod, E, exec, $fileManager"
         "$mainMod, V, togglefloating,"
-        "$mainMod, SPACE, exec, $menu"
         "$mainMod, P, pseudo," # dwindle
         "$mainMod, J, togglesplit," # dwindle
 
@@ -118,6 +119,9 @@
         ", XF86AudioPause, exec, playerctl play-pause"
         ", XF86AudioNext, exec, playerctl next"
         ", XF86AudioPrev, exec, playerctl previous"
+
+        "$mainMod, SPACE, exec, $menu"
+        "$mainMod, V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
       ];
       bindm = [
         # Move/resize windows with mainMod + LMB/RMB and dragging
@@ -132,6 +136,10 @@
   };
 
   programs.fuzzel = {
+    enable = true;
+  };
+
+  services.swaync = {
     enable = true;
   };
 

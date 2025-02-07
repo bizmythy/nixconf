@@ -157,6 +157,10 @@
     playerctl
     brightnessctl
     hyprpaper
+    swaynotificationcenter
+    hyprpolkitagent
+    wl-clipboard
+    cliphist
     alacritty
     kitty
     code-cursor

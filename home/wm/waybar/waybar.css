@@ -176,6 +176,9 @@ label:focus {
   background-color: @red;
 }
 
+#custom-notification {
+}
+
 /*
 
 window#waybar.solo {
