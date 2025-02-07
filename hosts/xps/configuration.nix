@@ -157,9 +157,14 @@
     playerctl
     brightnessctl
     hyprpaper
+    hyprpicker
+    hyprsysteminfo
     swaynotificationcenter
     hyprpolkitagent
     wl-clipboard
+    wtype
+    bemoji
+    wev
     cliphist
     alacritty
     kitty

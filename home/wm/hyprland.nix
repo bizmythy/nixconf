@@ -41,6 +41,8 @@
         "waybar"
         "systemctl --user start hyprpolkitagent"
         "swaync"
+        "wl-paste --type text --watch cliphist store"
+        "wl-paste --type image --watch cliphist store"
       ];
 
       general = {
@@ -58,14 +60,22 @@
       "$terminal" = "alacritty";
       "$fileManager" = "dolphin";
       "$menu" = "fuzzel";
+      "$browser" = "zen";
 
       bind = [
         # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
         "$mainMod, RETURN, exec, $terminal"
+        "$mainMod, E, exec, $fileManager"
+        "$mainMod, B, exec, $browser"
+        "$mainMod, P, exec, hyprpicker"
+
+        "SUPER, SUPER_L, exec, fuzzel"
+        "$mainMod, V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
+        "$mainMod, code:60, exec, bemoji -t"
+
         "$mainMod, W, killactive,"
         "$mainMod, M, exit,"
-        "$mainMod, E, exec, $fileManager"
-        "$mainMod, V, togglefloating,"
+        "$mainMod, F, togglefloating,"
         "$mainMod, P, pseudo," # dwindle
         "$mainMod, J, togglesplit," # dwindle
 
@@ -119,9 +129,6 @@
         ", XF86AudioPause, exec, playerctl play-pause"
         ", XF86AudioNext, exec, playerctl next"
         ", XF86AudioPrev, exec, playerctl previous"
-
-        "$mainMod, SPACE, exec, $menu"
-        "$mainMod, V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
       ];
       bindm = [
         # Move/resize windows with mainMod + LMB/RMB and dragging
