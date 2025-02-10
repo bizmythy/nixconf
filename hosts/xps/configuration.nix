@@ -147,6 +147,7 @@
     htop
     lazygit
     lazydocker
+    cht-sh
 
     # nix tools
     nix-output-monitor
@@ -174,6 +175,7 @@
     code-cursor
     vlc
     gimp
+    pavucontrol
     kdePackages.qtwayland
     kdePackages.qtsvg
     kdePackages.qt6ct
