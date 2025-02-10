@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   imports = [
@@ -61,6 +66,7 @@
       "$fileManager" = "dolphin";
       "$menu" = "fuzzel";
       "$browser" = "zen";
+      "$calculator" = "qalculate-qt";
 
       bind = [
         # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
@@ -68,10 +74,11 @@
         "$mainMod, E, exec, $fileManager"
         "$mainMod, B, exec, $browser"
         "$mainMod, P, exec, hyprpicker"
+        "$mainMod, EQUAL, exec, $calculator"
 
         "SUPER, SUPER_L, exec, fuzzel"
         "$mainMod, V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
-        "$mainMod, code:60, exec, bemoji -t"
+        "$mainMod, PERIOD, exec, bemoji -t"
 
         "$mainMod, W, killactive,"
         "$mainMod, M, exit,"
@@ -139,6 +146,19 @@
         workspace_swipe = true;
         workspace_swipe_fingers = 3;
       };
+
+      windowrulev2 =
+        let
+          floatingWindowRules = class: [
+            "float, initialClass:${class}"
+            "center, initialClass:${class}"
+            "size 50% 50%, initialClass:${class}"
+          ];
+        in
+        lib.lists.flatten [
+          (floatingWindowRules "1Password")
+          (floatingWindowRules "io.github.Qalculate.qalculate-qt")
+        ];
     };
   };
 

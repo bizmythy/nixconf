@@ -85,7 +85,12 @@
     };
 
     lazygit.enable = true;
-    zellij.enable = true;
+    zellij = {
+      enable = true;
+      enableBashIntegration = false;
+      enableZshIntegration = false;
+      enableFishIntegration = false;
+    };
     starship.enable = true;
 
     # Let Home Manager install and manage itself.
