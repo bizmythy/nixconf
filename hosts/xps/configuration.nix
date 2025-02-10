@@ -154,6 +154,7 @@
     nil
     nurl
     manix
+    nix-search-cli
 
     # graphical programs
     playerctl
@@ -171,6 +172,8 @@
     alacritty
     kitty
     code-cursor
+    vlc
+    gimp
     kdePackages.qtwayland
     kdePackages.qtsvg
     kdePackages.qt6ct
@@ -179,8 +182,7 @@
     kdePackages.dolphin
     kdePackages.okular
     qalculate-qt
-    vlc
-    gimp
+
     inputs.zen-browser.packages.${pkgs.system}.default
   ];
 
