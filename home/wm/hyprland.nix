@@ -55,7 +55,7 @@
       ];
 
       general = {
-        "col.active_border" = "$accent";
+        "col.active_border" = "$mauve $pink 90deg";
         "gaps_in" = 5;
         "gaps_out" = 10;
       };
