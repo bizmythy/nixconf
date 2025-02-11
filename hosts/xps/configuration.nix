@@ -148,6 +148,9 @@
     lazygit
     lazydocker
     cht-sh
+    ffmpeg
+    imagemagick
+    zstd
 
     # nix tools
     nix-output-monitor
@@ -158,10 +161,12 @@
     nix-search-cli
 
     # graphical programs
+    pqiv
     playerctl
     brightnessctl
     hyprpaper
     hyprpicker
+    hyprshot
     hyprsysteminfo
     swaynotificationcenter
     hyprpolkitagent
@@ -175,6 +180,7 @@
     code-cursor
     vlc
     gimp
+    zoom-us
     pavucontrol
     kdePackages.qtwayland
     kdePackages.qtsvg
@@ -183,6 +189,7 @@
     kdePackages.kio-extras
     kdePackages.dolphin
     kdePackages.okular
+    kdePackages.kdenlive
     qalculate-qt
 
     inputs.zen-browser.packages.${pkgs.system}.default
@@ -201,6 +208,7 @@
       "org.signal.Signal"
       "com.spotify.Client"
       "com.discordapp.Discord"
+      "com.github.tchx84.Flatseal"
     ];
   };
 
@@ -236,6 +244,7 @@
     flake = vars.flakePath;
   };
 
+  # Configure fonts
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
@@ -248,7 +257,6 @@
       noto-fonts-color-emoji
       ibm-plex
     ];
-
     fontconfig = {
       enable = true;
       defaultFonts = {
@@ -265,14 +273,15 @@
     enable = true;
     ports = [ 22 ];
     settings = {
-      PasswordAuthentication = true;
+      PasswordAuthentication = false;
       AllowUsers = null; # Allows all users by default. Can be [ "user1" "user2" ]
       UseDns = true;
       X11Forwarding = false;
-      PermitRootLogin = "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
+      PermitRootLogin = "no"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
     };
   };
 
+  # Set up docker
   virtualisation.docker = {
     enable = true;
     rootless = {
@@ -280,6 +289,12 @@
       setSocketVariable = true;
     };
   };
+
+  # Set up virt manager
+  programs.virt-manager.enable = true;
+  users.groups.libvirtd.members = ["drew"];
+  virtualisation.libvirtd.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
 
   fileSystems."/mnt/tungsten-vault" = {
     device = "192.168.1.237:/mnt/tungsten/tungsten-vault";
