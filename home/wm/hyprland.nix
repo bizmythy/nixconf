@@ -35,6 +35,10 @@
         wallpaper = " , ${wallpaper.outPath}";
       };
     };
+  
+  home.sessionVariables = {
+    HYPRSHOT_DIR = "/home/drew/Pictures/screenshots";
+  };
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -96,6 +100,9 @@
         "$mainMod, down, movefocus, d"
         "$mainMod, J, movefocus, d"
 
+        "$mainMod, Tab, cyclenext"           # change focus to another window
+        "$mainMod, Tab, bringactivetotop"    # bring it to the top
+
         # Switch workspaces with mainMod + [0-9]
         "$mainMod, 1, workspace, 1"
         "$mainMod, 2, workspace, 2"
@@ -108,6 +115,11 @@
         "$mainMod, 9, workspace, 9"
         "$mainMod, 0, workspace, 10"
 
+        "$mainMod CONTROL, H, workspace, e-1"
+        "$mainMod CONTROL, L, workspace, e+1"
+        "$mainMod CONTROL, left, workspace, e-1"
+        "$mainMod CONTROL, right, workspace, e+1"
+
         # Move active window to a workspace with mainMod + SHIFT + [0-9]
         "$mainMod SHIFT, 1, movetoworkspace, 1"
         "$mainMod SHIFT, 2, movetoworkspace, 2"
@@ -119,6 +131,11 @@
         "$mainMod SHIFT, 8, movetoworkspace, 8"
         "$mainMod SHIFT, 9, movetoworkspace, 9"
         "$mainMod SHIFT, 0, movetoworkspace, 10"
+
+        "$mainMod SHIFT, H, movetoworkspace, e-1"
+        "$mainMod SHIFT, L, movetoworkspace, e+1"
+        "$mainMod SHIFT, left, movetoworkspace, e-1"
+        "$mainMod SHIFT, right, movetoworkspace, e+1"
 
         # Example special workspace (scratchpad)
         "$mainMod, S, togglespecialworkspace, magic"
@@ -136,6 +153,11 @@
         ", XF86AudioPause, exec, playerctl play-pause"
         ", XF86AudioNext, exec, playerctl next"
         ", XF86AudioPrev, exec, playerctl previous"
+
+        # Screenshots
+        ", PRINT, exec, hyprshot -z -m region"
+        "$mainMod, PRINT, exec, hyprshot -z -m output"
+        "$mainMod SHIFT, PRINT, exec, hyprshot -z -m window"
       ];
       bindm = [
         # Move/resize windows with mainMod + LMB/RMB and dragging
