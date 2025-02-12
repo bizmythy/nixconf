@@ -40,6 +40,13 @@
     HYPRSHOT_DIR = "/home/drew/Pictures/screenshots";
   };
 
+  # Write portal config file
+  home.file.".config/xdg-desktop-portal/hyprland-portals.conf".text = ''
+    [preferred]
+    default = hyprland;gtk
+    org.freedesktop.impl.portal.FileChooser = kde
+  '';
+
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -52,6 +59,9 @@
         "swaync"
         "wl-paste --type text --watch cliphist store"
         "wl-paste --type image --watch cliphist store"
+        "udiskie"
+        "nm-applet"
+        "blueman-applet"
       ];
 
       general = {

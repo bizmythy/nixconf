@@ -168,6 +168,9 @@
     hyprpicker
     hyprshot
     hyprsysteminfo
+    udiskie
+    networkmanagerapplet
+    blueman
     swaynotificationcenter
     hyprpolkitagent
     wl-clipboard

@@ -16,7 +16,6 @@
     ],
     "modules-right": [
         "mpd",
-        "network",
         "pulseaudio",
         "battery",
         "battery#bat2",
@@ -150,7 +149,17 @@
         "tooltip-format": "{ifname} via {gwaddr}",
         "format-linked": "{ifname} (No IP) ",
         "format-disconnected": "Disconnected ⚠",
-        "format-alt": "{ifname}: {ipaddr}/{cidr} ({signalStrength}%)"
+        // "format-alt": "{ifname}: {ipaddr}/{cidr} ({signalStrength}%)"
+        "on-click": "nm-connection-editor"
+    },
+    "bluetooth": {
+	    "format": " {status}",
+	    "format-disabled": "", // an empty format will hide the module
+	    "format-connected": " {num_connections}",
+	    "tooltip-format": "{device_alias}",
+	    "tooltip-format-connected": " {device_enumerate}",
+	    "tooltip-format-enumerate-connected": "{device_alias}",
+        "on-click": "blueman-manager"
     },
     "pulseaudio": {
         // "scroll-step": 1, // %, can be a float
