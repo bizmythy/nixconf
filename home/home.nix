@@ -112,4 +112,8 @@
     platformTheme.name = "kvantum";
     style.name = "kvantum";
   };
+
+  gtk = {
+    enable = true;
+  };
 }
