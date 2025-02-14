@@ -10,6 +10,13 @@
     ./waybar/waybar.nix
   ];
 
+  home-manager.users.drew = {
+    dconf = {
+      enable = true;
+      settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+    };
+  }
+
   catppuccin.hyprland = {
     enable = true;
     accent = "mauve";
