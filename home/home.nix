@@ -80,6 +80,8 @@
       settings = {
         auto_sync = true;
         enter_accept = true;
+        style = "compact";
+        inline_height = 20;
         filter_mode_shell_up_key_binding = "session";
       };
     };
