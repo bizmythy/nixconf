@@ -202,6 +202,7 @@
     kitty
     code-cursor
     vlc
+    mpv
     gimp
     zoom-us
     pavucontrol
