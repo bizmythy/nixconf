@@ -10,12 +10,10 @@
     ./waybar/waybar.nix
   ];
 
-  home-manager.users.drew = {
-    dconf = {
-      enable = true;
-      settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
-    };
-  }
+  dconf = {
+    enable = true;
+    settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+  };
 
   catppuccin.hyprland = {
     enable = true;
@@ -70,6 +68,10 @@
         "nm-applet"
         "blueman-applet"
       ];
+
+      input = {
+        "kb_options" = "caps:escape";
+      };
 
       general = {
         "col.active_border" = "$mauve $pink 90deg";
