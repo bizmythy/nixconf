@@ -32,7 +32,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "xps"; # Define your hostname.
+  networking.hostName = "drewdirac"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -62,7 +62,7 @@
 
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
+  # services.xserver.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -231,6 +231,8 @@
       mode = "0755";
     };
   };
+
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   programs.steam = {
     enable = true;
