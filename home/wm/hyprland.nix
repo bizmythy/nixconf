@@ -69,6 +69,12 @@
         "blueman-applet"
       ];
 
+      monitor = [
+        " , preferred, auto, auto"
+        "desc:Microstep MSI MAG322UPF, highres, auto-up, 1.30"
+        "desc:Sharp Corporation LQ156T1JW03, highres, auto, 1.30"
+      ];
+
       input = {
         "kb_options" = "caps:escape";
       };
