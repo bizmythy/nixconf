@@ -53,7 +53,7 @@
               };
             }
           ];
-	};
+        };
         drewdirac = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs vars; };
           modules = [

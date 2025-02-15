@@ -295,7 +295,7 @@
 
   # Set up virt manager
   programs.virt-manager.enable = true;
-  users.groups.libvirtd.members = ["drew"];
+  users.groups.libvirtd.members = [ "drew" ];
   virtualisation.libvirtd.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
 

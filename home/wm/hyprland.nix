@@ -40,7 +40,7 @@
         wallpaper = " , ${wallpaper.outPath}";
       };
     };
-  
+
   home.sessionVariables = {
     HYPRSHOT_DIR = "/home/drew/Pictures/screenshots";
   };
@@ -139,8 +139,8 @@
         "$mainMod, down, movefocus, d"
         "$mainMod, J, movefocus, d"
 
-        "$mainMod, Tab, cyclenext"           # change focus to another window
-        "$mainMod, Tab, bringactivetotop"    # bring it to the top
+        "$mainMod, Tab, cyclenext" # change focus to another window
+        "$mainMod, Tab, bringactivetotop" # bring it to the top
 
         # Switch workspaces with mainMod + [0-9]
         "$mainMod, 1, workspace, 1"
@@ -216,7 +216,7 @@
           (floatingWindowRules "1Password")
           (floatingWindowRules "io.github.Qalculate.qalculate-qt")
         ];
-      
+
       xwayland = {
         force_zero_scaling = true;
       };
