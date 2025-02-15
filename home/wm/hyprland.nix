@@ -106,7 +106,7 @@
       "$mainMod" = "SUPER";
 
       "$terminal" = "alacritty";
-      "$fileManager" = "dolphin";
+      "$fileManager" = "pcmanfm-qt";
       "$menu" = "fuzzel";
       "$browser" = "zen";
       "$calculator" = "qalculate-qt";

@@ -151,8 +151,15 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  nixpkgs.overlays = [
+    (final: prev: {
+      papirus-icon-theme = prev.papirus-icon-theme.override {
+        color = "violet";
+      };
+    })
+  ];
+
+  # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
     # terminal tools
     neovim
@@ -216,7 +223,8 @@
     kdePackages.okular
     kdePackages.kdenlive
     qalculate-qt
-
+    lxqt.pcmanfm-qt
+    papirus-icon-theme
     inputs.zen-browser.packages.${pkgs.system}.default
   ];
 
@@ -253,7 +261,10 @@
     };
   };
 
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    MOZ_ENABLE_WAYLAND = "1"; 
+  };
 
   programs.steam = {
     enable = true;
@@ -329,6 +340,13 @@
       "x-systemd.automount"
       "noauto"
     ];
+  };
+
+  services.desktopManager.plasma6.enableQt5Integration = true;
+  qt = {
+    enable = true;
+    platformTheme = "qt5ct";
+    style = "kvantum";
   };
 
   # Some programs need SUID wrappers, can be configured further or are

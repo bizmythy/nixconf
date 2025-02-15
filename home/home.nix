@@ -94,6 +94,7 @@
       enableFishIntegration = false;
     };
     starship.enable = true;
+    btop.enable = true;
 
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
@@ -103,9 +104,21 @@
   catppuccin = {
     enable = true;
     flavor = "mocha";
-    kvantum = {
-      enable = true;
-      apply = true;
+    # kvantum = {
+    #   enable = true;
+    #   apply = true;
+    # };
+  };
+
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
     };
   };
 
