@@ -69,16 +69,6 @@
         "blueman-applet"
       ];
 
-      monitor = [
-        " , preferred, auto, auto"
-        "desc:Microstep MSI MAG322UPF, highres, auto-up, 1.30"
-        "desc:Sharp Corporation LQ156T1JW03, highres, auto, 1.30"
-      ];
-
-      input = {
-        "kb_options" = "caps:escape";
-      };
-
       general = {
         "col.active_border" = "$mauve $pink 90deg";
         "gaps_in" = 5;
@@ -87,6 +77,30 @@
 
       decoration = {
         "rounding" = 14;
+      };
+
+      monitor = [
+        " , preferred, auto, auto"
+        "desc:Microstep MSI MAG322UPF, highres, auto-up, 1.25"
+        "desc:Sharp Corporation LQ156T1JW03, highres, auto, 1.333333"
+      ];
+
+      input = {
+        "kb_layout" = "us";
+        "follow_mouse" = 1;
+        "touchpad" = {
+          "natural_scroll" = false;
+        };
+        "sensitivity" = -0.2;
+        "accel_profile" = "flat";
+        "numlock_by_default" = true;
+
+        "kb_options" = "caps:escape";
+      };
+
+      gestures = {
+        workspace_swipe = true;
+        workspace_swipe_fingers = 3;
       };
 
       "$mainMod" = "SUPER";
@@ -189,10 +203,6 @@
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
       ];
-      gestures = {
-        workspace_swipe = true;
-        workspace_swipe_fingers = 3;
-      };
 
       windowrulev2 =
         let
@@ -206,6 +216,11 @@
           (floatingWindowRules "1Password")
           (floatingWindowRules "io.github.Qalculate.qalculate-qt")
         ];
+      
+      xwayland = {
+        force_zero_scaling = true;
+      };
+
     };
   };
 
