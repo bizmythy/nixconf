@@ -203,6 +203,7 @@
     code-cursor
     vlc
     mpv
+    spotify
     gimp
     zoom-us
     pavucontrol
@@ -230,7 +231,6 @@
       "com.obsproject.Studio"
       "com.slack.Slack"
       "org.signal.Signal"
-      "com.spotify.Client"
       "com.discordapp.Discord"
       "com.github.tchx84.Flatseal"
     ];
