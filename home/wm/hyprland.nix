@@ -82,6 +82,7 @@
       monitor = [
         " , preferred, auto, auto"
         "desc:Microstep MSI MAG322UPF, highres, auto-up, 1.25"
+	"desc:LG Electronics LG SDQHD 409NTTQ8K433, highres, auto-up, 1.25, transform, 3"
         "desc:Sharp Corporation LQ156T1JW03, highres, auto, 1.333333"
       ];
 
@@ -209,7 +210,7 @@
           floatingWindowRules = class: [
             "float, initialClass:${class}"
             "center, initialClass:${class}"
-            "size 50% 50%, initialClass:${class}"
+            "size 60% 60%, initialClass:${class}"
           ];
         in
         lib.lists.flatten [
@@ -226,6 +227,11 @@
 
   programs.fuzzel = {
     enable = true;
+    settings = {
+      "border" = {
+        "width" = 3;
+      };
+    };
   };
 
   services.swaync = {
