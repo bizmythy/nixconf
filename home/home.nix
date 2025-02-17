@@ -6,6 +6,17 @@
   ...
 }:
 
+let
+  myShellAliases = {
+    lg = "lazygit";
+    ld = "lazydocker";
+    nhos = "nh os switch";
+  };
+  mySessionVariables = {
+    EDITOR = "nvim";
+    FLAKE = vars.flakePath;
+  };
+in
 {
   imports = [
     ./alacritty.nix
@@ -49,23 +60,28 @@
     # '';
   };
 
+  programs.eza = {
+    enable = true;
+    icons = "auto";
+    enableNushellIntegration = false;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+  };
+
   home = {
-    shellAliases = {
-      ls = "eza";
-      lg = "lazygit";
-      nhos = "nh os switch";
-    };
-    sessionVariables = {
-      EDITOR = "nvim";
-      FLAKE = vars.flakePath;
-    };
+    shellAliases = myShellAliases;
+    sessionVariables = mySessionVariables;
   };
 
   # NOTE: if any of these start to get large, break into separate module.
   programs = {
     zsh.enable = true;
     bash.enable = true;
-    nushell.enable = true;
+    nushell = {
+      enable = true;
+      environmentVariables = mySessionVariables;
+      shellAliases = myShellAliases;
+    };
 
     git = {
       userEmail = "andrew.p.council@gmail.com";
