@@ -151,14 +151,6 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  nixpkgs.overlays = [
-    (final: prev: {
-      papirus-icon-theme = prev.papirus-icon-theme.override {
-        color = "violet";
-      };
-    })
-  ];
-
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
     # terminal tools
@@ -213,7 +205,9 @@
     spotify
     gimp
     zoom-us
+    slack
     pavucontrol
+    thunderbird
     kdePackages.qtwayland
     kdePackages.qtsvg
     kdePackages.qt6ct
@@ -224,7 +218,6 @@
     kdePackages.kdenlive
     qalculate-qt
     lxqt.pcmanfm-qt
-    papirus-icon-theme
     inputs.zen-browser.packages.${pkgs.system}.default
   ];
 
@@ -237,7 +230,6 @@
 
     packages = [
       "com.obsproject.Studio"
-      "com.slack.Slack"
       "org.signal.Signal"
       "com.discordapp.Discord"
       "com.github.tchx84.Flatseal"
@@ -263,7 +255,7 @@
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
-    MOZ_ENABLE_WAYLAND = "1"; 
+    MOZ_ENABLE_WAYLAND = "1";
   };
 
   programs.steam = {
