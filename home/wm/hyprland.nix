@@ -82,7 +82,7 @@
       monitor = [
         " , preferred, auto, auto"
         "desc:Microstep MSI MAG322UPF, highres, auto-up, 1.25"
-	"desc:LG Electronics LG SDQHD 409NTTQ8K433, highres, auto-up, 1.25, transform, 3"
+        "desc:LG Electronics LG SDQHD 409NTTQ8K433, highres, auto-up, 1.25, transform, 3"
         "desc:Sharp Corporation LQ156T1JW03, highres, auto, 1.333333"
       ];
 
