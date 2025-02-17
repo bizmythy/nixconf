@@ -11,6 +11,7 @@ let
     lg = "lazygit";
     ld = "lazydocker";
     nhos = "nh os switch";
+    cdb = "cd /home/drew/buildos-web";
   };
   mySessionVariables = {
     EDITOR = "nvim";

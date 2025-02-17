@@ -95,7 +95,6 @@
         "sensitivity" = -0.2;
         "accel_profile" = "flat";
         "numlock_by_default" = true;
-
         "kb_options" = "caps:escape";
       };
 

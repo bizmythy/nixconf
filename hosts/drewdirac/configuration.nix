@@ -164,6 +164,7 @@
     unzip
     btop
     htop
+    gh
     lazygit
     lazydocker
     cht-sh
@@ -208,6 +209,8 @@
     slack
     pavucontrol
     thunderbird
+    postman
+    warp-terminal
     kdePackages.qtwayland
     kdePackages.qtsvg
     kdePackages.qt6ct
