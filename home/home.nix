@@ -94,7 +94,13 @@
       enableFishIntegration = false;
     };
     starship.enable = true;
-    btop.enable = true;
+    btop = {
+      enable = true;
+      settings = {
+        vim_keys = true;
+        theme_background = false;
+      };
+    };
 
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
@@ -118,7 +124,10 @@
     };
     iconTheme = {
       name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
+      package = pkgs.catppuccin-papirus-folders.override {
+        accent = "mauve";
+        flavor = "mocha";
+      };
     };
   };
 
