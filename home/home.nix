@@ -12,6 +12,7 @@ let
     ld = "lazydocker";
     nhos = "nh os switch";
     cdb = "cd /home/drew/buildos-web";
+    edit = "zsh -c '(&>/dev/null cursor . &)'";
   };
   mySessionVariables = {
     EDITOR = "nvim";
