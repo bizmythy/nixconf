@@ -11,7 +11,7 @@ let
     lg = "lazygit";
     ld = "lazydocker";
     nhos = "nh os switch";
-    cdb = "cd /home/drew/buildos-web";
+    cdb = "cd /home/drew/dirac/buildos-web";
     edit = "zsh -c '(&>/dev/null cursor . &)'";
   };
   mySessionVariables = {
