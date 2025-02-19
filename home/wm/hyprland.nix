@@ -71,31 +71,31 @@
 
       general = {
         "col.active_border" = "$mauve $pink 90deg";
-        "gaps_in" = 5;
-        "gaps_out" = 10;
+        gaps_in = 5;
+        gaps_out = 10;
       };
 
       decoration = {
-        "rounding" = 14;
+        rounding = 14;
       };
 
       monitor = [
         " , preferred, auto, auto"
         "desc:Microstep MSI MAG322UPF, highres, auto-up, 1.25"
-        "desc:LG Electronics LG SDQHD 409NTTQ8K433, highres, auto-up, 1.25, transform, 3"
+        "desc:LG Electronics LG SDQHD 409NTTQ8K433, 2560x2880@60, auto-up, 1.25, transform, 3"
         "desc:Sharp Corporation LQ156T1JW03, highres, auto, 1.333333"
       ];
 
       input = {
-        "kb_layout" = "us";
-        "follow_mouse" = 1;
-        "touchpad" = {
-          "natural_scroll" = false;
+        kb_layout = "us";
+        follow_mouse = 1;
+        touchpad = {
+          natural_scroll = false;
         };
-        "sensitivity" = -0.2;
-        "accel_profile" = "flat";
-        "numlock_by_default" = true;
-        "kb_options" = "caps:escape";
+        sensitivity = -0.2;
+        accel_profile = "flat";
+        numlock_by_default = true;
+        kb_options = "caps:escape";
       };
 
       gestures = {
@@ -120,6 +120,8 @@
         "$mainMod, P, exec, hyprpicker"
         "$mainMod, EQUAL, exec, $calculator"
 
+        "$mainMod, D, exec, cd $HOME/buildos-web && nix develop --command cursor ."
+
         "SUPER, SUPER_L, exec, fuzzel"
         "$mainMod, V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
         "$mainMod, PERIOD, exec, bemoji -t"
@@ -127,8 +129,8 @@
         "$mainMod, W, killactive,"
         "$mainMod, M, exit,"
         "$mainMod, F, togglefloating,"
-        "$mainMod, P, pseudo," # dwindle
-        "$mainMod, J, togglesplit," # dwindle
+        # "$mainMod, P, pseudo," # dwindle
+        # "$mainMod, J, togglesplit," # dwindle
 
         # Move focus with mainMod + arrow keys or VIM keys
         "$mainMod, left, movefocus, l"
