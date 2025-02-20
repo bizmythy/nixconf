@@ -50,8 +50,6 @@
     # '';
   };
 
-
-
   # NOTE: if any of these start to get large, break into separate module.
   programs = {
     git = {
