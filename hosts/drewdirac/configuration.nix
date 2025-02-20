@@ -165,6 +165,8 @@
     unzip
     btop
     htop
+    nvitop
+    lshw
     gh
     lazygit
     lazydocker
