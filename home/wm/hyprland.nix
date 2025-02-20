@@ -118,7 +118,7 @@
 
       bind = [
         # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
-        "$mainMod, RETURN, exec, $terminal --command nu"
+        "$mainMod, RETURN, exec, $terminal"
         "$mainMod SHIFT, RETURN, exec, $terminal"
         "$mainMod, E, exec, $fileManager"
         "$mainMod, B, exec, $browser"

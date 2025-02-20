@@ -159,6 +159,7 @@
     wget
     git
     ripgrep
+    fd
     bat
     eza
     yazi
@@ -171,6 +172,7 @@
     lazygit
     lazydocker
     cht-sh
+    nerdfetch
     ffmpeg
     imagemagick
     zstd

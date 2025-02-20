@@ -22,7 +22,6 @@
     "nvidia-drm.fbdev=1"
   ];
 
-
   hardware.nvidia = {
     # Modesetting is required.
     modesetting.enable = true;
@@ -68,5 +67,5 @@
     };
   };
 
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = [ "nvidia" ];
 }
