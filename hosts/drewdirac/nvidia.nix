@@ -16,11 +16,11 @@
     enable32Bit = true;
   };
 
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.kernelParams = [
-  #   "nvidia-drm.modeset=1"
-  #   "nvidia-drm.fbdev=1"
-  # ];
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelParams = [
+    "nvidia-drm.modeset=1"
+    "nvidia-drm.fbdev=1"
+  ];
 
 
   hardware.nvidia = {
@@ -59,14 +59,14 @@
     };
   };
 
-  # nixpkgs = {
-  #   config = {
-  #     allowUnfree = true;
-  #     pulseaudio = true;
-  #     nvidia.acceptLicense = true;
-  #     packageOverrides = pkgs: { inherit (pkgs) linuxPackages_latest nvidia_x11; };
-  #   };
-  # };
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      pulseaudio = true;
+      nvidia.acceptLicense = true;
+      packageOverrides = pkgs: { inherit (pkgs) linuxPackages_latest nvidia_x11; };
+    };
+  };
 
-  # services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = ["nvidia"];
 }
