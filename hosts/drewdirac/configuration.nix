@@ -166,7 +166,6 @@
     btop
     htop
     hwinfo
-    nvitop
     lshw
     gh
     lazygit

@@ -5,12 +5,23 @@
 }:
 
 {
+  environment.systemPackages = with pkgs; [
+    egl-wayland
+    nvitop
+  ];
+
   # Enable OpenGL
   hardware.graphics = {
     enable = true;
+    enable32Bit = true;
   };
 
-  # services.xserver.videoDrivers = ["nvidia"];
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelParams = [
+  #   "nvidia-drm.modeset=1"
+  #   "nvidia-drm.fbdev=1"
+  # ];
+
 
   hardware.nvidia = {
     # Modesetting is required.
@@ -47,4 +58,15 @@
       nvidiaBusId = "PCI:1:0:0";
     };
   };
+
+  # nixpkgs = {
+  #   config = {
+  #     allowUnfree = true;
+  #     pulseaudio = true;
+  #     nvidia.acceptLicense = true;
+  #     packageOverrides = pkgs: { inherit (pkgs) linuxPackages_latest nvidia_x11; };
+  #   };
+  # };
+
+  # services.xserver.videoDrivers = ["nvidia"];
 }
