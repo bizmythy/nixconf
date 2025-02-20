@@ -12,9 +12,6 @@
     enable = true;
   };
 
-  programs.waybar = {
-    enable = true;
-  };
   # Enable Simple Desktop Display Manager
   services.displayManager.sddm.enable = true;
   catppuccin.sddm.enable = false;
