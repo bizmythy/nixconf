@@ -113,7 +113,7 @@
       "$terminal" = "alacritty";
       "$fileManager" = "pcmanfm-qt";
       "$menu" = "fuzzel";
-      "$browser" = "zen";
+      "$browser" = "firefox";
       "$calculator" = "qalculate-qt";
 
       bind = [

@@ -184,13 +184,14 @@
     nix-search-cli
 
     # graphical programs
-    pqiv
-    playerctl
-    brightnessctl
-    hyprpaper
     hyprpicker
     hyprshot
     hyprsysteminfo
+    hyprpaper
+
+    pqiv
+    playerctl
+    brightnessctl
     udiskie
     networkmanagerapplet
     blueman
@@ -201,8 +202,6 @@
     bemoji
     wev
     cliphist
-    alacritty
-    kitty
     code-cursor
     vlc
     mpv
@@ -213,7 +212,11 @@
     pavucontrol
     thunderbird
     postman
+
     warp-terminal
+    alacritty
+    kitty
+
     kdePackages.qtwayland
     kdePackages.qtsvg
     kdePackages.qt6ct
@@ -224,6 +227,8 @@
     kdePackages.kdenlive
     qalculate-qt
     lxqt.pcmanfm-qt
+
+    google-chrome
     inputs.zen-browser.packages.${pkgs.system}.default
   ];
 
