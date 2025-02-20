@@ -165,6 +165,7 @@
     unzip
     btop
     htop
+    hwinfo
     nvitop
     lshw
     gh
