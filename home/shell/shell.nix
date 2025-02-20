@@ -39,7 +39,7 @@ in
       environmentVariables = mySessionVariables;
       shellAliases = myShellAliases;
       extraConfig =
-        builtins.readFile "${nushellCatppuccin}/themes/catppuccin_mocha.nu" + "\n" + builtins.readFile ./config.nu;
+        builtins.readFile "${nushellCatppuccin}/themes/catppuccin_mocha.nu" + builtins.readFile ./config.nu;
     };
 
     eza = {
