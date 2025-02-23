@@ -10,13 +10,18 @@
     ./waybar/waybar.nix
   ];
 
+  dconf = {
+    enable = true;
+    settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+  };
+
   catppuccin.hyprland = {
     enable = true;
     accent = "mauve";
   };
 
   home.pointerCursor = {
-    name = "phinger-cursors-dark";
+    name = "phinger-cursors-light";
     package = pkgs.phinger-cursors;
     size = 32;
   };
@@ -35,7 +40,7 @@
         wallpaper = " , ${wallpaper.outPath}";
       };
     };
-  
+
   home.sessionVariables = {
     HYPRSHOT_DIR = "/home/drew/Pictures/screenshots";
   };
@@ -52,6 +57,11 @@
     xwayland.enable = true;
 
     settings = {
+      env = [
+        "LIBVA_DRIVER_NAME,nvidia"
+        "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+      ];
+
       exec-once = [
         "hyprpaper"
         "waybar"
@@ -66,29 +76,56 @@
 
       general = {
         "col.active_border" = "$mauve $pink 90deg";
-        "gaps_in" = 5;
-        "gaps_out" = 10;
+        gaps_in = 5;
+        gaps_out = 10;
       };
 
       decoration = {
-        "rounding" = 14;
+        rounding = 14;
+      };
+
+      monitor = [
+        " , preferred, auto, auto"
+        "desc:Microstep MSI MAG322UPF, highres, auto-up, 1.25"
+        "desc:LG Electronics LG SDQHD 409NTTQ8K433, 2560x2880@60, auto-up, 1.25, transform, 3"
+        "desc:Sharp Corporation LQ156T1JW03, highres, auto, 1.333333"
+      ];
+
+      input = {
+        kb_layout = "us";
+        follow_mouse = 1;
+        touchpad = {
+          natural_scroll = false;
+        };
+        sensitivity = -0.2;
+        accel_profile = "flat";
+        numlock_by_default = true;
+        kb_options = "caps:escape";
+      };
+
+      gestures = {
+        workspace_swipe = true;
+        workspace_swipe_fingers = 3;
       };
 
       "$mainMod" = "SUPER";
 
       "$terminal" = "alacritty";
-      "$fileManager" = "dolphin";
+      "$fileManager" = "pcmanfm-qt";
       "$menu" = "fuzzel";
-      "$browser" = "zen";
+      "$browser" = "firefox";
       "$calculator" = "qalculate-qt";
 
       bind = [
         # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
         "$mainMod, RETURN, exec, $terminal"
+        "$mainMod SHIFT, RETURN, exec, $terminal"
         "$mainMod, E, exec, $fileManager"
         "$mainMod, B, exec, $browser"
         "$mainMod, P, exec, hyprpicker"
         "$mainMod, EQUAL, exec, $calculator"
+
+        "$mainMod, D, exec, cd $HOME/buildos-web && nix develop --command cursor ."
 
         "SUPER, SUPER_L, exec, fuzzel"
         "$mainMod, V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
@@ -97,8 +134,8 @@
         "$mainMod, W, killactive,"
         "$mainMod, M, exit,"
         "$mainMod, F, togglefloating,"
-        "$mainMod, P, pseudo," # dwindle
-        "$mainMod, J, togglesplit," # dwindle
+        # "$mainMod, P, pseudo," # dwindle
+        # "$mainMod, J, togglesplit," # dwindle
 
         # Move focus with mainMod + arrow keys or VIM keys
         "$mainMod, left, movefocus, l"
@@ -110,8 +147,8 @@
         "$mainMod, down, movefocus, d"
         "$mainMod, J, movefocus, d"
 
-        "$mainMod, Tab, cyclenext"           # change focus to another window
-        "$mainMod, Tab, bringactivetotop"    # bring it to the top
+        "$mainMod, Tab, cyclenext" # change focus to another window
+        "$mainMod, Tab, bringactivetotop" # bring it to the top
 
         # Switch workspaces with mainMod + [0-9]
         "$mainMod, 1, workspace, 1"
@@ -174,28 +211,34 @@
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
       ];
-      gestures = {
-        workspace_swipe = true;
-        workspace_swipe_fingers = 3;
-      };
 
       windowrulev2 =
         let
           floatingWindowRules = class: [
             "float, initialClass:${class}"
             "center, initialClass:${class}"
-            "size 50% 50%, initialClass:${class}"
+            "size 60% 60%, initialClass:${class}"
           ];
         in
         lib.lists.flatten [
           (floatingWindowRules "1Password")
           (floatingWindowRules "io.github.Qalculate.qalculate-qt")
         ];
+
+      xwayland = {
+        force_zero_scaling = true;
+      };
+
     };
   };
 
   programs.fuzzel = {
     enable = true;
+    settings = {
+      "border" = {
+        "width" = 3;
+      };
+    };
   };
 
   services.swaync = {

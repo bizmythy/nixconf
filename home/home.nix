@@ -9,6 +9,7 @@
 {
   imports = [
     ./alacritty.nix
+    ./shell/shell.nix
     ./wm/hyprland.nix
   ];
 
@@ -49,39 +50,11 @@
     # '';
   };
 
-  home = {
-    shellAliases = {
-      ls = "eza";
-      lg = "lazygit";
-      nhos = "nh os switch";
-    };
-    sessionVariables = {
-      EDITOR = "nvim";
-      FLAKE = vars.flakePath;
-    };
-  };
-
   # NOTE: if any of these start to get large, break into separate module.
   programs = {
-    zsh.enable = true;
-    bash.enable = true;
-    nushell.enable = true;
-
     git = {
       userEmail = "andrew.p.council@gmail.com";
       userName = "AndrewCouncil";
-    };
-
-    atuin = {
-      enable = true;
-      enableZshIntegration = true;
-      enableBashIntegration = true;
-      enableNushellIntegration = true;
-      settings = {
-        auto_sync = true;
-        enter_accept = true;
-        filter_mode_shell_up_key_binding = "session";
-      };
     };
 
     lazygit.enable = true;
@@ -91,7 +64,13 @@
       enableZshIntegration = false;
       enableFishIntegration = false;
     };
-    starship.enable = true;
+    btop = {
+      enable = true;
+      settings = {
+        vim_keys = true;
+        theme_background = false;
+      };
+    };
 
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
@@ -101,9 +80,24 @@
   catppuccin = {
     enable = true;
     flavor = "mocha";
-    kvantum = {
-      enable = true;
-      apply = true;
+    # kvantum = {
+    #   enable = true;
+    #   apply = true;
+    # };
+  };
+
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.catppuccin-papirus-folders.override {
+        accent = "mauve";
+        flavor = "mocha";
+      };
     };
   };
 

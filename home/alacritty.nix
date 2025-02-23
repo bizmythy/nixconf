@@ -15,6 +15,14 @@ in
 
       selection.save_to_clipboard = true;
 
+      terminal.shell = {
+        program = "zsh";
+        args = [
+          "-c"
+          "nerdfetch && nu"
+        ];
+      };
+
       font = {
         normal = {
           family = font_family;
