@@ -13,9 +13,14 @@
   };
 
   # Enable Simple Desktop Display Manager
-  services.displayManager.sddm.enable = true;
-  catppuccin.sddm.enable = false;
-  services.displayManager.sddm.wayland.enable = true;
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+  };
+
+  # catppuccin sdddm theme, not working with kde specialisation
+  # services.displayManager.sddm.package = pkgs.kdePackages.sddm;
+  # catppuccin.sddm.enable = true;
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
