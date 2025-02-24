@@ -12,10 +12,18 @@ let
     nhos = "nh os switch";
     cdb = "cd /home/drew/dirac/buildos-web";
     edit = "zsh -c '(&>/dev/null cursor . &)'";
+
+    # dirac
+    awsl = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login --profile dirac-dev'";
   };
   mySessionVariables = {
     EDITOR = "nvim";
     FLAKE = vars.flakePath;
+
+    # dirac
+    AWS_PROFILE = "dirac-dev";
+    COGNITO_USER_EMAIL_DEV_INTERNAL = "drew@diracinc.com";
+    TEAM_ID_DEV = "dirac";
   };
   nushellCatppuccin = pkgs.fetchFromGitHub {
     owner = "nik-rev";
@@ -30,7 +38,12 @@ in
     sessionVariables = mySessionVariables;
   };
   programs = {
-    zsh.enable = true;
+    zsh = {
+      enable = true;
+      initExtra = ''
+        source /home/drew/.config/secrets
+      '';
+    };
 
     bash.enable = true;
 
@@ -64,6 +77,13 @@ in
       };
     };
 
-    starship.enable = true;
+    starship = {
+      enable = true;
+      settings = {
+        aws = {
+          disabled = true;
+        };
+      };
+    };
   };
 }
