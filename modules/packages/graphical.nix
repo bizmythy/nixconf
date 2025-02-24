@@ -37,6 +37,7 @@
     pavucontrol
     thunderbird
     postman
+    pcloud
 
     warp-terminal
     alacritty
