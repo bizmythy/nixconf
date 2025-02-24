@@ -125,7 +125,7 @@
         "$mainMod, P, exec, hyprpicker"
         "$mainMod, EQUAL, exec, $calculator"
 
-        "$mainMod, D, exec, cd $HOME/buildos-web && nix develop --command cursor ."
+        "$mainMod, D, exec, cursor /home/drew/dirac/buildos-web"
 
         "SUPER, SUPER_L, exec, fuzzel"
         "$mainMod, V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
