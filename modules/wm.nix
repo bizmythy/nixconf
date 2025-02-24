@@ -20,7 +20,7 @@
 
   # catppuccin sdddm theme, not working with kde specialisation
   # services.displayManager.sddm.package = pkgs.kdePackages.sddm;
-  # catppuccin.sddm.enable = true;
+  catppuccin.sddm.enable = false;
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
