@@ -57,9 +57,19 @@
       userName = "AndrewCouncil";
     };
 
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      enableNushellIntegration = true;
+    };
+
     lazygit.enable = true;
     zellij = {
       enable = true;
+
       enableBashIntegration = false;
       enableZshIntegration = false;
       enableFishIntegration = false;
