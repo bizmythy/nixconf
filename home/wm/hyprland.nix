@@ -223,6 +223,7 @@
         lib.lists.flatten [
           (floatingWindowRules "1Password")
           (floatingWindowRules "io.github.Qalculate.qalculate-qt")
+          # "workspace:special:magic, initialClass:Slack"
         ];
 
       xwayland = {
