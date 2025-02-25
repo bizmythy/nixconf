@@ -57,8 +57,6 @@
       userName = "AndrewCouncil";
     };
 
-
-
     lazygit.enable = true;
     zellij = {
       enable = true;
