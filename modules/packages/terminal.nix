@@ -19,6 +19,7 @@
     neovim
     wget
     git
+    git-lfs
     ripgrep
     fd
     bat
@@ -58,10 +59,14 @@
   # Set up docker
   virtualisation.docker = {
     enable = true;
-    rootless = {
-      enable = true;
-      setSocketVariable = true;
-    };
+    # rootless = {
+    #   enable = true;
+    #   setSocketVariable = true;
+    # };
+
+    # daemon.settings = {
+    #   "bridge" = "none";
+    # };
   };
 
   programs._1password.enable = true;
