@@ -38,6 +38,10 @@
     thunderbird
     postman
     pcloud
+    localsend
+    wireshark
+    ventoy
+    gparted
 
     warp-terminal
     alacritty

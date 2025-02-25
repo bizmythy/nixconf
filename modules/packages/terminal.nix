@@ -38,6 +38,8 @@
     ffmpeg
     imagemagick
     zstd
+    nmap
+    traceroute
 
     # nix tools
     nix-output-monitor
