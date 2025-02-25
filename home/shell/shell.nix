@@ -55,6 +55,24 @@ in
         builtins.readFile "${nushellCatppuccin}/themes/catppuccin_mocha.nu" + builtins.readFile ./config.nu;
     };
 
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      enableNushellIntegration = true;
+
+      config = {
+        whitelist = {
+          prefix = [
+            "~/buildos-web"
+            "~/dirac"
+          ];
+        };
+      };
+    };
+
     eza = {
       enable = true;
       icons = "auto";
