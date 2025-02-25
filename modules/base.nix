@@ -47,6 +47,9 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  # networking.hosts = {
+  #   "172.18.0.1" = [ "host.docker.internal" ];
+  # };
 
   # Set your time zone.
   time.timeZone = "America/New_York";
@@ -189,5 +192,5 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
 }
