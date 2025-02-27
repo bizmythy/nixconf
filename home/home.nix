@@ -106,5 +106,18 @@
     enable = true;
     platformTheme.name = "kvantum";
     style.name = "kvantum";
+
+    # fixes for kvantum and icon theme to be applied to kde apps
+    kde.settings = {
+      "kdeglobals" = {
+        "UiSettings" = {
+          "ColorScheme" = "Kvantum";
+        };
+        "Icons" = {
+          "Theme" = "Papirus-Dark";
+        };
+      };
+    };
   };
+
 }

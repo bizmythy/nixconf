@@ -55,6 +55,8 @@
     kdePackages.dolphin
     kdePackages.okular
     kdePackages.kdenlive
+    kdePackages.plasma-workspace
+    kdePackages.kconfig
     qalculate-qt
     lxqt.pcmanfm-qt
 
