@@ -72,6 +72,13 @@
         theme_background = false;
       };
     };
+    zoxide = {
+      enable = true;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      enableNushellIntegration = true;
+      options = [ "--cmd cd" ];
+    };
 
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
