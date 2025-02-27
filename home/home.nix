@@ -8,7 +8,7 @@
 
 {
   imports = [
-    ./alacritty.nix
+    ./tty.nix
     ./shell/shell.nix
     ./wm/hyprland.nix
   ];
@@ -119,5 +119,4 @@
       };
     };
   };
-
 }

@@ -1,14 +1,16 @@
 { config, pkgs, ... }:
 
 let
-  font_family = "JetBrainsMono Nerd Font";
+  fontFamily = "JetBrainsMono Nerd Font";
+  fontSize = 12;
+  backgroundOpacity = 0.9;
 in
 {
   programs.alacritty = {
     enable = true;
     settings = {
       window = {
-        opacity = 0.9;
+        opacity = backgroundOpacity;
       };
 
       scrolling.history = 10000;
@@ -25,23 +27,35 @@ in
 
       font = {
         normal = {
-          family = font_family;
+          family = fontFamily;
           style = "Regular";
         };
         bold = {
-          family = font_family;
+          family = fontFamily;
           style = "Bold";
         };
         italic = {
-          family = font_family;
+          family = fontFamily;
           style = "Italic";
         };
         bold_italic = {
-          family = font_family;
+          family = fontFamily;
           style = "Bold Italic";
         };
-        size = 12;
+        size = fontSize;
       };
     };
+  };
+
+  programs.ghostty = {
+    enable = true;
+    settings = {
+      font-family = fontFamily;
+      font-size = fontSize;
+      background-opacity = backgroundOpacity;
+      copy-on-select = true;
+    };
+    enableBashIntegration = true;
+    enableZshIntegration = true;
   };
 }

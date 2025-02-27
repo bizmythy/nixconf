@@ -45,7 +45,7 @@
 
     warp-terminal
     alacritty
-    kitty
+    ghostty
 
     kdePackages.qtwayland
     kdePackages.qtsvg
