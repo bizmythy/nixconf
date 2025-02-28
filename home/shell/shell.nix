@@ -108,8 +108,23 @@ in
     starship = {
       enable = true;
       settings = {
+        format = "$all$shell$character";
         aws = {
           disabled = true;
+        };
+        character = {
+          success_symbol = "[➜](bold green)";
+          error_symbol = "[➜](bold red)";
+        };
+        # configure shell-specific icons
+        shell = {
+          disabled = false;
+          format = "$indicator($style)";
+          bash_indicator = "\\$ ";
+          zsh_indicator = "% ";
+          nu_indicator = "";
+          unknown_indicator = "? ";
+          style = "white bold";
         };
       };
     };
