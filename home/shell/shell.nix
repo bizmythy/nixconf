@@ -40,8 +40,18 @@ in
   programs = {
     zsh = {
       enable = true;
+      syntaxHighlighting.enable = true;
+      autosuggestion.enable = true;
       initExtra = ''
-        source /home/drew/.config/secrets
+        # Load environment variables from secrets.env file
+        if [ -f "/home/drew/.config/secrets.env" ]; then
+          while IFS='=' read -r key value || [ -n "$key" ]; do
+            # Export the variable
+            export "$key=$value"
+          done < "/home/drew/.config/secrets.env"
+        else
+          echo "Warning: /home/drew/.config/secrets.env file not found"
+        fi
       '';
     };
 
