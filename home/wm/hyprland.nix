@@ -86,7 +86,15 @@
 
       monitor = [
         " , preferred, auto, auto"
-        "desc:Microstep MSI MAG322UPF, highres, auto-up, 1.25"
+	# home displays:
+	# main display
+        "desc:Microstep MSI MAG322UPF, 3840x2160@160, 0x0, 1.25"
+	# top display
+        "desc:ViewSonic Corporation VX2418-P FHD WFK231321682, 1920x1080@144, 575x-1080, 1.0"
+	# tv
+
+        # work displays:
+	# LG Dual Up
         "desc:LG Electronics LG SDQHD 409NTTQ8K433, 2560x2880@60, auto-up, 1.25, transform, 3"
         "desc:Sharp Corporation LQ156T1JW03, highres, auto, 1.333333"
       ];
