@@ -10,8 +10,10 @@ let
     lg = "lazygit";
     ld = "lazydocker";
     nhos = "nh os switch";
+    nhob = "nh os build";
     cdb = "cd /home/drew/dirac/buildos-web";
     edit = "zsh -c '(&>/dev/null cursor . &)'";
+    zed = "zeditor";
 
     # dirac
     awsl = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login --profile dirac-dev'";
