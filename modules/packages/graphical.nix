@@ -28,7 +28,6 @@
     wev
     cliphist
     gimp
-    zoom-us
     slack
     pavucontrol
     thunderbird
@@ -80,6 +79,7 @@
       "org.signal.Signal"
       "com.discordapp.Discord"
       "com.github.tchx84.Flatseal"
+      "us.zoom.Zoom"
     ];
   };
 
