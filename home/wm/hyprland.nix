@@ -95,7 +95,10 @@
 
         # work displays:
         # LG Dual Up
-        "desc:LG Electronics LG SDQHD 409NTTQ8K433, 2560x2880@60, auto-up, 1.25, transform, 3"
+        # "desc:LG Electronics LG SDQHD 409NTTQ8K433, 2560x2880@60, auto-up, 1.25, transform, 3"
+        # Samsung 4k
+        "desc:Samsung Electric Company U32J59x HCJXA01635, preferred, auto-up, 1.25"
+        # razer internal display
         "desc:Sharp Corporation LQ156T1JW03, highres, auto, 1.333333"
 
         # framework display:
