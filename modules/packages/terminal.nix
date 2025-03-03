@@ -44,6 +44,7 @@
     # nix tools
     nix-output-monitor
     nixfmt-rfc-style
+    nil
     nixd
     nurl
     manix
