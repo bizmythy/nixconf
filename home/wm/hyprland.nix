@@ -98,8 +98,8 @@
         "desc:LG Electronics LG SDQHD 409NTTQ8K433, 2560x2880@60, auto-up, 1.25, transform, 3"
         "desc:Sharp Corporation LQ156T1JW03, highres, auto, 1.333333"
 
-	# framework display:
-	"desc:BOE 0x095F, preferred, auto, 1.566667"
+        # framework display:
+        "desc:BOE 0x095F, preferred, auto, 1.566667"
       ];
 
       input = {
