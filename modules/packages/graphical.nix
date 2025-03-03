@@ -29,6 +29,7 @@
     cliphist
     gimp
     slack
+    github-desktop
     pavucontrol
     thunderbird
     postman
