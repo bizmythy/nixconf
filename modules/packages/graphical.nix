@@ -27,10 +27,6 @@
     bemoji
     wev
     cliphist
-    code-cursor
-    vlc
-    mpv
-    spotify
     gimp
     zoom-us
     slack
@@ -42,6 +38,13 @@
     wireshark
     ventoy
     gparted
+
+    vlc
+    mpv
+    spotify
+
+    code-cursor
+    zed-editor
 
     warp-terminal
     alacritty
