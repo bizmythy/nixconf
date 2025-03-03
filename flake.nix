@@ -29,75 +29,44 @@
       vars = {
         flakePath = "/home/drew/nixconf";
       };
+
+      hostConfig =
+        hostname:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs vars; };
+          modules = [
+            catppuccin.nixosModules.catppuccin
+            nix-flatpak.nixosModules.nix-flatpak
+            ./hosts/${hostname}/configuration.nix
+
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                extraSpecialArgs = { inherit vars; };
+                backupFileExtension = "bak";
+                users.drew = {
+                  imports = [
+                    catppuccin.homeManagerModules.catppuccin
+                    ./home/home.nix
+                  ];
+                };
+              };
+            }
+          ];
+        };
     in
     {
-      nixosConfigurations = {
-        xps = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs vars; };
-          modules = [
-            catppuccin.nixosModules.catppuccin
-            nix-flatpak.nixosModules.nix-flatpak
-            ./hosts/xps/configuration.nix
-
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                extraSpecialArgs = { inherit vars; };
-                backupFileExtension = "bak";
-                users.drew = {
-                  imports = [
-                    catppuccin.homeManagerModules.catppuccin
-                    ./home/home.nix
-                  ];
-                };
-              };
-            }
-          ];
-        };
-        igneous = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs vars; };
-          modules = [
-            catppuccin.nixosModules.catppuccin
-            nix-flatpak.nixosModules.nix-flatpak
-            ./hosts/igneous/configuration.nix
-
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                extraSpecialArgs = { inherit vars; };
-                backupFileExtension = "bak";
-                users.drew = {
-                  imports = [
-                    catppuccin.homeManagerModules.catppuccin
-                    ./home/home.nix
-                  ];
-                };
-              };
-            }
-          ];
-        };
-        drewdirac = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs vars; };
-          modules = [
-            catppuccin.nixosModules.catppuccin
-            nix-flatpak.nixosModules.nix-flatpak
-            ./hosts/drewdirac/configuration.nix
-
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                extraSpecialArgs = { inherit vars; };
-                backupFileExtension = "bak";
-                users.drew = {
-                  imports = [
-                    catppuccin.homeManagerModules.catppuccin
-                    ./home/home.nix
-                  ];
-                };
-              };
-            }
-          ];
-        };
-      };
+      nixosConfigurations = builtins.listToAttrs (
+        map
+          (hostname: {
+            name = hostname;
+            value = hostConfig hostname;
+          })
+          [
+            "xps"
+            "igneous"
+            "drewdirac"
+          ]
+      );
     };
 }
