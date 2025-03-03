@@ -62,6 +62,21 @@
         diff.tool = "bat";
       };
     };
+    gh = {
+      enable = true;
+      settings = {
+        git_protocol = "ssh";
+        # aliases = {};
+      };
+    };
+    gh-dash = {
+      enable = true;
+      settings = {
+        repoPaths = {
+          "diracq/*" = "~/dirac/*";
+        };
+      };
+    };
 
     lazygit.enable = true;
 
