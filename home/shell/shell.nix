@@ -128,5 +128,21 @@ in
         };
       };
     };
+
+    zellij = {
+      enable = true;
+
+      enableBashIntegration = false;
+      enableZshIntegration = false;
+      enableFishIntegration = false;
+    };
+
+    zoxide = {
+      enable = true;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      enableNushellIntegration = true;
+      options = [ "--cmd cd" ];
+    };
   };
 }

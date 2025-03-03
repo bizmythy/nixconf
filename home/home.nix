@@ -58,26 +58,13 @@
     };
 
     lazygit.enable = true;
-    zellij = {
-      enable = true;
 
-      enableBashIntegration = false;
-      enableZshIntegration = false;
-      enableFishIntegration = false;
-    };
     btop = {
       enable = true;
       settings = {
         vim_keys = true;
         theme_background = false;
       };
-    };
-    zoxide = {
-      enable = true;
-      enableBashIntegration = true;
-      enableZshIntegration = true;
-      enableNushellIntegration = true;
-      options = [ "--cmd cd" ];
     };
 
     # Let Home Manager install and manage itself.
