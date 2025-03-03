@@ -55,6 +55,12 @@
     git = {
       userEmail = "andrew.p.council@gmail.com";
       userName = "AndrewCouncil";
+      extraConfig = {
+        push = {
+          autoSetupRemote = true;
+        };
+        diff.tool = "bat";
+      };
     };
 
     lazygit.enable = true;
