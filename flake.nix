@@ -54,6 +54,28 @@
             }
           ];
         };
+        igneous = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs vars; };
+          modules = [
+            catppuccin.nixosModules.catppuccin
+            nix-flatpak.nixosModules.nix-flatpak
+            ./hosts/igneous/configuration.nix
+
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                extraSpecialArgs = { inherit vars; };
+                backupFileExtension = "bak";
+                users.drew = {
+                  imports = [
+                    catppuccin.homeManagerModules.catppuccin
+                    ./home/home.nix
+                  ];
+                };
+              };
+            }
+          ];
+        };
         drewdirac = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs vars; };
           modules = [
