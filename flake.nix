@@ -30,6 +30,19 @@
         flakePath = "/home/drew/nixconf";
       };
 
+      home = {
+        home-manager = {
+          extraSpecialArgs = { inherit vars; };
+          backupFileExtension = "bak";
+          users.drew = {
+            imports = [
+              catppuccin.homeManagerModules.catppuccin
+              ./home/home.nix
+            ];
+          };
+        };
+      };
+
       hostConfig =
         hostname:
         nixpkgs.lib.nixosSystem {
@@ -40,18 +53,7 @@
             ./hosts/${hostname}/configuration.nix
 
             home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                extraSpecialArgs = { inherit vars; };
-                backupFileExtension = "bak";
-                users.drew = {
-                  imports = [
-                    catppuccin.homeManagerModules.catppuccin
-                    ./home/home.nix
-                  ];
-                };
-              };
-            }
+            home
           ];
         };
     in
