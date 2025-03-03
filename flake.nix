@@ -67,6 +67,7 @@
           [
             "xps"
             "igneous"
+	    "theseus"
             "drewdirac"
           ]
       );
