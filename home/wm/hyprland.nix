@@ -91,7 +91,7 @@
           igneous = {
             main = "desc:Microstep MSI MAG322UPF";
             top = "desc:ViewSonic Corporation VX2418-P FHD WFK231321682";
-            tv = "desc:LG Electronics LG TV SSCR3 0x01010101";
+            tv = "desc:LG Electronics LG TV SSCR2 0x01010101";
           };
           drewdirac = {
             main = "desc:Samsung Electric Company U32J59x HCJXA01635";
