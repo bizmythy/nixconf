@@ -136,7 +136,7 @@
       "$terminal" = "alacritty";
       "$fileManager" = "dolphin";
       "$menu" = "fuzzel";
-      "$browser" = "zen";
+      "$browser" = "firefox";
       "$calculator" = "qalculate-qt";
 
       bind = [
