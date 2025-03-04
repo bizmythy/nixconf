@@ -52,8 +52,19 @@
         # ];
       };
     };
-    # userKeymaps = {
-    #   a = "";
-    # };
+    userKeymaps = [
+      {
+        context = "Workspace";
+        bindings = {
+          "ctrl-b" = "workspace::ToggleLeftDock";
+        };
+      }
+      {
+        context = "Workspace";
+        bindings = {
+          "ctrl-b" = "workspace::ToggleLeftDock";
+        };
+      }
+    ];
   };
 }
