@@ -1,6 +1,11 @@
 # nixconf
 Configuration files for NixOS and Home Manager
 
+## Overview
+This config uses [hyprland](https://hyprland.org/) as a window manager, and uses Qt-based applications wherever possible.
+
+It is themed heavily with [Catppuccin](https://catppuccin.com/) Mocha (mauve accent).
+
 ## Structure
 Each computer hostname has a folder in `hosts` and an entry in the `flake.nix` file. These can then import various host-specific modules.
 For now, all computers also import the `home/home.nix` module to use for home manager.
