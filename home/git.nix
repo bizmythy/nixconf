@@ -48,9 +48,33 @@ in
     gh-dash = {
       enable = true;
       settings = {
+        pager.diff = "delta";
         repoPaths = {
           "diracq/*" = "~/dirac/*";
         };
+        prSections = [
+          {
+            title = "need review";
+            filters = "is:open draft:false review:required -review:approved-by:@me";
+          }
+          {
+            title = "mine";
+            filters = "is:open author:@me";
+            layout.author.hidden = true;
+          }
+          {
+            title = "review requested";
+            filters = "is:open review-requested:@me";
+          }
+          {
+            title = "all ready";
+            filters = "is:open draft:false";
+          }
+          {
+            title = "all";
+            filters = "is:open";
+          }
+        ];
       };
     };
 
