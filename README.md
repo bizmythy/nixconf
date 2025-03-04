@@ -1,5 +1,6 @@
 # nixconf
 Configuration files for NixOS and Home Manager
+![image](https://github.com/user-attachments/assets/7e27dec8-1485-4878-88d9-a9dbe81463a1)
 
 ## Overview
 This config uses [hyprland](https://hyprland.org/) as a window manager, and uses Qt-based applications wherever possible.
