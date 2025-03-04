@@ -41,11 +41,15 @@
     nmap
     traceroute
 
+    # language tools
+    go
+    gopls
+    nil
+    nixd
+
     # nix tools
     nix-output-monitor
     nixfmt-rfc-style
-    nil
-    nixd
     nurl
     manix
     nix-search-cli
