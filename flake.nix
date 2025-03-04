@@ -51,6 +51,7 @@
             catppuccin.nixosModules.catppuccin
             nix-flatpak.nixosModules.nix-flatpak
             ./hosts/${hostname}/configuration.nix
+            { networking.hostName = hostname; }
 
             home-manager.nixosModules.home-manager
             home
