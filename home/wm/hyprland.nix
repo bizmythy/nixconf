@@ -97,7 +97,7 @@
             dualup = "desc:LG Electronics LG SDQHD 409NTTQ8K433";
           };
           theseus = {
-            laptop = "desc:BOE 0x0960";
+            laptop = "desc:BOE 0x095F";
           };
         in
         [
