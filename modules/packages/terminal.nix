@@ -40,6 +40,8 @@
     zstd
     nmap
     traceroute
+    rclone
+    nvtop
 
     # language tools
     go
