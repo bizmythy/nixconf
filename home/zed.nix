@@ -31,6 +31,10 @@
       load_direnv = "shell_hook";
       base_keymap = "VSCode";
 
+      languages = {
+        Markdown.soft_wrap = "editor_width";
+      };
+
       assistant = {
         enabled = true;
         version = "2";
