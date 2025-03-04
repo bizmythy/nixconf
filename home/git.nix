@@ -24,7 +24,7 @@ in
       delta = {
         enable = true;
         options = {
-          side-by-side = true;
+          side-by-side = false;
         };
       };
       extraConfig = {
@@ -54,19 +54,40 @@ in
       };
     };
 
-    lazygit = {
-      enable = true;
-      settings = {
-        nerdFontsVersion = "3";
-        showFileIcons = true;
-        # TODO: this is not working...
-        git = {
-          paging = {
-            colorArg = "always";
-            pager = "delta --dark --paging=never";
+    lazygit =
+      let
+        # https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#custom-command-for-copying-to-and-pasting-from-clipboard
+        copyCmd = ''
+          if [[ "$TERM" =~ ^(screen|tmux) ]]; then
+            printf "\033Ptmux;\033\033]52;c;$(printf {{text}} | base64 -w 0)\a\033\\" > /dev/tty
+          else
+            printf "\033]52;c;$(printf {{text}} | base64 -w 0)\a" > /dev/tty
+          fi
+        '';
+      in
+      {
+        enable = true;
+        settings = {
+          nerdFontsVersion = "3";
+          showFileIcons = true;
+          skipNoStagedFilesWarning = true;
+          language = "en";
+          update.method = "never";
+          disableStartupPopups = true;
+          notARepository = "quit";
+          os = {
+            copyToClipboardCmd = copyCmd;
+            editPreset = "zed";
+          };
+
+          git = {
+            paging = {
+              colorArg = "always";
+              pager = "delta --dark --paging=never";
+            };
+            # parseEmoji = true;
           };
         };
       };
-    };
   };
 }
