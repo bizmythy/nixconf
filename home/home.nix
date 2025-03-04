@@ -8,8 +8,15 @@
 }:
 
 let
-  diracPath = "~/dirac";
-  diracConfig = "gitdiractestfile";
+  user = "drew";
+  homeDir = "/home/${user}";
+  diracPath = "${homeDir}/dirac";
+  diracGitConf = (pkgs.formats.ini { }).generate ".gitconfig-dirac" {
+    user = {
+      name = "drew-dirac";
+      email = "drew@diracinc.com";
+    };
+  };
 in
 {
   imports = [
@@ -20,8 +27,8 @@ in
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "drew";
-  home.homeDirectory = "/home/drew";
+  home.username = user;
+  home.homeDirectory = homeDir;
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -40,18 +47,6 @@ in
 
   fonts.fontconfig.enable = true;
 
-  home.file = {
-    "${diracConfig}" = {
-      enable = true;
-      text = lib.generators.toINI {} {
-        user = {
-            name = "drew-dirac";
-            email = "drew@diracinc.com";
-        };
-      };
-    };
-  };
-
   # NOTE: if any of these start to get large, break into separate module.
   programs = {
     git = {
@@ -68,7 +63,9 @@ in
         push = {
           autoSetupRemote = true;
         };
-        # "includeIf \"gitdir:${diracPath}\"".path = ".gitconfig-dirac";
+        "includeIf \"gitdir:${diracPath}\"" = {
+          path = "${diracGitConf}";
+        };
       };
     };
     gh = {
