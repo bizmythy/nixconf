@@ -10,7 +10,7 @@ let
     lg = "lazygit";
     ld = "lazydocker";
     nhos = "nh os switch";
-    nhob = "nh os build";
+    nhob = "nh os boot";
     cdb = "cd /home/drew/dirac/buildos-web";
     edit = "zsh -c '(&>/dev/null cursor . &)'";
     zed = "zeditor";
