@@ -7,28 +7,18 @@
   ...
 }:
 
-let
-  user = "drew";
-  homeDir = "/home/${user}";
-  diracPath = "${homeDir}/dirac";
-  diracGitConf = (pkgs.formats.ini { }).generate ".gitconfig-dirac" {
-    user = {
-      name = "drew-dirac";
-      email = "drew@diracinc.com";
-    };
-  };
-in
 {
   imports = [
     ./tty.nix
     ./shell/shell.nix
     ./wm/hyprland.nix
+    ./git.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = user;
-  home.homeDirectory = homeDir;
+  home.username = "drew";
+  home.homeDirectory = "/home/drew";
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -49,43 +39,6 @@ in
 
   # NOTE: if any of these start to get large, break into separate module.
   programs = {
-    git = {
-      enable = true;
-      userEmail = "andrew.p.council@gmail.com";
-      userName = "AndrewCouncil";
-      delta = {
-        enable = true;
-        options = {
-          side-by-side = true;
-        };
-      };
-      extraConfig = {
-        push = {
-          autoSetupRemote = true;
-        };
-        "includeIf \"gitdir:${diracPath}\"" = {
-          path = "${diracGitConf}";
-        };
-      };
-    };
-    gh = {
-      enable = true;
-      settings = {
-        git_protocol = "ssh";
-        # aliases = {};
-      };
-    };
-    gh-dash = {
-      enable = true;
-      settings = {
-        repoPaths = {
-          "diracq/*" = "~/dirac/*";
-        };
-      };
-    };
-
-    lazygit.enable = true;
-
     btop = {
       enable = true;
       settings = {
