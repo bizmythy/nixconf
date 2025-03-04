@@ -12,6 +12,7 @@
     extensions = [
       "catppuccin"
       "nix"
+      "proto"
     ];
     userSettings = {
       vim_mode = true;
