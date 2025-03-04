@@ -84,26 +84,35 @@
         rounding = 14;
       };
 
-      monitor = [
-        " , preferred, auto, auto"
-        # home displays:
-        # main display
-        "desc:Microstep MSI MAG322UPF, 3840x2160@160, 0x0, 1.25"
-        # top display
-        "desc:ViewSonic Corporation VX2418-P FHD WFK231321682, 1920x1080@144, 575x-1080, 1.0"
-        # tv
+      monitor =
+        let
+          igneous = {
+            main = "desc:Microstep MSI MAG322UPF";
+            top = "desc:ViewSonic Corporation VX2418-P FHD WFK231321682";
+            tv = "desc:LG Electronics LG TV SSCR3 0x01010101";
+          };
+          drewdirac = {
+            main = "desc:Samsung Electric Company U32J59x HCJXA01635";
+            razer = "desc:Sharp Corporation LQ156T1JW03";
+            dualup = "desc:LG Electronics LG SDQHD 409NTTQ8K433";
+          };
+          theseus = {
+            laptop = "desc:BOE 0x0960";
+          };
+        in
+        [
+          " , preferred, auto, auto"
 
-        # work displays:
-        # LG Dual Up
-        # "desc:LG Electronics LG SDQHD 409NTTQ8K433, 2560x2880@60, auto-up, 1.25, transform, 3"
-        # Samsung 4k
-        "desc:Samsung Electric Company U32J59x HCJXA01635, preferred, auto-up, 1.25"
-        # razer internal display
-        "desc:Sharp Corporation LQ156T1JW03, highres, auto, 1.333333"
+          "${igneous.main}, 3840x2160@160, 0x0, 1.25"
+          "${igneous.top}, 1920x1080@144, 575x-1080, 1.0"
+          "${igneous.tv}, 3840x2160@120, auto-right, 1.25, mirror, ${igneous.main}"
 
-        # framework display:
-        "desc:BOE 0x095F, preferred, auto, 1.566667"
-      ];
+          "${drewdirac.main}, preferred, auto-up, 1.25"
+          "${drewdirac.razer}, highres, auto, 1.333333"
+          # "${drewdirac.dualup}, 2560x2880@60, auto-up, 1.25, transform, 3"
+
+          "${theseus.laptop}, preferred, auto, 1.566667"
+        ];
 
       input = {
         kb_layout = "us";
