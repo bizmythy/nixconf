@@ -10,7 +10,7 @@ let
     cdn = "cd /home/drew/nixconf";
 
     zed = "zeditor";
-    z = "zeditor .";
+    e = "zeditor .";
 
     lg = "lazygit";
     ld = "lazydocker";

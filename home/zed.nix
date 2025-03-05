@@ -14,8 +14,22 @@
       "nix"
       "proto"
     ];
+    userKeymaps = [
+      # -----KEYBINDS-----
+      {
+        context = "Workspace";
+        bindings = {
+          "ctrl-b" = "workspace::ToggleLeftDock";
+          "alt-h" = "workspace::ActivatePaneLeft";
+          "alt-j" = "workspace::ActivatePaneDown";
+          "alt-k" = "workspace::ActivatePaneUp";
+          "alt-l" = "workspace::ActivatePaneRight";
+        };
+      }
+    ];
+
     userSettings = {
-      # -----KEYBINDS AND EDITOR CONFIG-----
+      # -----EDITOR CONFIG-----
       autosave.after_delay.milliseconds = 500;
 
       base_keymap = "VSCode";
@@ -23,21 +37,6 @@
       cursor_blink = false;
       relative_line_numbers = true;
       # scroll_beyond_last_line = "off";
-
-      userKeymaps = [
-        {
-          context = "Workspace";
-          bindings = {
-            "ctrl-b" = "workspace::ToggleLeftDock";
-          };
-        }
-        {
-          context = "Workspace";
-          bindings = {
-            "ctrl-b" = "workspace::ToggleLeftDock";
-          };
-        }
-      ];
 
       # -----THEMING AND STYLE-----
       ui_font_size = 16;
@@ -49,9 +48,21 @@
         dark = lib.mkDefault "Catppuccin Mocha";
         mode = "dark";
       };
+      icon_theme = {
+        light = "Catppuccin Latte";
+        dark = "Catppuccin Mocha";
+        mode = "dark";
+      };
 
       # -----LANGUAGE SETUP-----
       load_direnv = "shell_hook";
+
+      file_types = {
+        CMake = [
+          "CMakeLists*"
+          "cmake"
+        ];
+      };
 
       languages = {
         Markdown.soft_wrap = "editor_width";
@@ -79,6 +90,5 @@
         # ];
       };
     };
-
   };
 }
