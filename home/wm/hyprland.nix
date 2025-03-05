@@ -60,8 +60,8 @@
       env = [
         "LIBVA_DRIVER_NAME,nvidia"
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-	"WLR_NO_HARDWARE_CURSORS,1"
-	"OGL_DEDICATED_HW_STATE_PER_CONTEXT,ENABLE_ROBUST"
+        "WLR_NO_HARDWARE_CURSORS,1"
+        "OGL_DEDICATED_HW_STATE_PER_CONTEXT,ENABLE_ROBUST"
       ];
 
       exec-once = [
@@ -134,7 +134,7 @@
       };
 
       cursor = {
-       no_hardware_cursors = true;
+        no_hardware_cursors = true;
       };
 
       "$mainMod" = "SUPER";
