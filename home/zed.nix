@@ -15,10 +15,31 @@
       "proto"
     ];
     userSettings = {
-      vim_mode = true;
-
+      # -----KEYBINDS AND EDITOR CONFIG-----
       autosave.after_delay.milliseconds = 500;
 
+      base_keymap = "VSCode";
+      vim_mode = true;
+      cursor_blink = false;
+      relative_line_numbers = true;
+      # scroll_beyond_last_line = "off";
+
+      userKeymaps = [
+        {
+          context = "Workspace";
+          bindings = {
+            "ctrl-b" = "workspace::ToggleLeftDock";
+          };
+        }
+        {
+          context = "Workspace";
+          bindings = {
+            "ctrl-b" = "workspace::ToggleLeftDock";
+          };
+        }
+      ];
+
+      # -----THEMING AND STYLE-----
       ui_font_size = 16;
       buffer_font_size = 16;
       buffer_font_family = "JetBrainsMono Nerd Font";
@@ -29,13 +50,14 @@
         mode = "dark";
       };
 
+      # -----LANGUAGE SETUP-----
       load_direnv = "shell_hook";
-      base_keymap = "VSCode";
 
       languages = {
         Markdown.soft_wrap = "editor_width";
       };
 
+      # -----ASSISTANT FEATURES-----
       assistant = {
         enabled = true;
         version = "2";
@@ -57,19 +79,6 @@
         # ];
       };
     };
-    userKeymaps = [
-      {
-        context = "Workspace";
-        bindings = {
-          "ctrl-b" = "workspace::ToggleLeftDock";
-        };
-      }
-      {
-        context = "Workspace";
-        bindings = {
-          "ctrl-b" = "workspace::ToggleLeftDock";
-        };
-      }
-    ];
+
   };
 }
