@@ -7,16 +7,20 @@
 }:
 let
   myShellAliases = {
+    cdn = "cd /home/drew/nixconf";
+
+    zed = "zeditor";
+    z = "zeditor .";
+
     lg = "lazygit";
     ld = "lazydocker";
     nhos = "nh os switch";
     nhob = "nh os boot";
     hmclean = "zsh -c 'find ~ -name \"*.hmbackup\" -type f -delete'";
-    cdb = "cd /home/drew/dirac/buildos-web";
     edit = "zsh -c '(&>/dev/null cursor . &)'";
-    zed = "zeditor";
 
     # dirac
+    cdb = "cd /home/drew/dirac/buildos-web";
     awsl = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login --profile dirac-dev'";
   };
   mySessionVariables = {
