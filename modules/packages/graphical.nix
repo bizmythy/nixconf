@@ -7,9 +7,9 @@
 }:
 
 {
-  imports = [
-    ./firefox.nix
-  ];
+  # imports = [
+  #   ./firefox.nix
+  # ];
 
   environment.systemPackages = with pkgs; [
     # graphical programs
