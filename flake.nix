@@ -50,6 +50,7 @@
           modules = [
             catppuccin.nixosModules.catppuccin
             nix-flatpak.nixosModules.nix-flatpak
+            ./modules/base.nix
             ./hosts/${hostname}/configuration.nix
             { networking.hostName = hostname; }
 

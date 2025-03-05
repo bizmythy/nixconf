@@ -1,7 +1,8 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
+  osConfig,
   ...
 }:
 
@@ -57,12 +58,19 @@
     xwayland.enable = true;
 
     settings = {
-      env = [
-        "LIBVA_DRIVER_NAME,nvidia"
-        "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-        "WLR_NO_HARDWARE_CURSORS,1"
-        "OGL_DEDICATED_HW_STATE_PER_CONTEXT,ENABLE_ROBUST"
-      ];
+      env =
+        [ ]
+        ++ (
+          if osConfig.nvidiaEnable then
+            [
+              "LIBVA_DRIVER_NAME,nvidia"
+              "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+              "WLR_NO_HARDWARE_CURSORS,1"
+              "OGL_DEDICATED_HW_STATE_PER_CONTEXT,ENABLE_ROBUST"
+            ]
+          else
+            [ ]
+        );
 
       exec-once = [
         "hyprpaper"

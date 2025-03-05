@@ -9,7 +9,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/base.nix
   ];
 
   services.fwupd.enable = true;

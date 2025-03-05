@@ -9,7 +9,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/base.nix
   ];
 
   # This value determines the NixOS release from which the default
