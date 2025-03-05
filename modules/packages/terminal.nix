@@ -68,10 +68,10 @@
   # Set up docker
   virtualisation.docker = {
     enable = true;
-    # rootless = {
-    #   enable = true;
-    #   setSocketVariable = true;
-    # };
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
 
     # daemon.settings = {
     #   "bridge" = "none";
