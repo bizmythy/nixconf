@@ -41,6 +41,7 @@
     nmap
     traceroute
     rclone
+    lsof
 
     # language tools
     go
