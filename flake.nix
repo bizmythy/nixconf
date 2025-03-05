@@ -33,7 +33,7 @@
       home = {
         home-manager = {
           extraSpecialArgs = { inherit vars; };
-          backupFileExtension = "homemanagerbackup";
+          backupFileExtension = "hmbackup";
           users.drew = {
             imports = [
               catppuccin.homeManagerModules.catppuccin

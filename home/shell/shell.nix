@@ -11,7 +11,7 @@ let
     ld = "lazydocker";
     nhos = "nh os switch";
     nhob = "nh os boot";
-    hmclean = "zsh -c 'find ~ -name \"*.homemanagerbackup\" -type f -delete'";
+    hmclean = "zsh -c 'find ~ -name \"*.hmbackup\" -type f -delete'";
     cdb = "cd /home/drew/dirac/buildos-web";
     edit = "zsh -c '(&>/dev/null cursor . &)'";
     zed = "zeditor";
