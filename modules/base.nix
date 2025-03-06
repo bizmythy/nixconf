@@ -1,5 +1,4 @@
 {
-  pkgs,
   inputs,
   ...
 }:
@@ -32,10 +31,10 @@
 
   programs.nix-ld = {
     enable = true;
-    libraries = with pkgs; [
-      # Add any missing dynamic libraries for unpackaged
-      # programs here, NOT in environment.systemPackages
-    ];
+    # libraries = with pkgs; [
+    #   # Add any missing dynamic libraries for unpackaged
+    #   # programs here, NOT in environment.systemPackages
+    # ];
   };
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
