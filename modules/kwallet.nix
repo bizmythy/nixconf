@@ -9,6 +9,9 @@
     pam.services.kwallet = {
       name = "kwallet";
       enableKwallet = true;
+      kwallet = {
+        enable = true;
+      };
     };
   };
 
