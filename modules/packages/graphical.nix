@@ -4,6 +4,11 @@
   ...
 }:
 
+let
+  logseq-patched = pkgs.logseq.override {
+    electron_27 = pkgs.electron_34;
+  };
+in
 {
   imports = [
     ../kwallet.nix
@@ -21,7 +26,7 @@
     # firefox in home manager
 
     qalculate-qt
-    logseq
+    logseq-patched
 
     slack
     github-desktop
