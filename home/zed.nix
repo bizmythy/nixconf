@@ -15,13 +15,15 @@
     userKeymaps = [
       # -----KEYBINDS-----
       {
-        context = "Workspace";
         bindings = {
           "ctrl-b" = "workspace::ToggleLeftDock";
           "alt-h" = "workspace::ActivatePaneLeft";
           "alt-j" = "workspace::ActivatePaneDown";
           "alt-k" = "workspace::ActivatePaneUp";
           "alt-l" = "workspace::ActivatePaneRight";
+          # default zoom toggle frequently pressed on accident
+          "shift-escape" = null;
+          "ctrl-shift-escape" = "workspace::ToggleZoom";
         };
       }
     ];
