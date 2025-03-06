@@ -10,36 +10,32 @@
   ];
 
   environment.systemPackages = with pkgs; [
-    # graphical programs
-    hyprpicker
-    hyprshot
-    hyprsysteminfo
-    hyprpaper
+    kdePackages.dolphin
+    lxqt.pcmanfm-qt
 
-    pqiv
-    playerctl
-    brightnessctl
-    udiskie
-    networkmanagerapplet
-    blueman
-    swaynotificationcenter
-    hyprpolkitagent
-    wl-clipboard
-    wtype
-    bemoji
-    wev
-    cliphist
-    gimp
+    thunderbird
+    kdePackages.okular
+
+    google-chrome
+    inputs.zen-browser.packages.${pkgs.system}.default
+    # firefox in home manager
+
+    qalculate-qt
+    logseq
+
     slack
     github-desktop
-    pavucontrol
-    thunderbird
     postman
+
     pcloud
     localsend
     wireshark
+
     ventoy
     gparted
+
+    gimp
+    kdePackages.kdenlive
 
     vlc
     mpv
@@ -57,16 +53,8 @@
     kdePackages.qt6ct
     kdePackages.kio-fuse
     kdePackages.kio-extras
-    kdePackages.dolphin
-    kdePackages.okular
-    kdePackages.kdenlive
     kdePackages.plasma-workspace
     kdePackages.kconfig
-    qalculate-qt
-    lxqt.pcmanfm-qt
-
-    google-chrome
-    inputs.zen-browser.packages.${pkgs.system}.default
   ];
 
   services.flatpak = {

@@ -28,4 +28,26 @@
   #   # Enable KDE Plasma 6
   #   services.desktopManager.plasma6.enable = true;
   # };
+
+  environment.systemPackages = with pkgs; [
+    hyprpicker
+    hyprshot
+    hyprsysteminfo
+    hyprpaper
+
+    pqiv
+    playerctl
+    brightnessctl
+    udiskie
+    networkmanagerapplet
+    blueman
+    pavucontrol
+    swaynotificationcenter
+    hyprpolkitagent
+    wl-clipboard
+    wtype
+    bemoji
+    wev
+    cliphist
+  ];
 }
