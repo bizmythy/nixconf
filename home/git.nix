@@ -27,6 +27,7 @@ in
         push = {
           autoSetupRemote = true;
         };
+        core.hooksPath = ".githooks";
         "includeIf \"gitdir:${diracPath}\"" = {
           path = "${diracGitConf}";
         };
