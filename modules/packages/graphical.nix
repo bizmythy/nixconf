@@ -5,9 +5,9 @@
 }:
 
 {
-  # imports = [
-  #   ./firefox.nix
-  # ];
+  imports = [
+    ../kwallet.nix
+  ];
 
   environment.systemPackages = with pkgs; [
     # graphical programs
