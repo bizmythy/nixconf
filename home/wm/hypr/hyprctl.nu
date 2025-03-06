@@ -1,7 +1,16 @@
-# get table of monitor ids and workspace ids
-def main [] {
-    hyprctl monitors -j
-    | from json
+let monitorsInfo = hyprctl monitors -j | from json
+
+let monToWS = (
+    $monitorsInfo
     | select id activeWorkspace.id
     | rename monitor workspace
-}
+)
+print $monToWS
+
+let activeWS = (
+    hyprctl activeworkspace -j
+    | from json
+    | get id
+)
+print $activeWS
+
