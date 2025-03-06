@@ -7,7 +7,7 @@
   imports = [
     ./tty.nix
     ./shell/shell.nix
-    ./wm/hyprland.nix
+    ./wm/hypr/hyprland.nix
     ./git.nix
     ./zed.nix
     ./firefox.nix
