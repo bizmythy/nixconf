@@ -9,13 +9,13 @@ let
 
     zed = "zeditor";
     e = "zeditor .";
+    edit = "zsh -c '(&>/dev/null cursor . &)'";
 
     lg = "lazygit";
     ld = "lazydocker";
     nhos = "nh os switch";
     nhob = "nh os boot";
-    hmclean = "zsh -c 'find ~ -name \"*.hmbackup\" -type f -delete'";
-    edit = "zsh -c '(&>/dev/null cursor . &)'";
+    hmclean = "fd '\.hmbackup$' ~ -x rm";
 
     # dirac
     cdb = "cd /home/drew/dirac/buildos-web";
