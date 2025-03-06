@@ -26,8 +26,8 @@
     MOZ_ENABLE_WAYLAND = "1";
   };
 
-  specialisation.kde.configuration = {
-    # Enable KDE Plasma 6
-    services.desktopManager.plasma6.enable = true;
-  };
+  # specialisation.kde.configuration = {
+  #   # Enable KDE Plasma 6
+  #   services.desktopManager.plasma6.enable = true;
+  # };
 }
