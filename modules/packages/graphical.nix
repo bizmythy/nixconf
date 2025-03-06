@@ -48,6 +48,7 @@ in
 
     code-cursor
     zed-editor
+    meld
 
     warp-terminal
     alacritty
