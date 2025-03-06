@@ -4,9 +4,16 @@
 // see the documentation: https://zed.dev/docs/configuring-zed#settings-files
 {
   "tab_size": 2,
-  "formatter": {
-    "external": {
-      "command": "nixfmt"
+  "languages": {
+    "Nu": {
+      "tab_size": 4
+    },
+    "Nix": {
+      "formatter": {
+        "external": {
+          "command": "nixfmt"
+        }
+      }
     }
-  },
+  }
 }
