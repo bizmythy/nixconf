@@ -57,7 +57,7 @@
 
       file_types = {
         CMake = [
-          "CMakeLists*"
+          "CMakeLists.txt"
           "cmake"
         ];
       };
