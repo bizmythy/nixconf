@@ -18,6 +18,7 @@
     wget
     git
     git-lfs
+    pre-commit
     ripgrep
     fd
     bat
