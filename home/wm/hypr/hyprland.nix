@@ -104,6 +104,7 @@
             main = "desc:Samsung Electric Company U32J59x HCJXA01635";
             razer = "desc:Sharp Corporation LQ156T1JW03";
             dualup = "desc:LG Electronics LG SDQHD 409NTTQ8K433";
+            acer = "desc:Acer Technologies KA272 TJ0AA00785SJ";
           };
           theseus = {
             laptop = "desc:BOE 0x095F";
@@ -116,9 +117,11 @@
           "${igneous.top}, 1920x1080@144, 575x-1080, 1.0"
           "${igneous.tv}, 3840x2160@120, auto-right, 1.25, mirror, ${igneous.main}"
 
-          "${drewdirac.main}, preferred, auto-up, 1.25"
           "${drewdirac.razer}, highres, auto, 1.333333"
-          # "${drewdirac.dualup}, 2560x2880@60, auto-up, 1.25, transform, 3"
+
+          "${drewdirac.main}, 3840x2160, 0x0, 1.25"
+          "${drewdirac.dualup}, 2560x2880@60, 3072x-200, 1.25"
+          "${drewdirac.acer}, 1920x1080@60, 575x-1080, 1.0"
 
           "${theseus.laptop}, preferred, auto, 1.566667"
         ];
