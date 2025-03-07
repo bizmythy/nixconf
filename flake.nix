@@ -71,6 +71,7 @@
             "igneous"
             "theseus"
             "drewdirac"
+            "drewdiracpc"
           ]
       );
     };
