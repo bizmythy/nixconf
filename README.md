@@ -29,3 +29,4 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 - signal encrypted kwallet backend
 - firefox buttons at right place at startup
 - atuin enter not running for specifically nushell?
+- sddm on all monitors, maybe a theme if not broken
