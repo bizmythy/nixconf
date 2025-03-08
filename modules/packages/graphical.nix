@@ -11,6 +11,7 @@ let
 in
 {
   imports = [
+    ./flatpak.nix
     ./kwallet.nix
     ./fonts.nix
   ];
@@ -63,23 +64,6 @@ in
     kdePackages.plasma-workspace
     kdePackages.kconfig
   ];
-
-  services.flatpak = {
-    enable = true;
-    update.auto = {
-      enable = true;
-      onCalendar = "weekly";
-    };
-
-    # flatpak packages
-    packages = [
-      "com.obsproject.Studio"
-      "org.signal.Signal"
-      "com.discordapp.Discord"
-      "com.github.tchx84.Flatseal"
-      "us.zoom.Zoom"
-    ];
-  };
 
   programs = {
     _1password-gui = {
