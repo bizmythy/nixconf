@@ -11,7 +11,8 @@ let
 in
 {
   imports = [
-    ../kwallet.nix
+    ./kwallet.nix
+    ./fonts.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -78,29 +79,6 @@ in
       "com.github.tchx84.Flatseal"
       "us.zoom.Zoom"
     ];
-  };
-
-  # configure fonts
-  fonts = {
-    enableDefaultPackages = true;
-    packages = with pkgs; [
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.hack
-      nerd-fonts.fira-code
-      nerd-fonts.ubuntu-mono
-
-      noto-fonts
-      noto-fonts-color-emoji
-      ibm-plex
-    ];
-    fontconfig = {
-      enable = true;
-      defaultFonts = {
-        monospace = [ "JetBrainsMono Nerd Font" ];
-        sansSerif = [ "Noto Sans" ];
-        serif = [ "Noto Serif" ];
-      };
-    };
   };
 
   programs = {
