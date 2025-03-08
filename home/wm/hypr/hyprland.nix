@@ -114,7 +114,7 @@
           " , preferred, auto, auto"
 
           "${igneous.main}, 3840x2160@160, 0x0, 1.25"
-          "${igneous.top}, 1920x1080@144, 575x-1080, 1.0"
+          "${igneous.top}, 1920x1080@60, 575x-1080, 1.0"
           "${igneous.tv}, 3840x2160@120, auto-right, 1.25, mirror, ${igneous.main}"
 
           "${drewdirac.razer}, highres, auto, 1.333333"
