@@ -27,6 +27,8 @@ in
     inputs.zen-browser.packages.${pkgs.system}.default
     # firefox in home manager
 
+    signal-desktop
+
     qalculate-qt
     logseq-patched
 

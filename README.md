@@ -24,9 +24,9 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 
 ## TODO:
 
-- gpg signing github
-- integrate 1password cli for logging into everything, better secrets
-- signal encrypted kwallet backend
-- firefox buttons at right place at startup
-- atuin enter not running for specifically nushell?
-- sddm on all monitors, maybe a theme if not broken
+- [ ] gpg signing github
+- [ ] integrate 1password cli for logging into everything, better secrets
+- [x] signal encrypted kwallet backend
+- [ ] firefox buttons at right place at startup
+- [ ] atuin enter not running for specifically nushell?
+- [ ] sddm on all monitors, maybe a theme if not broken

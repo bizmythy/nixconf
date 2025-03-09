@@ -27,16 +27,11 @@
           GTK_THEME = "Adwaita:dark";
         };
       };
-
-      "org.signal.Signal".Environment = {
-        SIGNAL_PASSWORD_STORE = "kwallet";
-      };
     };
 
     # flatpak packages
     packages = [
       "com.obsproject.Studio"
-      "org.signal.Signal"
       "com.discordapp.Discord"
       "com.github.tchx84.Flatseal"
       "us.zoom.Zoom"
