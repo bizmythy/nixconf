@@ -27,7 +27,7 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 - [ ] gpg signing github
 - [ ] integrate 1password cli for logging into everything, better secrets
 - [x] signal encrypted kwallet backend
-- [ ] firefox buttons at right place at startup
+- [x] firefox buttons at right place at startup
 - [ ] atuin enter not running for specifically nushell?
 ~~- [ ] sddm on all monitors~~ not real, can't work well with hidpi screens~~
 - [x] sddm theme if not broken
