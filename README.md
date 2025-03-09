@@ -30,7 +30,7 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 - [ ] firefox buttons at right place at startup
 - [ ] atuin enter not running for specifically nushell?
 ~~- [ ] sddm on all monitors~~ not real, can't work well with hidpi screens~~
-- [ ] sddm theme if not broken
+- [x] sddm theme if not broken
 - [ ] default apps for xdg-open
 - [ ] switch to ghostty
-- [ ] 1password autostart in background?
+- [x] 1password autostart in background?
