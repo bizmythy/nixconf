@@ -1,5 +1,6 @@
 {
   pkgs,
+  vars,
   ...
 }:
 
@@ -74,6 +75,10 @@
         accent = "mauve";
         flavor = "mocha";
       };
+    };
+    cursorTheme = {
+      name = vars.cursorTheme;
+      size = vars.cursorSize;
     };
   };
 

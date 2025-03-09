@@ -1,4 +1,5 @@
 {
+  inputs,
   pkgs,
   ...
 }:
@@ -24,6 +25,8 @@
     hyprshot
     hyprsysteminfo
     hyprpaper
+
+    inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
 
     pqiv
     playerctl
