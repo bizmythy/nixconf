@@ -2,7 +2,6 @@
   lib,
   pkgs,
   osConfig,
-  vars,
   ...
 }:
 
@@ -21,11 +20,11 @@
     accent = "mauve";
   };
 
-  # home.pointerCursor = {
-  #   name = "phinger-cursors-light";
-  #   package = pkgs.phinger-cursors;
-  #   size = 32;
-  # };
+  home.pointerCursor = {
+    name = "phinger-cursors-light";
+    package = pkgs.phinger-cursors;
+    size = 32;
+  };
 
   services.hyprpaper =
     let
@@ -59,15 +58,7 @@
 
     settings = {
       env =
-        let
-          size = builtins.toString vars.cursorSize;
-        in
-        [
-          "HYPRCURSOR_THEME,${vars.cursorTheme}"
-          "XCURSOR_THEME,${vars.cursorTheme}"
-          "HYPRCURSOR_SIZE,${size}"
-          "XCURSOR_SIZE,${size}"
-        ]
+        [ ]
         ++ (
           if osConfig.nvidiaEnable then
             [
@@ -154,9 +145,9 @@
         workspace_swipe_fingers = 3;
       };
 
-      # cursor = {
-      #   no_hardware_cursors = true;
-      # };
+      cursor = {
+        no_hardware_cursors = true;
+      };
 
       "$mainMod" = "SUPER";
 
@@ -175,7 +166,7 @@
         "$mainMod, P, exec, hyprpicker"
         "$mainMod, EQUAL, exec, $calculator"
 
-        "$mainMod, D, exec, zeditor /home/drew/dirac/buildos-web"
+        "$mainMod, D, exec, cursor /home/drew/dirac/buildos-web"
 
         "SUPER, SUPER_L, exec, fuzzel"
         "$mainMod, V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
