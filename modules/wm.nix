@@ -4,6 +4,21 @@
   ...
 }:
 
+let
+  sddmTheme = pkgs.stdenv.mkDerivation {
+    name = "sddm-theme";
+    src = pkgs.fetchFromGitHub {
+      owner = "JaKooLit";
+      repo = "simple-sddm-2";
+      rev = "84ae7ad47eab5daa9d904b2e33669788d891bd3d";
+      hash = "sha256-BkqtSh944QIVyYvXCCU8Pucs/2RpWXlwNFSC9zVlRoc=";
+    };
+    installPhase = ''
+      mkdir -p $out
+      cp -R ./* $out/
+    '';
+  };
+in
 {
   # Enable Hyprland
   programs.hyprland = {
@@ -14,10 +29,15 @@
   services.displayManager = {
     # Enable Simple Desktop Display Manager
     sddm = {
+      extraPackages = with pkgs.kdePackages; [
+        qt5compat
+        qtdeclarative
+        qtsvg
+      ];
       enable = true;
       wayland.enable = true;
       package = pkgs.kdePackages.sddm;
-      theme = "breeze";
+      theme = "${sddmTheme}";
     };
 
     # # tui display manager
