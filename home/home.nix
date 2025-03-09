@@ -9,7 +9,6 @@
     ./shell/shell.nix
     ./wm/hypr/hyprland.nix
     ./git.nix
-    ./zed.nix
     ./firefox.nix
   ];
 
