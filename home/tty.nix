@@ -1,4 +1,6 @@
 {
+  lib,
+  pkgs,
   ...
 }:
 
@@ -6,6 +8,40 @@ let
   fontFamily = "JetBrainsMono Nerd Font";
   fontSize = 12;
   backgroundOpacity = 0.9;
+  # https://github.com/ghostty-org/ghostty/discussions/3167#discussioncomment-12434378
+  ghostty-cursor-patched = pkgs.ghostty.override {
+    wrapGAppsHook4 = pkgs.wrapGAppsNoGuiHook.override {
+      isGraphical = true;
+      gtk3 =
+        (pkgs.__splicedPackages.gtk4.override {
+          wayland-protocols = pkgs.wayland-protocols.overrideAttrs (o: rec {
+            version = "1.41";
+            src = pkgs.fetchurl {
+              url = "https://gitlab.freedesktop.org/wayland/${o.pname}/-/releases/${version}/downloads/${o.pname}-${version}.tar.xz";
+              hash = "sha256-J4a2sbeZZeMT8sKJwSB1ue1wDUGESBDFGv2hDuMpV2s=";
+            };
+          });
+        }).overrideAttrs
+          (o: rec {
+            version = "4.17.6";
+            src = pkgs.fetchurl {
+              url = "mirror://gnome/sources/gtk/${lib.versions.majorMinor version}/gtk-${version}.tar.xz";
+              hash = "sha256-366boSY/hK+oOklNsu0UxzksZ4QLZzC/om63n94eE6E=";
+            };
+            postFixup = ''
+              demos=(gtk4-demo gtk4-demo-application gtk4-widget-factory)
+
+              for program in ''${demos[@]}; do
+                wrapProgram $dev/bin/$program \
+                  --prefix XDG_DATA_DIRS : "$GSETTINGS_SCHEMAS_PATH:$out/share/gsettings-schemas/${o.pname}-${version}"
+              done
+
+              # Cannot be in postInstall, otherwise _multioutDocs hook in preFixup will move right back.
+              moveToOutput "share/doc" "$devdoc"
+            '';
+          });
+    };
+  };
 in
 {
   programs.alacritty = {
@@ -59,5 +95,6 @@ in
     };
     enableBashIntegration = true;
     enableZshIntegration = true;
+    package = ghostty-cursor-patched;
   };
 }

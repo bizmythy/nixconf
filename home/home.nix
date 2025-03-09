@@ -3,6 +3,13 @@
   ...
 }:
 
+let
+  cursor = {
+    name = "phinger-cursors-light";
+    package = pkgs.phinger-cursors;
+    size = 24;
+  };
+in
 {
   imports = [
     ./tty.nix
@@ -62,6 +69,8 @@
     # };
   };
 
+  home.pointerCursor = cursor;
+
   gtk = {
     enable = true;
     theme = {
@@ -75,6 +84,7 @@
         flavor = "mocha";
       };
     };
+    cursorTheme = cursor;
   };
 
   qt = {
