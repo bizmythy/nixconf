@@ -7,7 +7,8 @@
   imports = [
     inputs.home-manager.nixosModules.default
     ./nvidia.nix
-    ./wm.nix
+    ./displaymanager.nix
+    ./windowmanager.nix
     ./packages/terminal.nix
     ./packages/graphical.nix
   ];
