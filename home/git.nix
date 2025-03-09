@@ -31,6 +31,7 @@ in
         "includeIf \"gitdir:${diracPath}\"" = {
           path = "${diracGitConf}";
         };
+        init.defaultBranch = "main";
       };
     };
 
