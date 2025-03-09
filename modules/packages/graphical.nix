@@ -21,6 +21,7 @@ in
     lxqt.pcmanfm-qt
 
     thunderbird
+    libreoffice-qt6-fresh
     kdePackages.okular
 
     google-chrome
@@ -28,6 +29,7 @@ in
     # firefox in home manager
 
     signal-desktop
+    discord
 
     qalculate-qt
     logseq-patched
@@ -39,16 +41,20 @@ in
     pcloud
     localsend
     wireshark
+    transmission_4-qt
 
     ventoy
     gparted
 
+    audacity
     gimp
     kdePackages.kdenlive
 
     vlc
     mpv
     spotify
+    jellyfin
+    calibre
 
     code-cursor
     zed-editor
@@ -57,6 +63,8 @@ in
     warp-terminal
     alacritty
     ghostty
+
+    space-cadet-pinball
 
     kdePackages.qtwayland
     kdePackages.qtsvg

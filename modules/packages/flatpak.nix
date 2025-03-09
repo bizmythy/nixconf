@@ -32,9 +32,9 @@
     # flatpak packages
     packages = [
       "com.obsproject.Studio"
-      "com.discordapp.Discord"
       "com.github.tchx84.Flatseal"
       "us.zoom.Zoom"
+      "com.makemkv.MakeMKV"
     ];
   };
 }
