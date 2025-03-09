@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   ...
 }:
@@ -11,6 +12,17 @@ let
       rev = "84ae7ad47eab5daa9d904b2e33669788d891bd3d";
       hash = "sha256-BkqtSh944QIVyYvXCCU8Pucs/2RpWXlwNFSC9zVlRoc=";
     };
+
+    # patches = [ ./sddmtheme.patch ];
+
+    postPatch = ''
+      ls
+      substituteInPlace theme.conf \
+      --replace-fail "WELCOME!" "${config.networking.hostName}" \
+      --replace-fail "Backgrounds/mountain.png" "Backgrounds/mountain.png" \
+      --replace-fail "HH:mm" "hh:mm AP"
+    '';
+
     installPhase = ''
       mkdir -p $out
       cp -R ./* $out/
