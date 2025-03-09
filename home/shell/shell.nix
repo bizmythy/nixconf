@@ -15,7 +15,7 @@ let
     ld = "lazydocker";
     nhos = "nh os switch";
     nhob = "nh os boot";
-    hmclean = "fd '${vars.hmBackupFileExtension}' ~ -x rm";
+    hmclean = "fd '${vars.hmBackupFileExtension}' ~ -u -x rm";
 
     # dirac
     cdb = "cd /home/drew/dirac/buildos-web";
