@@ -81,6 +81,7 @@
         "udiskie"
         "nm-applet"
         "blueman-applet"
+        "1password --silent"
       ];
 
       general = {
