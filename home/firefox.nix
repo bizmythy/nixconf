@@ -15,10 +15,16 @@
         isDefault = true; # can be omitted; true if profile ID is 0
         settings = {
           # specify profile-specific preferences here; check about:config for options
-          "browser.newtabpage.activity-stream.feeds.section.highlights" = false;
-          "extensions.pocket.enabled" = false;
-          "sidebar.revamp" = true;
-          "sidebar.verticalTabs" = true;
+          widget.use-xdg-desktop-portal.file-picker = 1;
+          browser.newtabpage.activity-stream = {
+            feeds.section.highlights = false;
+            showSponsoredTopSites = false;
+          };
+          extensions.pocket.enabled = false;
+          sidebar = {
+            revamp = true;
+            verticalTabs = true;
+          };
         };
         search = {
           engines = {
