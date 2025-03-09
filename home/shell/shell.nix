@@ -5,7 +5,7 @@
 }:
 let
   myShellAliases = {
-    cdn = "cd /home/drew/nixconf";
+    cdn = "cd ${vars.flakePath}";
 
     zed = "zeditor";
     e = "zeditor .";
@@ -15,7 +15,7 @@ let
     ld = "lazydocker";
     nhos = "nh os switch";
     nhob = "nh os boot";
-    hmclean = "fd '\.hmbackup$' ~ -x rm";
+    hmclean = "fd '${vars.hmBackupFileExtension}' ~ -x rm";
 
     # dirac
     cdb = "cd /home/drew/dirac/buildos-web";

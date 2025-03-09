@@ -28,12 +28,13 @@
     let
       vars = {
         flakePath = "/home/drew/nixconf";
+        hmBackupFileExtension = "hmbackup";
       };
 
       home = {
         home-manager = {
           extraSpecialArgs = { inherit vars; };
-          backupFileExtension = "hmbackup";
+          backupFileExtension = vars.hmBackupFileExtension;
           users.drew = {
             imports = [
               catppuccin.homeManagerModules.catppuccin
