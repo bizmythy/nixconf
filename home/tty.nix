@@ -23,7 +23,7 @@ in
         program = "zsh";
         args = [
           "-c"
-          "nerdfetch && nu"
+          "nerdfetch && zsh"
         ];
       };
 

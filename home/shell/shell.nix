@@ -126,8 +126,8 @@ in
           disabled = false;
           format = "$indicator($style)";
           bash_indicator = "\\$ ";
-          zsh_indicator = "% ";
-          nu_indicator = "";
+          zsh_indicator = "";
+          nu_indicator = "& ";
           unknown_indicator = "? ";
           style = "white bold";
         };
