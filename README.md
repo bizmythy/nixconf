@@ -28,9 +28,10 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 - [ ] integrate 1password cli for logging into everything, better secrets
 - [x] signal encrypted kwallet backend
 - [x] firefox buttons at right place at startup
-- [ ] atuin enter not running for specifically nushell?
+- [x] atuin enter not running for specifically nushell?
 ~~- [ ] sddm on all monitors~~ not real, can't work well with hidpi screens~~
 - [x] sddm theme if not broken
 - [ ] default apps for xdg-open
 - [ ] switch to ghostty
 - [x] 1password autostart in background?
+- [x] fix zed settings
