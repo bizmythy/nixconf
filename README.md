@@ -29,6 +29,6 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 - [x] signal encrypted kwallet backend
 - [ ] firefox buttons at right place at startup
 - [ ] atuin enter not running for specifically nushell?
-- [ ] sddm on all monitors
+~~- [ ] sddm on all monitors~~ not real, can't work well with hidpi screens~~
 - [ ] sddm theme if not broken
 - [ ] default apps for xdg-open

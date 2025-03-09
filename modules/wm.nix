@@ -13,17 +13,20 @@
   catppuccin.sddm.enable = false;
   services.displayManager = {
     # Enable Simple Desktop Display Manager
-    # sddm = {
-    #   enable = true;
-    #   wayland.enable = true;
-    #   package = lib.mkDefault pkgs.kdePackages.sddm;
-    #   theme = "chili";
-    # };
-
-    # tui display manager
-    ly = {
+    sddm = {
       enable = true;
+      wayland.enable = true;
+      package = pkgs.kdePackages.sddm;
+      theme = "breeze";
     };
+
+    # # tui display manager
+    # ly = {
+    #   enable = true;
+    #   settings = {
+    #     animation = "colormix";
+    #   };
+    # };
   };
 
   environment.sessionVariables = {
