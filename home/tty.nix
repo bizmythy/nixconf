@@ -96,7 +96,9 @@ in
       font-family = fontFamily;
       font-size = fontSize;
       background-opacity = backgroundOpacity;
+      cursor-style = "bar";
       cursor-style-blink = false;
+      shell-integration-features = "no-cursor";
 
       copy-on-select = "clipboard";
       app-notifications = "no-clipboard-copy";
