@@ -5,9 +5,6 @@
 }:
 
 let
-  fontFamily = "JetBrainsMono Nerd Font";
-  fontSize = 12;
-  backgroundOpacity = 0.9;
   # https://github.com/ghostty-org/ghostty/discussions/3167#discussioncomment-12434378
   ghostty-cursor-patched = pkgs.ghostty.override {
     wrapGAppsHook4 = pkgs.wrapGAppsNoGuiHook.override {
@@ -42,6 +39,11 @@ let
           });
     };
   };
+
+  fontFamily = "JetBrainsMono Nerd Font";
+  fontSize = 12;
+  backgroundOpacity = 0.9;
+  startCommand = "nerdfetch && zsh";
 in
 {
   programs.alacritty = {
@@ -59,7 +61,7 @@ in
         program = "zsh";
         args = [
           "-c"
-          "nerdfetch && zsh"
+          startCommand
         ];
       };
 
@@ -88,10 +90,17 @@ in
   programs.ghostty = {
     enable = true;
     settings = {
+      command = startCommand;
+      gtk-single-instance = true;
+
       font-family = fontFamily;
       font-size = fontSize;
       background-opacity = backgroundOpacity;
-      copy-on-select = true;
+      cursor-style-blink = false;
+
+      copy-on-select = "clipboard";
+      app-notifications = "no-clipboard-copy";
+
     };
     enableBashIntegration = true;
     enableZshIntegration = true;

@@ -32,6 +32,6 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 ~~- [ ] sddm on all monitors~~ not real, can't work well with hidpi screens~~
 - [x] sddm theme if not broken
 - [ ] default apps for xdg-open
-- [ ] switch to ghostty
+- [x] switch to ghostty
 - [x] 1password autostart in background?
 - [x] fix zed settings
