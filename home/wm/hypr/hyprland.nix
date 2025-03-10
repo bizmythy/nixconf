@@ -78,6 +78,7 @@
         "nm-applet"
         "blueman-applet"
         "1password --silent"
+        "[workspace special:magic silent] '${vars.defaults.tty} -e btop'"
       ];
 
       general = {
