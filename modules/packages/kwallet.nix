@@ -5,17 +5,21 @@
 
 {
   # enable kwallet for org.freedesktop.Secrets
-  security = {
-    pam.services.kwallet = {
-      name = "kwallet";
-      enableKwallet = true;
+  security.pam.services = {
+    login.kwallet = {
+      enable = true;
+      package = pkgs.kdePackages.kwallet-pam;
+    };
+    kde = {
+      allowNullPassword = true;
       kwallet = {
         enable = true;
+        package = pkgs.kdePackages.kwallet-pam;
       };
     };
   };
-
-  environment.systemPackages = with pkgs; [
-    kdePackages.kwalletmanager
+  environment.systemPackages = with pkgs.kdePackages; [
+    kwallet
+    kwalletmanager
   ];
 }
