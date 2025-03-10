@@ -98,6 +98,7 @@ in
       background-opacity = backgroundOpacity;
       cursor-style = "bar";
       cursor-style-blink = false;
+      adjust-cursor-thickness = 2;
       shell-integration-features = "no-cursor";
 
       copy-on-select = "clipboard";
