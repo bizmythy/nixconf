@@ -2,6 +2,7 @@
   lib,
   pkgs,
   osConfig,
+  vars,
   ...
 }:
 
@@ -145,109 +146,97 @@
       };
 
       "$mainMod" = "SUPER";
+      bind = [
+        # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
+        "$mainMod, RETURN, exec, ${vars.defaults.tty}"
+        # "$mainMod SHIFT, RETURN, exec, ${vars.defaults.tty}"
+        "$mainMod, E, exec, ${vars.defaults.fileManager}"
+        "$mainMod, B, exec, ${vars.defaults.browser}"
+        "$mainMod, P, exec, hyprpicker"
+        "$mainMod, EQUAL, exec, ${vars.defaults.calculator}"
 
-      "$terminal" = "alacritty";
-      "$fileManager" = "dolphin";
-      "$menu" = "fuzzel";
-      "$browser" = "firefox";
-      "$calculator" = "qalculate-qt";
+        "$mainMod, D, exec, cursor /home/drew/dirac/buildos-web"
 
-      bind =
-        let
-          terminal = "ghostty";
+        "SUPER, SUPER_L, exec, fuzzel"
+        "$mainMod, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
+        "$mainMod, PERIOD, exec, bemoji -t"
 
-        in
-        [
-          # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
-          "$mainMod, RETURN, exec, $terminal"
-          "$mainMod SHIFT, RETURN, exec, $terminal"
-          "$mainMod, E, exec, $fileManager"
-          "$mainMod, B, exec, $browser"
-          "$mainMod, P, exec, hyprpicker"
-          "$mainMod, EQUAL, exec, $calculator"
+        "$mainMod, W, killactive,"
+        "$mainMod, M, exit,"
+        "$mainMod, F, togglefloating,"
+        "$mainMod, F11, fullscreen,"
+        # "$mainMod, P, pseudo," # dwindle
+        # "$mainMod, J, togglesplit," # dwindle
 
-          "$mainMod, D, exec, cursor /home/drew/dirac/buildos-web"
+        # Move focus with mainMod + arrow keys or VIM keys
+        "$mainMod, left, movefocus, l"
+        "$mainMod, H, movefocus, l"
+        "$mainMod, right, movefocus, r"
+        "$mainMod, L, movefocus, r"
+        "$mainMod, up, movefocus, u"
+        "$mainMod, K, movefocus, u"
+        "$mainMod, down, movefocus, d"
+        "$mainMod, J, movefocus, d"
 
-          "SUPER, SUPER_L, exec, fuzzel"
-          "$mainMod, V, exec, cliphist list | $menu --dmenu | cliphist decode | wl-copy"
-          "$mainMod, PERIOD, exec, bemoji -t"
+        "$mainMod, Tab, cyclenext" # change focus to another window
+        "$mainMod, Tab, bringactivetotop" # bring it to the top
 
-          "$mainMod, W, killactive,"
-          "$mainMod, M, exit,"
-          "$mainMod, F, togglefloating,"
-          "$mainMod, F11, fullscreen,"
-          # "$mainMod, P, pseudo," # dwindle
-          # "$mainMod, J, togglesplit," # dwindle
+        # Switch workspaces with mainMod + [0-9]
+        "$mainMod, 1, focusworkspaceoncurrentmonitor, 1"
+        "$mainMod, 2, focusworkspaceoncurrentmonitor, 2"
+        "$mainMod, 3, focusworkspaceoncurrentmonitor, 3"
+        "$mainMod, 4, focusworkspaceoncurrentmonitor, 4"
+        "$mainMod, 5, focusworkspaceoncurrentmonitor, 5"
+        "$mainMod, 6, focusworkspaceoncurrentmonitor, 6"
+        "$mainMod, 7, focusworkspaceoncurrentmonitor, 7"
+        "$mainMod, 8, focusworkspaceoncurrentmonitor, 8"
+        "$mainMod, 9, focusworkspaceoncurrentmonitor, 9"
+        "$mainMod, 0, focusworkspaceoncurrentmonitor, 10"
 
-          # Move focus with mainMod + arrow keys or VIM keys
-          "$mainMod, left, movefocus, l"
-          "$mainMod, H, movefocus, l"
-          "$mainMod, right, movefocus, r"
-          "$mainMod, L, movefocus, r"
-          "$mainMod, up, movefocus, u"
-          "$mainMod, K, movefocus, u"
-          "$mainMod, down, movefocus, d"
-          "$mainMod, J, movefocus, d"
+        "$mainMod CONTROL, H, workspace, e-1"
+        "$mainMod CONTROL, L, workspace, e+1"
+        "$mainMod CONTROL, left, workspace, e-1"
+        "$mainMod CONTROL, right, workspace, e+1"
 
-          "$mainMod, Tab, cyclenext" # change focus to another window
-          "$mainMod, Tab, bringactivetotop" # bring it to the top
+        # Move active window to a workspace with mainMod + SHIFT + [0-9]
+        "$mainMod SHIFT, 1, movetoworkspace, 1"
+        "$mainMod SHIFT, 2, movetoworkspace, 2"
+        "$mainMod SHIFT, 3, movetoworkspace, 3"
+        "$mainMod SHIFT, 4, movetoworkspace, 4"
+        "$mainMod SHIFT, 5, movetoworkspace, 5"
+        "$mainMod SHIFT, 6, movetoworkspace, 6"
+        "$mainMod SHIFT, 7, movetoworkspace, 7"
+        "$mainMod SHIFT, 8, movetoworkspace, 8"
+        "$mainMod SHIFT, 9, movetoworkspace, 9"
+        "$mainMod SHIFT, 0, movetoworkspace, 10"
 
-          # Switch workspaces with mainMod + [0-9]
-          "$mainMod, 1, focusworkspaceoncurrentmonitor, 1"
-          "$mainMod, 2, focusworkspaceoncurrentmonitor, 2"
-          "$mainMod, 3, focusworkspaceoncurrentmonitor, 3"
-          "$mainMod, 4, focusworkspaceoncurrentmonitor, 4"
-          "$mainMod, 5, focusworkspaceoncurrentmonitor, 5"
-          "$mainMod, 6, focusworkspaceoncurrentmonitor, 6"
-          "$mainMod, 7, focusworkspaceoncurrentmonitor, 7"
-          "$mainMod, 8, focusworkspaceoncurrentmonitor, 8"
-          "$mainMod, 9, focusworkspaceoncurrentmonitor, 9"
-          "$mainMod, 0, focusworkspaceoncurrentmonitor, 10"
+        "$mainMod SHIFT, H, movetoworkspace, e-1"
+        "$mainMod SHIFT, L, movetoworkspace, e+1"
+        "$mainMod SHIFT, left, movetoworkspace, e-1"
+        "$mainMod SHIFT, right, movetoworkspace, e+1"
 
-          "$mainMod CONTROL, H, workspace, e-1"
-          "$mainMod CONTROL, L, workspace, e+1"
-          "$mainMod CONTROL, left, workspace, e-1"
-          "$mainMod CONTROL, right, workspace, e+1"
+        # Example special workspace (scratchpad)
+        "$mainMod, S, togglespecialworkspace, magic"
+        "$mainMod SHIFT, S, movetoworkspace, special:magic"
 
-          # Move active window to a workspace with mainMod + SHIFT + [0-9]
-          "$mainMod SHIFT, 1, movetoworkspace, 1"
-          "$mainMod SHIFT, 2, movetoworkspace, 2"
-          "$mainMod SHIFT, 3, movetoworkspace, 3"
-          "$mainMod SHIFT, 4, movetoworkspace, 4"
-          "$mainMod SHIFT, 5, movetoworkspace, 5"
-          "$mainMod SHIFT, 6, movetoworkspace, 6"
-          "$mainMod SHIFT, 7, movetoworkspace, 7"
-          "$mainMod SHIFT, 8, movetoworkspace, 8"
-          "$mainMod SHIFT, 9, movetoworkspace, 9"
-          "$mainMod SHIFT, 0, movetoworkspace, 10"
+        # Scroll through existing workspaces with mainMod + scroll
+        "$mainMod, mouse_down, workspace, e+1"
+        "$mainMod, mouse_up, workspace, e-1"
+        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%-"
+        ", XF86MonBrightnessUp, exec, brightnessctl s +5%"
+        ", XF86MonBrightnessDown, exec, brightnessctl s 5%-"
+        ", XF86AudioPlay, exec, playerctl play-pause"
+        ", XF86AudioPause, exec, playerctl play-pause"
+        ", XF86AudioNext, exec, playerctl next"
+        ", XF86AudioPrev, exec, playerctl previous"
 
-          "$mainMod SHIFT, H, movetoworkspace, e-1"
-          "$mainMod SHIFT, L, movetoworkspace, e+1"
-          "$mainMod SHIFT, left, movetoworkspace, e-1"
-          "$mainMod SHIFT, right, movetoworkspace, e+1"
-
-          # Example special workspace (scratchpad)
-          "$mainMod, S, togglespecialworkspace, magic"
-          "$mainMod SHIFT, S, movetoworkspace, special:magic"
-
-          # Scroll through existing workspaces with mainMod + scroll
-          "$mainMod, mouse_down, workspace, e+1"
-          "$mainMod, mouse_up, workspace, e-1"
-          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-          ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%+"
-          ", XF86AudioLowerVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%-"
-          ", XF86MonBrightnessUp, exec, brightnessctl s +5%"
-          ", XF86MonBrightnessDown, exec, brightnessctl s 5%-"
-          ", XF86AudioPlay, exec, playerctl play-pause"
-          ", XF86AudioPause, exec, playerctl play-pause"
-          ", XF86AudioNext, exec, playerctl next"
-          ", XF86AudioPrev, exec, playerctl previous"
-
-          # Screenshots
-          ", PRINT, exec, hyprshot -z -m region"
-          "$mainMod, PRINT, exec, hyprshot -z -m output"
-          "$mainMod SHIFT, PRINT, exec, hyprshot -z -m window"
-        ];
+        # Screenshots
+        ", PRINT, exec, hyprshot -z -m region"
+        "$mainMod, PRINT, exec, hyprshot -z -m output"
+        "$mainMod SHIFT, PRINT, exec, hyprshot -z -m window"
+      ];
       bindm = [
         # Move/resize windows with mainMod + LMB/RMB and dragging
         "$mainMod, mouse:272, movewindow"
@@ -265,7 +254,6 @@
         lib.lists.flatten [
           (floatingWindowRules "1Password")
           (floatingWindowRules "io.github.Qalculate.qalculate-qt")
-          # "workspace:special:magic, initialClass:Slack"
         ];
 
       xwayland = {

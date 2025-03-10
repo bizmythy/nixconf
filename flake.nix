@@ -29,6 +29,12 @@
       vars = {
         flakePath = "/home/drew/nixconf";
         hmBackupFileExtension = "hmbackup";
+        defaults = {
+          tty = "ghostty";
+          fileManager = "dolphin";
+          browser = "firefox";
+          calculator = "qalculate-qt";
+        };
       };
 
       home = {
