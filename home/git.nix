@@ -15,6 +15,7 @@ in
   programs = {
     git = {
       enable = true;
+      lfs.enable = true;
       userEmail = "andrew.p.council@gmail.com";
       userName = "AndrewCouncil";
       delta = {
