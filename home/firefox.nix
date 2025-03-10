@@ -1,8 +1,10 @@
 {
+  lib,
   ...
 }:
 
 {
+  home.file.".mozilla/firefox/profile_0/search.json.mozlz4".force = lib.mkForce true;
   programs.firefox = {
     enable = true;
 
@@ -20,6 +22,9 @@
             feeds.section.highlights = false;
             showSponsoredTopSites = false;
           };
+          browser.aboutConfig.showWarning = false;
+          # restores previous session on startup
+          browser.startup.page = 3;
           extensions.pocket.enabled = false;
           sidebar = {
             revamp = true;
