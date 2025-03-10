@@ -51,65 +51,65 @@
     enable = true;
     xwayland.enable = true;
 
-    settings = {
-      env =
-        [ ]
-        ++ (
-          if osConfig.nvidiaEnable then
-            [
-              "LIBVA_DRIVER_NAME,nvidia"
-              "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-              "WLR_NO_HARDWARE_CURSORS,1"
-              "OGL_DEDICATED_HW_STATE_PER_CONTEXT,ENABLE_ROBUST"
-            ]
-          else
-            [ ]
-        );
+    settings =
+      let
+        igneous = {
+          main = "desc:Microstep MSI MAG322UPF";
+          top = "desc:ViewSonic Corporation VX2418-P FHD WFK231321682";
+          tv = "desc:LG Electronics LG TV SSCR2 0x01010101";
+        };
+        drewdirac = {
+          main = "desc:Samsung Electric Company U32J59x HCJXA01635";
+          razer = "desc:Sharp Corporation LQ156T1JW03";
+          right = "desc:LG Electronics LG SDQHD 409NTTQ8K433";
+          top = "desc:Acer Technologies KA272 TJ0AA00785SJ";
+        };
+        theseus = {
+          laptop = "desc:BOE 0x095F";
+        };
+        scaleHiDPI = "1.3333333";
+      in
+      {
+        exec-once = [
+          "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
+          "hyprpaper"
+          "waybar"
+          "systemctl --user start hyprpolkitagent"
+          "swaync"
+          "wl-paste --type text --watch cliphist store"
+          "wl-paste --type image --watch cliphist store"
+          "udiskie"
+          "nm-applet"
+          "blueman-applet"
+          "1password --silent"
+          # "[workspace special:magic silent] '${vars.defaults.tty} -e btop'"
+        ];
 
-      exec-once = [
-        "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
-        "hyprpaper"
-        "waybar"
-        "systemctl --user start hyprpolkitagent"
-        "swaync"
-        "wl-paste --type text --watch cliphist store"
-        "wl-paste --type image --watch cliphist store"
-        "udiskie"
-        "nm-applet"
-        "blueman-applet"
-        "1password --silent"
-        "[workspace special:magic silent] '${vars.defaults.tty} -e btop'"
-      ];
+        env =
+          [ ]
+          ++ (
+            if osConfig.nvidiaEnable then
+              [
+                "LIBVA_DRIVER_NAME,nvidia"
+                "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+                "WLR_NO_HARDWARE_CURSORS,1"
+                "OGL_DEDICATED_HW_STATE_PER_CONTEXT,ENABLE_ROBUST"
+              ]
+            else
+              [ ]
+          );
 
-      general = {
-        "col.active_border" = "$mauve $pink 90deg";
-        gaps_in = 5;
-        gaps_out = 10;
-      };
+        general = {
+          "col.active_border" = "$mauve $pink 90deg";
+          gaps_in = 5;
+          gaps_out = 10;
+        };
 
-      decoration = {
-        rounding = 14;
-      };
+        decoration = {
+          rounding = 14;
+        };
 
-      monitor =
-        let
-          igneous = {
-            main = "desc:Microstep MSI MAG322UPF";
-            top = "desc:ViewSonic Corporation VX2418-P FHD WFK231321682";
-            tv = "desc:LG Electronics LG TV SSCR2 0x01010101";
-          };
-          drewdirac = {
-            main = "desc:Samsung Electric Company U32J59x HCJXA01635";
-            razer = "desc:Sharp Corporation LQ156T1JW03";
-            dualup = "desc:LG Electronics LG SDQHD 409NTTQ8K433";
-            acer = "desc:Acer Technologies KA272 TJ0AA00785SJ";
-          };
-          theseus = {
-            laptop = "desc:BOE 0x095F";
-          };
-          scaleHiDPI = "1.3333333";
-        in
-        [
+        monitor = [
           " , preferred, auto, auto"
 
           "${igneous.main}, 3840x2160@160, 0x0, ${scaleHiDPI}"
@@ -119,149 +119,155 @@
           "${drewdirac.razer}, highres, auto, 1.333333"
 
           "${drewdirac.main}, 3840x2160, 0x0, ${scaleHiDPI}"
-          "${drewdirac.dualup}, 2560x2880@60, 3072x-200, ${scaleHiDPI}"
-          "${drewdirac.acer}, 1920x1080@60, 575x-1080, 1.0"
+          "${drewdirac.right}, 2560x2880@60, auto-right, ${scaleHiDPI}"
+          "${drewdirac.top}, 1920x1080@60, 575x-1080, 1.0"
 
           "${theseus.laptop}, preferred, auto, 1.566667"
         ];
 
-      input = {
-        kb_layout = "us";
-        follow_mouse = 1;
-        touchpad = {
-          natural_scroll = false;
-        };
-        sensitivity = -0.2;
-        accel_profile = "flat";
-        numlock_by_default = true;
-        kb_options = "caps:escape";
-      };
-
-      gestures = {
-        workspace_swipe = true;
-        workspace_swipe_fingers = 3;
-      };
-
-      cursor = {
-        no_hardware_cursors = true;
-      };
-
-      "$mainMod" = "SUPER";
-      bind = [
-        # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
-        "$mainMod, RETURN, exec, ${vars.defaults.tty}"
-        # "$mainMod SHIFT, RETURN, exec, ${vars.defaults.tty}"
-        "$mainMod, E, exec, ${vars.defaults.fileManager}"
-        "$mainMod, B, exec, ${vars.defaults.browser}"
-        "$mainMod, P, exec, hyprpicker"
-        "$mainMod, EQUAL, exec, ${vars.defaults.calculator}"
-
-        "$mainMod, D, exec, cursor /home/drew/dirac/buildos-web"
-
-        "SUPER, SUPER_L, exec, fuzzel"
-        "$mainMod, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
-        "$mainMod, PERIOD, exec, bemoji -t"
-
-        "$mainMod, W, killactive,"
-        "$mainMod, M, exit,"
-        "$mainMod, F, togglefloating,"
-        "$mainMod, F11, fullscreen,"
-        # "$mainMod, P, pseudo," # dwindle
-        # "$mainMod, J, togglesplit," # dwindle
-
-        # Move focus with mainMod + arrow keys or VIM keys
-        "$mainMod, left, movefocus, l"
-        "$mainMod, H, movefocus, l"
-        "$mainMod, right, movefocus, r"
-        "$mainMod, L, movefocus, r"
-        "$mainMod, up, movefocus, u"
-        "$mainMod, K, movefocus, u"
-        "$mainMod, down, movefocus, d"
-        "$mainMod, J, movefocus, d"
-
-        "$mainMod, Tab, cyclenext" # change focus to another window
-        "$mainMod, Tab, bringactivetotop" # bring it to the top
-
-        # Switch workspaces with mainMod + [0-9]
-        "$mainMod, 1, focusworkspaceoncurrentmonitor, 1"
-        "$mainMod, 2, focusworkspaceoncurrentmonitor, 2"
-        "$mainMod, 3, focusworkspaceoncurrentmonitor, 3"
-        "$mainMod, 4, focusworkspaceoncurrentmonitor, 4"
-        "$mainMod, 5, focusworkspaceoncurrentmonitor, 5"
-        "$mainMod, 6, focusworkspaceoncurrentmonitor, 6"
-        "$mainMod, 7, focusworkspaceoncurrentmonitor, 7"
-        "$mainMod, 8, focusworkspaceoncurrentmonitor, 8"
-        "$mainMod, 9, focusworkspaceoncurrentmonitor, 9"
-        "$mainMod, 0, focusworkspaceoncurrentmonitor, 10"
-
-        "$mainMod CONTROL, H, workspace, e-1"
-        "$mainMod CONTROL, L, workspace, e+1"
-        "$mainMod CONTROL, left, workspace, e-1"
-        "$mainMod CONTROL, right, workspace, e+1"
-
-        # Move active window to a workspace with mainMod + SHIFT + [0-9]
-        "$mainMod SHIFT, 1, movetoworkspace, 1"
-        "$mainMod SHIFT, 2, movetoworkspace, 2"
-        "$mainMod SHIFT, 3, movetoworkspace, 3"
-        "$mainMod SHIFT, 4, movetoworkspace, 4"
-        "$mainMod SHIFT, 5, movetoworkspace, 5"
-        "$mainMod SHIFT, 6, movetoworkspace, 6"
-        "$mainMod SHIFT, 7, movetoworkspace, 7"
-        "$mainMod SHIFT, 8, movetoworkspace, 8"
-        "$mainMod SHIFT, 9, movetoworkspace, 9"
-        "$mainMod SHIFT, 0, movetoworkspace, 10"
-
-        "$mainMod SHIFT, H, movetoworkspace, e-1"
-        "$mainMod SHIFT, L, movetoworkspace, e+1"
-        "$mainMod SHIFT, left, movetoworkspace, e-1"
-        "$mainMod SHIFT, right, movetoworkspace, e+1"
-
-        # Example special workspace (scratchpad)
-        "$mainMod, S, togglespecialworkspace, magic"
-        "$mainMod SHIFT, S, movetoworkspace, special:magic"
-
-        # Scroll through existing workspaces with mainMod + scroll
-        "$mainMod, mouse_down, workspace, e+1"
-        "$mainMod, mouse_up, workspace, e-1"
-        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-        ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%-"
-        ", XF86MonBrightnessUp, exec, brightnessctl s +5%"
-        ", XF86MonBrightnessDown, exec, brightnessctl s 5%-"
-        ", XF86AudioPlay, exec, playerctl play-pause"
-        ", XF86AudioPause, exec, playerctl play-pause"
-        ", XF86AudioNext, exec, playerctl next"
-        ", XF86AudioPrev, exec, playerctl previous"
-
-        # Screenshots
-        ", PRINT, exec, hyprshot -z -m region"
-        "$mainMod, PRINT, exec, hyprshot -z -m output"
-        "$mainMod SHIFT, PRINT, exec, hyprshot -z -m window"
-      ];
-      bindm = [
-        # Move/resize windows with mainMod + LMB/RMB and dragging
-        "$mainMod, mouse:272, movewindow"
-        "$mainMod, mouse:273, resizewindow"
-      ];
-
-      windowrulev2 =
-        let
-          floatingWindowRules = class: [
-            "float, initialClass:${class}"
-            "center, initialClass:${class}"
-            "size 60% 60%, initialClass:${class}"
-          ];
-        in
-        lib.lists.flatten [
-          (floatingWindowRules "1Password")
-          (floatingWindowRules "io.github.Qalculate.qalculate-qt")
+        workspace = [
+          "1, monitor:${drewdirac.right}, default:true"
+          "2, monitor:${drewdirac.main}, default:true"
+          "3, monitor:${drewdirac.top}, default:true"
         ];
 
-      xwayland = {
-        force_zero_scaling = true;
-      };
+        input = {
+          kb_layout = "us";
+          follow_mouse = 1;
+          touchpad = {
+            natural_scroll = false;
+          };
+          sensitivity = -0.2;
+          accel_profile = "flat";
+          numlock_by_default = true;
+          kb_options = "caps:escape";
+        };
 
-    };
+        gestures = {
+          workspace_swipe = true;
+          workspace_swipe_fingers = 3;
+        };
+
+        cursor = {
+          no_hardware_cursors = true;
+        };
+
+        "$mainMod" = "SUPER";
+        bind = [
+          # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
+          "$mainMod, RETURN, exec, ${vars.defaults.tty}"
+          # "$mainMod SHIFT, RETURN, exec, ${vars.defaults.tty}"
+          "$mainMod, E, exec, ${vars.defaults.fileManager}"
+          "$mainMod, B, exec, ${vars.defaults.browser}"
+          "$mainMod, P, exec, hyprpicker"
+          "$mainMod, EQUAL, exec, ${vars.defaults.calculator}"
+
+          "$mainMod, D, exec, cursor /home/drew/dirac/buildos-web"
+
+          "SUPER, SUPER_L, exec, fuzzel"
+          "$mainMod, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
+          "$mainMod, PERIOD, exec, bemoji -t"
+
+          "$mainMod, W, killactive,"
+          "$mainMod, M, exit,"
+          "$mainMod, F, togglefloating,"
+          "$mainMod, F11, fullscreen,"
+          # "$mainMod, P, pseudo," # dwindle
+          # "$mainMod, J, togglesplit," # dwindle
+
+          # Move focus with mainMod + arrow keys or VIM keys
+          "$mainMod, left, movefocus, l"
+          "$mainMod, H, movefocus, l"
+          "$mainMod, right, movefocus, r"
+          "$mainMod, L, movefocus, r"
+          "$mainMod, up, movefocus, u"
+          "$mainMod, K, movefocus, u"
+          "$mainMod, down, movefocus, d"
+          "$mainMod, J, movefocus, d"
+
+          "$mainMod, Tab, cyclenext" # change focus to another window
+          "$mainMod, Tab, bringactivetotop" # bring it to the top
+
+          # Switch workspaces with mainMod + [0-9]
+          "$mainMod, 1, focusworkspaceoncurrentmonitor, 1"
+          "$mainMod, 2, focusworkspaceoncurrentmonitor, 2"
+          "$mainMod, 3, focusworkspaceoncurrentmonitor, 3"
+          "$mainMod, 4, focusworkspaceoncurrentmonitor, 4"
+          "$mainMod, 5, focusworkspaceoncurrentmonitor, 5"
+          "$mainMod, 6, focusworkspaceoncurrentmonitor, 6"
+          "$mainMod, 7, focusworkspaceoncurrentmonitor, 7"
+          "$mainMod, 8, focusworkspaceoncurrentmonitor, 8"
+          "$mainMod, 9, focusworkspaceoncurrentmonitor, 9"
+          "$mainMod, 0, focusworkspaceoncurrentmonitor, 10"
+
+          "$mainMod CONTROL, H, workspace, e-1"
+          "$mainMod CONTROL, L, workspace, e+1"
+          "$mainMod CONTROL, left, workspace, e-1"
+          "$mainMod CONTROL, right, workspace, e+1"
+
+          # Move active window to a workspace with mainMod + SHIFT + [0-9]
+          "$mainMod SHIFT, 1, movetoworkspace, 1"
+          "$mainMod SHIFT, 2, movetoworkspace, 2"
+          "$mainMod SHIFT, 3, movetoworkspace, 3"
+          "$mainMod SHIFT, 4, movetoworkspace, 4"
+          "$mainMod SHIFT, 5, movetoworkspace, 5"
+          "$mainMod SHIFT, 6, movetoworkspace, 6"
+          "$mainMod SHIFT, 7, movetoworkspace, 7"
+          "$mainMod SHIFT, 8, movetoworkspace, 8"
+          "$mainMod SHIFT, 9, movetoworkspace, 9"
+          "$mainMod SHIFT, 0, movetoworkspace, 10"
+
+          "$mainMod SHIFT, H, movetoworkspace, e-1"
+          "$mainMod SHIFT, L, movetoworkspace, e+1"
+          "$mainMod SHIFT, left, movetoworkspace, e-1"
+          "$mainMod SHIFT, right, movetoworkspace, e+1"
+
+          # Example special workspace (scratchpad)
+          "$mainMod, S, togglespecialworkspace, magic"
+          "$mainMod SHIFT, S, movetoworkspace, special:magic"
+
+          # Scroll through existing workspaces with mainMod + scroll
+          "$mainMod, mouse_down, workspace, e+1"
+          "$mainMod, mouse_up, workspace, e-1"
+          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+          ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%+"
+          ", XF86AudioLowerVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%-"
+          ", XF86MonBrightnessUp, exec, brightnessctl s +5%"
+          ", XF86MonBrightnessDown, exec, brightnessctl s 5%-"
+          ", XF86AudioPlay, exec, playerctl play-pause"
+          ", XF86AudioPause, exec, playerctl play-pause"
+          ", XF86AudioNext, exec, playerctl next"
+          ", XF86AudioPrev, exec, playerctl previous"
+
+          # Screenshots
+          ", PRINT, exec, hyprshot -z -m region"
+          "$mainMod, PRINT, exec, hyprshot -z -m output"
+          "$mainMod SHIFT, PRINT, exec, hyprshot -z -m window"
+        ];
+        bindm = [
+          # Move/resize windows with mainMod + LMB/RMB and dragging
+          "$mainMod, mouse:272, movewindow"
+          "$mainMod, mouse:273, resizewindow"
+        ];
+
+        windowrulev2 =
+          let
+            floatingWindowRules = class: [
+              "float, initialClass:${class}"
+              "center, initialClass:${class}"
+              "size 60% 60%, initialClass:${class}"
+            ];
+          in
+          lib.lists.flatten [
+            (floatingWindowRules "1Password")
+            (floatingWindowRules "io.github.Qalculate.qalculate-qt")
+          ];
+
+        xwayland = {
+          force_zero_scaling = true;
+        };
+
+      };
   };
 
   programs.fuzzel = {
