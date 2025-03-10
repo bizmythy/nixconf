@@ -127,7 +127,7 @@ in
           format = "$indicator($style)";
           bash_indicator = "\\$ ";
           zsh_indicator = "";
-          nu_indicator = "& ";
+          nu_indicator = "nu ";
           unknown_indicator = "? ";
           style = "white bold";
         };
