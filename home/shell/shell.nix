@@ -4,6 +4,15 @@
   ...
 }:
 let
+  mySessionVariables = {
+    EDITOR = "nvim";
+    FLAKE = vars.flakePath;
+
+    # dirac
+    AWS_PROFILE = "dirac-dev";
+    COGNITO_USER_EMAIL_DEV_INTERNAL = "drew@diracinc.com";
+    TEAM_ID_DEV = "dirac";
+  };
   myShellAliases = {
     cdn = "cd ${vars.flakePath}";
 
@@ -19,16 +28,7 @@ let
 
     # dirac
     cdb = "cd /home/drew/dirac/buildos-web";
-    awsl = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login --profile dirac-dev'";
-  };
-  mySessionVariables = {
-    EDITOR = "nvim";
-    FLAKE = vars.flakePath;
-
-    # dirac
-    AWS_PROFILE = "dirac-dev";
-    COGNITO_USER_EMAIL_DEV_INTERNAL = "drew@diracinc.com";
-    TEAM_ID_DEV = "dirac";
+    awsl = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login --profile ${mySessionVariables.AWS_PROFILE}'";
   };
   nushellCatppuccin = pkgs.fetchFromGitHub {
     owner = "nik-rev";
@@ -48,6 +48,15 @@ in
       syntaxHighlighting.enable = true;
       autosuggestion.enable = true;
       initExtra = ''
+        function y() {
+         	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+         	yazi "$@" --cwd-file="$tmp"
+         	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+          		builtin cd -- "$cwd"
+         	fi
+         	rm -f -- "$tmp"
+        }
+
         # Load environment variables from secrets.env file
         if [ -f "/home/drew/.config/secrets.env" ]; then
           while IFS='=' read -r key value || [ -n "$key" ]; do
