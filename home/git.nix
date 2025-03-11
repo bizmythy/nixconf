@@ -3,12 +3,13 @@
   ...
 }:
 let
-  diracPath = "/home/drew/dirac";
-  diracGitConf = (pkgs.formats.ini { }).generate ".gitconfig-dirac" {
+  diracPath = "/home/drew/dirac/";
+  diracGitConf = (pkgs.formats.ini { }).generate ".dirac.gitconfig" {
     user = {
       name = "drew-dirac";
       email = "drew@diracinc.com";
     };
+    core.sshCommand = "ssh -i ~/.ssh/dirac_id_ed25519";
   };
 in
 {
@@ -25,6 +26,7 @@ in
         };
       };
       extraConfig = {
+        core.sshCommand = "ssh -i ~/.ssh/id_ed25519";
         push = {
           autoSetupRemote = true;
         };
