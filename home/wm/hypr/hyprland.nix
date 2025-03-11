@@ -51,7 +51,6 @@
     enable = true;
     xwayland = {
       enable = true;
-      force_zero_scaling = false;
     };
     settings =
       let
@@ -83,6 +82,7 @@
         };
       in
       {
+        xwayland.force_zero_scaling = true;
         exec-once = [
           "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
           "hyprpaper"
@@ -143,6 +143,7 @@
         input = {
           kb_layout = "us";
           follow_mouse = 1;
+          mouse_refocus = false;
           touchpad = {
             natural_scroll = false;
           };
