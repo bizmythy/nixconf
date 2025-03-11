@@ -121,6 +121,8 @@ in
             copyToClipboardCmd = copyCmd;
             editPreset = "zed";
           };
+          # skips drop to terminal from signing commit
+          promptToReturnFromSubprocess = false;
 
           git = {
             paging = {
