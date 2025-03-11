@@ -46,6 +46,8 @@
     gopls
     nil
     nixd
+    markdown-oxide
+    shellcheck
 
     # nix tools
     nix-output-monitor
