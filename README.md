@@ -24,8 +24,8 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 
 ## TODO:
 
-- [ ] gpg signing github
-- [ ] integrate 1password cli for logging into everything, better secrets
+- [x] gpg signing github
+- [x] integrate 1password cli for logging into everything, better secrets
 - [x] signal encrypted kwallet backend
 - [x] firefox buttons at right place at startup
 - [x] atuin enter not running for specifically nushell?
