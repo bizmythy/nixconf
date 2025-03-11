@@ -36,5 +36,5 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 - [x] 1password autostart in background?
 - [x] fix zed settings
 - [ ] solaar setup
-- [ ] default monitor settings
+- [x] default monitor settings
 - [ ] terminal search
