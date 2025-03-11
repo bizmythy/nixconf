@@ -129,6 +129,9 @@
           "1, monitor:${drewdirac.right}, default:true"
           "2, monitor:${drewdirac.main}, default:true"
           "3, monitor:${drewdirac.top}, default:true"
+
+          "1, monitor:${igneous.top}, default:true"
+          "2, monitor:${igneous.main}, default:true"
         ];
 
         input = {
