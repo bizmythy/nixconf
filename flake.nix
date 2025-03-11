@@ -34,6 +34,8 @@
           fileManager = "dolphin";
           browser = "firefox";
           calculator = "qalculate-qt";
+          editor = "zeditor";
+          shell = "zsh";
         };
       };
 

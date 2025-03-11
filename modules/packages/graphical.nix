@@ -4,11 +4,6 @@
   ...
 }:
 
-let
-  logseq-patched = pkgs.logseq.override {
-    electron_27 = pkgs.electron_34;
-  };
-in
 {
   imports = [
     ./flatpak.nix
@@ -32,11 +27,11 @@ in
     discord
 
     qalculate-qt
-    logseq-patched
 
     slack
     github-desktop
     postman
+    zoom-us
 
     pcloud
     localsend
