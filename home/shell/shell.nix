@@ -59,10 +59,7 @@ in
 
         # Load environment variables from secrets.env file
         if [ -f "/home/drew/.config/secrets.env" ]; then
-          while IFS='=' read -r key value || [ -n "$key" ]; do
-            # Export the variable
-            export "$key=$value"
-          done < "/home/drew/.config/secrets.env"
+          source "/home/drew/.config/secrets.env"
         else
           echo "Warning: /home/drew/.config/secrets.env file not found"
         fi
@@ -75,8 +72,7 @@ in
       enable = true;
       environmentVariables = mySessionVariables;
       shellAliases = myShellAliases;
-      extraConfig =
-        builtins.readFile "${nushellCatppuccin}/themes/catppuccin_mocha.nu" + builtins.readFile ./config.nu;
+      extraConfig = builtins.readFile "${nushellCatppuccin}/themes/catppuccin_mocha.nu";
     };
 
     direnv = {
