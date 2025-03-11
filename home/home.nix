@@ -12,11 +12,12 @@ let
 in
 {
   imports = [
-    ./tty.nix
-    ./shell/shell.nix
-    ./wm/hypr/hyprland.nix
-    ./git.nix
     ./firefox.nix
+    ./git.nix
+    ./secrets.nix
+    ./shell/shell.nix
+    ./tty.nix
+    ./wm/hypr/hyprland.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
