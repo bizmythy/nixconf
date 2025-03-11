@@ -68,6 +68,17 @@
           laptop = "desc:BOE 0x095F";
         };
         scaleHiDPI = "1.3333333";
+        wsByHost = {
+          drewdirac = [
+            "1, monitor:${drewdirac.right}, default:true"
+            "2, monitor:${drewdirac.main}, default:true"
+            "3, monitor:${drewdirac.top}, default:true"
+          ];
+          igneous = [
+            "1, monitor:${igneous.top}, default:true"
+            "2, monitor:${igneous.main}, default:true"
+          ];
+        };
       in
       {
         exec-once = [
@@ -125,14 +136,7 @@
           "${theseus.laptop}, preferred, auto, 1.566667"
         ];
 
-        workspace = [
-          "1, monitor:${drewdirac.right}, default:true"
-          "2, monitor:${drewdirac.main}, default:true"
-          "3, monitor:${drewdirac.top}, default:true"
-
-          "1, monitor:${igneous.top}, default:true"
-          "2, monitor:${igneous.main}, default:true"
-        ];
+        workspace = wsByHost.${osConfig.networking.hostName} or [ ];
 
         input = {
           kb_layout = "us";
