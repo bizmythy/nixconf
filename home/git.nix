@@ -3,8 +3,8 @@
   ...
 }:
 let
-  personalIdentityFile = builtins.readFile ./identity/personal_id.pub;
-  diracIdentityFile = builtins.readFile ./identity/dirac_id.pub;
+  personalIdentityFile = ./identity/personal_id.pub;
+  diracIdentityFile = ./identity/dirac_id.pub;
 
   personalSSHCommand = "ssh -i ${personalIdentityFile}";
   diracSSHCommand = "ssh -i ${diracIdentityFile}";
