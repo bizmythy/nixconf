@@ -49,8 +49,10 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    xwayland.enable = true;
-
+    xwayland = {
+      enable = true;
+      force_zero_scaling = false;
+    };
     settings =
       let
         igneous = {
@@ -270,11 +272,6 @@
             (floatingWindowRules "1Password")
             (floatingWindowRules "io.github.Qalculate.qalculate-qt")
           ];
-
-        xwayland = {
-          force_zero_scaling = true;
-        };
-
       };
   };
 

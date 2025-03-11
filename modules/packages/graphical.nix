@@ -31,7 +31,6 @@
     slack
     github-desktop
     postman
-    zoom-us
 
     pcloud
     localsend
