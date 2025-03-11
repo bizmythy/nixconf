@@ -169,7 +169,8 @@
           "$mainMod, P, exec, hyprpicker"
           "$mainMod, EQUAL, exec, ${vars.defaults.calculator}"
 
-          "$mainMod, D, exec, cursor /home/drew/dirac/buildos-web"
+          "$mainMod, Z, exec, ${vars.defaults.editor}"
+          "$mainMod, D, exec, ${vars.defaults.editor} /home/drew/dirac/buildos-web"
 
           "SUPER, SUPER_L, exec, fuzzel"
           "$mainMod, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
