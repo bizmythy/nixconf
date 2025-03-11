@@ -3,13 +3,19 @@
   ...
 }:
 let
+  personalIdentityFile = builtins.readFile ./identity/personal_id.pub;
+  diracIdentityFile = builtins.readFile ./identity/dirac_id.pub;
+
+  personalSSHCommand = "ssh -i ${personalIdentityFile}";
+  diracSSHCommand = "ssh -i ${diracIdentityFile}";
+
   diracPath = "/home/drew/dirac/";
   diracGitConf = (pkgs.formats.ini { }).generate ".dirac.gitconfig" {
     user = {
       name = "drew-dirac";
       email = "drew@diracinc.com";
     };
-    core.sshCommand = "ssh -i ~/.ssh/dirac_id_ed25519";
+    core.sshCommand = diracSSHCommand;
   };
 in
 {
@@ -26,7 +32,7 @@ in
         };
       };
       extraConfig = {
-        core.sshCommand = "ssh -i ~/.ssh/id_ed25519";
+        core.sshCommand = personalSSHCommand;
         push = {
           autoSetupRemote = true;
         };

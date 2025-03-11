@@ -14,7 +14,7 @@ in
   imports = [
     ./firefox.nix
     ./git.nix
-    ./secrets.nix
+    ./secrets/ssh.nix
     ./shell/shell.nix
     ./tty.nix
     ./wm/hypr/hyprland.nix
