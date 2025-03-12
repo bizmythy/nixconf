@@ -1,5 +1,4 @@
 {
-  pkgs,
   ...
 }:
 let
@@ -8,8 +7,6 @@ let
 
   personalSSHCommand = "ssh -i ${personalIdentityFile}";
   diracSSHCommand = "ssh -i ${diracIdentityFile}";
-
-  mkINI = (pkgs.formats.ini { }).generate;
 in
 {
   programs = {
@@ -32,27 +29,29 @@ in
 
         # configure multiple git accounts
         core.sshCommand = personalSSHCommand;
-        user.signingkey = builtins.readFile personalIdentityFile;
-
-        "includeIf \"gitdir:/home/drew/dirac/\"" = {
-          path = builtins.toPath (
-            mkINI ".dirac.gitconfig" {
-              user = {
-                name = "drew-dirac";
-                email = "drew@diracinc.com";
-                signingkey = builtins.readFile diracIdentityFile;
-              };
-              core.sshCommand = diracSSHCommand;
-            }
-          );
-        };
 
         # 1password ssh commit signing
+        user.signingkey = builtins.readFile personalIdentityFile;
         gpg.format = "ssh";
         # should be declared deterministically, but can't get same pkg as in nixos config
         "gpg \"ssh\"".program = "/run/current-system/sw/bin/op-ssh-sign";
         commit.gpgsign = true;
       };
+
+      includes = [
+        {
+          condition = "gitdir:/home/drew/dirac/";
+          contentSuffix = ".dirac.gitconfig";
+          contents = {
+            user = {
+              name = "drew-dirac";
+              email = "drew@diracinc.com";
+              signingkey = builtins.readFile diracIdentityFile;
+            };
+            core.sshCommand = diracSSHCommand;
+          };
+        }
+      ];
     };
 
     gh = {
