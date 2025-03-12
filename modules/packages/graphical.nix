@@ -19,7 +19,8 @@
     libreoffice-qt6-fresh
     kdePackages.okular
 
-    google-chrome
+    chromium
+    brave
     inputs.zen-browser.packages.${pkgs.system}.default
     # firefox in home manager
 
