@@ -169,6 +169,7 @@
           # "$mainMod SHIFT, RETURN, exec, ${vars.defaults.tty}"
           "$mainMod, E, exec, ${vars.defaults.fileManager}"
           "$mainMod, B, exec, ${vars.defaults.browser}"
+          "$mainMod SHIFT, B, exec, ${vars.defaults.browser} --private-window duckduckgo.com"
           "$mainMod, P, exec, hyprpicker"
           "$mainMod, EQUAL, exec, ${vars.defaults.calculator}"
 
