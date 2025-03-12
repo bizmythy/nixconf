@@ -17,7 +17,7 @@
         isDefault = true; # can be omitted; true if profile ID is 0
         settings = {
           # specify profile-specific preferences here; check about:config for options
-          widget.use-xdg-desktop-portal.file-picker = 1;
+          # widget.use-xdg-desktop-portal.file-picker = 1;
           browser.newtabpage.activity-stream = {
             feeds.section.highlights = false;
             showSponsoredTopSites = false;
