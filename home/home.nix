@@ -54,6 +54,10 @@ in
 
     bat = {
       enable = true;
+      config = {
+        style = "changes,header,header-filename";
+        color = "always";
+      };
     };
 
     # Let Home Manager install and manage itself.
