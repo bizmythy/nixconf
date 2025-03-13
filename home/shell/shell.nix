@@ -11,8 +11,6 @@ let
 
     # dirac
     AWS_PROFILE = "dirac-dev";
-    # COGNITO_USER_EMAIL_DEV_INTERNAL = "drew@diracinc.com";
-    TEAM_ID_DEV = "dirac";
   };
   myShellAliases = {
     cdn = "cd ${vars.flakePath}";
@@ -57,13 +55,6 @@ in
          	fi
          	rm -f -- "$tmp"
         }
-
-        # Load environment variables from secrets.env file
-        if [ -f "/home/drew/.config/secrets.env" ]; then
-          source "/home/drew/.config/secrets.env"
-        else
-          echo "Warning: /home/drew/.config/secrets.env file not found"
-        fi
       '';
     };
 
