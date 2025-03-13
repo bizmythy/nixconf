@@ -40,11 +40,16 @@
     HYPRSHOT_DIR = "/home/drew/Pictures/screenshots";
   };
 
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
+
   # Write portal config file
   home.file.".config/xdg-desktop-portal/hyprland-portals.conf".text = ''
     [preferred]
     default = hyprland;gtk
-    org.freedesktop.impl.portal.FileChooser = kde
+    org.freedesktop.impl.portal.FileChooser = gtk
   '';
 
   wayland.windowManager.hyprland = {
