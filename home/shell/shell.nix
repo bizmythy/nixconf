@@ -115,6 +115,13 @@ in
       };
     };
 
+    fzf = {
+      enable = true;
+      enableZshIntegration = false;
+      enableBashIntegration = false;
+      enableFishIntegration = false;
+    };
+
     starship = {
       enable = true;
       settings = {
