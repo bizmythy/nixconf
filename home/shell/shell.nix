@@ -11,7 +11,7 @@ let
 
     # dirac
     AWS_PROFILE = "dirac-dev";
-    COGNITO_USER_EMAIL_DEV_INTERNAL = "drew@diracinc.com";
+    # COGNITO_USER_EMAIL_DEV_INTERNAL = "drew@diracinc.com";
     TEAM_ID_DEV = "dirac";
   };
   myShellAliases = {
