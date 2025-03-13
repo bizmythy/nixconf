@@ -276,7 +276,7 @@
             ];
           in
           lib.lists.flatten [
-            (floatingWindowRules "1Password")
+            # (floatingWindowRules "1Password")
             (floatingWindowRules "io.github.Qalculate.qalculate-qt")
           ];
       };
