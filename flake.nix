@@ -35,6 +35,7 @@
           browser = "firefox";
           calculator = "qalculate-qt";
           editor = "zeditor";
+          termEditor = "nvim";
           shell = "zsh";
         };
       };

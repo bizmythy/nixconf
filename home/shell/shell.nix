@@ -5,8 +5,9 @@
 }:
 let
   mySessionVariables = {
-    EDITOR = "nvim";
     FLAKE = vars.flakePath;
+    EDITOR = vars.defaults.termEditor;
+    VISUAL = vars.defaults.editor;
 
     # dirac
     AWS_PROFILE = "dirac-dev";
@@ -17,8 +18,8 @@ let
     cdn = "cd ${vars.flakePath}";
 
     zed = "zeditor";
-    e = "zeditor .";
-    edit = "zsh -c '(&>/dev/null cursor . &)'";
+    e = "${vars.defaults.editor} .";
+    code = "zsh -c '(&>/dev/null cursor . &)'";
 
     lg = "lazygit";
     ld = "lazydocker";

@@ -37,6 +37,6 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 - [x] fix zed settings
 - [ ] solaar setup
 - [x] default monitor settings
-- [ ] terminal search
+- [x] terminal search
 - [ ] display audio from all displays not working (maybe caused by display mirror?)
 - [ ] check no duplicate package installed across hm and nixos configs

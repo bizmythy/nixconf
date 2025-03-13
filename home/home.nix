@@ -1,5 +1,6 @@
 {
   pkgs,
+  vars,
   ...
 }:
 
@@ -40,7 +41,25 @@ in
   # home.packages = with pkgs; [
   # ];
 
-  fonts.fontconfig.enable = true;
+  # set default applications
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications =
+      let
+        browser = "${vars.defaults.browser}.desktop";
+        fileManager = "org.kde.dolphin.desktop";
+        editor = "dev.zed.Zed.desktop";
+      in
+      {
+        "text/html" = browser;
+        "x-scheme-handler/http" = browser;
+        "x-scheme-handler/https" = browser;
+        "x-scheme-handler/about" = browser;
+        "x-scheme-handler/unknown" = browser;
+        "inode/directory" = fileManager;
+        "text/plain" = editor;
+      };
+  };
 
   # NOTE: if any of these start to get large, break into separate module.
   programs = {
@@ -63,6 +82,8 @@ in
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
   };
+
+  fonts.fontconfig.enable = true;
 
   # Theming
   catppuccin = {
