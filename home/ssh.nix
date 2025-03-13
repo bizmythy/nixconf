@@ -29,15 +29,17 @@ in
     Host diraclocalserver
         HostName 192.168.1.154
         User diraclocalserver
-        IdentityAgent ${onePassPath}
         IdentityFile ${diraclocalserverIdentityFile}
-        IdentitiesOnly yes
   '';
 
+  # You can test the result by running:
+  #  SSH_AUTH_SOCK=~/.1password/agent.sock ssh-add -l
   xdg.configFile."1Password/ssh/agent.toml".text = ''
+    # Personal
     [[ssh-keys]]
     vault = "Private"
 
+    # Dirac
     [[ssh-keys]]
     vault = "Employee"
 
