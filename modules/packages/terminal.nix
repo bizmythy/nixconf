@@ -69,8 +69,8 @@
   virtualisation.docker = {
     enable = true;
     rootless = {
-      enable = false;
-      # setSocketVariable = true;
+      enable = true;
+      setSocketVariable = true;
     };
 
     # daemon.settings = {
