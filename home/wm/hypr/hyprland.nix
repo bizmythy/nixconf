@@ -75,7 +75,7 @@
         };
         scaleHiDPI = "1.3333333";
         wsByHost = {
-          drewdirac = [
+          drewdiracpc = [
             "1, monitor:${drewdirac.right}, default:true"
             "2, monitor:${drewdirac.main}, default:true"
             "3, monitor:${drewdirac.top}, default:true"
