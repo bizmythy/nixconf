@@ -100,6 +100,7 @@
           "nm-applet"
           "blueman-applet"
           "1password --silent"
+          "pcloud"
           # "[workspace special:magic silent] '${vars.defaults.tty} -e btop'"
         ];
 
@@ -180,6 +181,7 @@
 
           "$mainMod, Z, exec, ${vars.defaults.editor}"
           "$mainMod, D, exec, ${vars.defaults.editor} /home/drew/dirac/buildos-web"
+          "$mainMod, N, exec, ${vars.defaults.editor} /home/drew/nixconf"
 
           "SUPER, SUPER_L, exec, fuzzel"
           "$mainMod, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
