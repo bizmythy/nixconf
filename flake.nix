@@ -58,11 +58,16 @@
         nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs vars; };
           modules = [
+            {
+              nixpkgs.hostPlatform = "x86_64-linux";
+              networking.hostName = hostname;
+            }
+
             catppuccin.nixosModules.catppuccin
             nix-flatpak.nixosModules.nix-flatpak
+
             ./modules/base.nix
             ./hosts/${hostname}/configuration.nix
-            { networking.hostName = hostname; }
 
             home-manager.nixosModules.home-manager
             home
