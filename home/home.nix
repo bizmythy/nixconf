@@ -18,7 +18,7 @@ in
     ./ssh.nix
     ./shell.nix
     ./tty.nix
-    ./wm/hypr/hyprland.nix
+    ./wm/wm.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
