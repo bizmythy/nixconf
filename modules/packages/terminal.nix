@@ -56,6 +56,8 @@ in
     traceroute
     rclone
     lsof
+    jc
+    dig
 
     # language tools
     go
