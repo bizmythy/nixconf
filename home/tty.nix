@@ -1,5 +1,6 @@
 {
   pkgs,
+  vars,
   ...
 }:
 
@@ -7,7 +8,7 @@ let
   fontFamily = "JetBrainsMono Nerd Font";
   fontSize = 12;
   backgroundOpacity = 0.9;
-  startCommand = "nerdfetch && zsh";
+  startCommand = "nerdfetch && ${vars.defaults.shell}";
 in
 {
   programs.alacritty = {
