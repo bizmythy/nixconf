@@ -74,7 +74,7 @@ in
     bat = {
       enable = true;
       config = {
-        style = "changes,header,header-filename";
+        style = "header-filename,rule,snip";
         color = "always";
       };
     };
