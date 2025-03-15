@@ -39,6 +39,8 @@ in
       };
 
       includes = [
+        # dirac-specific git setup
+        # need to `git init` in ~/dirac for this to work properly
         {
           condition = "gitdir:/home/drew/dirac/";
           contentSuffix = ".dirac.gitconfig";
