@@ -49,7 +49,7 @@
     vlc
     mpv
     spotify
-    jellyfin
+    jellyfin-media-player
     calibre
 
     code-cursor
