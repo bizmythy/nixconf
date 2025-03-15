@@ -35,6 +35,12 @@ let
     rev = "82c31124b39294c722f5853cf94edc01ad5ddf34";
     hash = "sha256-O95OrdF9UA5xid1UlXzqrgZqw3fBpTChUDmyExmD2i4=";
   };
+  nushellConfig =
+    builtins.readFile "${nushellCatppuccin}/themes/catppuccin_mocha.nu"
+    + ''
+      $env.config.show_banner = false
+      $env.config.buffer_editor = "nvim"
+    '';
 in
 {
   home = {
@@ -64,7 +70,7 @@ in
       enable = true;
       environmentVariables = mySessionVariables;
       shellAliases = myShellAliases;
-      extraConfig = builtins.readFile "${nushellCatppuccin}/themes/catppuccin_mocha.nu";
+      extraConfig = nushellConfig;
     };
 
     direnv = {

@@ -16,7 +16,7 @@ in
     ./firefox.nix
     ./git.nix
     ./ssh.nix
-    ./shell/shell.nix
+    ./shell.nix
     ./tty.nix
     ./wm/hypr/hyprland.nix
   ];
