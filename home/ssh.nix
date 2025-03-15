@@ -14,14 +14,6 @@ let
 in
 {
   # home manager version adds several extra options i do not want
-  # programs.ssh = {
-  #   enable = true;
-  #   extraConfig = ''
-  #     Host *
-  #         IdentityAgent ${onePassPath}
-  #   '';
-  # };
-
   home.file.".ssh/config".text = ''
     Host *
         IdentityAgent ${onePassPath}
