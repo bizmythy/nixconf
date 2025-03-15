@@ -23,7 +23,7 @@ print "running nixfmt on staged files..."
 try {
     nixfmt ...$staged_files
 } catch {
-    print "error: nixfmt formatting failed."
+    print $"(ansi red)error: nixfmt formatting failed.(ansi reset)"
     exit 1
 }
 
@@ -32,7 +32,7 @@ git add ...$staged_files
 
 let time_since_update = (date now) - (git log -1 --format="%ad" -- flake.lock | into datetime)
 if ($time_since_update > 1.wk) {
-    print "warning: flake.lock is out of date."
+    print $"(ansi yellow)warning: flake.lock is out of date.(ansi reset)"
 }
 
 print "formatting complete"
