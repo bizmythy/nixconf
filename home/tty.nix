@@ -107,6 +107,6 @@ in
     };
     enableBashIntegration = true;
     enableZshIntegration = true;
-    package = ghostty-cursor-patched;
+    package = pkgs.ghostty;
   };
 }
