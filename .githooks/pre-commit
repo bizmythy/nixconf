@@ -1,31 +1,34 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nu
 
 # Check if nixfmt is installed
-if ! command -v nixfmt &> /dev/null
-then
-    echo "error: nixfmt is not installed."
+if (which nixfmt | is-empty) {
+    print "error: nixfmt is not installed."
     exit 1
-fi
+}
 
 # Get a list of staged files
-staged_files=$(git diff --cached --name-only --diff-filter=ACMR | grep -v lock)
+let staged_files = (
+    git diff --cached --name-only --diff-filter=ACMR 
+    | lines 
+    | where { |line| (not ($line | str contains "lock")) }
+)
 
 # If there are no staged files, exit successfully
-if [ -z "$staged_files" ]; then
-  exit 0
-fi
+if ($staged_files | is-empty) {
+    exit 0
+}
 
 # Format the staged files using prettier
-echo "running nixfmt on staged files..."
-nixfmt $staged_files
-
-if [ $? -ne 0 ]; then
-  echo "error: nixfmt formatting failed."
-  exit 1
-fi
+print "running nixfmt on staged files..."
+try {
+    nixfmt ...$staged_files
+} catch {
+    print "error: nixfmt formatting failed."
+    exit 1
+}
 
 # Add the formatted files back to the staging area
-git add $staged_files
+git add ...$staged_files
 
-echo "formatting complete"
+print "formatting complete"
 exit 0
