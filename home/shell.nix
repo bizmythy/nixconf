@@ -96,14 +96,14 @@ in
       icons = "auto";
       enableNushellIntegration = false;
       enableZshIntegration = true;
-      enableBashIntegration = true;
+      enableBashIntegration = false;
     };
 
     atuin = {
       enable = true;
       enableZshIntegration = true;
-      enableBashIntegration = true;
       enableNushellIntegration = true;
+      enableBashIntegration = false;
       settings = {
         auto_sync = true;
         enter_accept = true;
@@ -116,12 +116,16 @@ in
     fzf = {
       enable = true;
       enableZshIntegration = false;
-      enableBashIntegration = false;
       enableFishIntegration = false;
+      enableBashIntegration = false;
     };
 
     starship = {
       enable = true;
+      enableZshIntegration = true;
+      enableFishIntegration = true;
+      enableNushellIntegration = true;
+      enableBashIntegration = false;
       settings = {
         format = "$all$shell$character";
         aws = {
@@ -135,9 +139,9 @@ in
         shell = {
           disabled = false;
           format = "$indicator($style)";
-          bash_indicator = "\\$ ";
-          zsh_indicator = "";
-          nu_indicator = "nu ";
+          bash_indicator = "bash ";
+          zsh_indicator = "%";
+          nu_indicator = "";
           unknown_indicator = "? ";
           style = "white bold";
         };
@@ -147,16 +151,16 @@ in
     zellij = {
       enable = true;
 
-      enableBashIntegration = false;
       enableZshIntegration = false;
       enableFishIntegration = false;
+      enableBashIntegration = false;
     };
 
     zoxide = {
       enable = true;
-      enableBashIntegration = true;
       enableZshIntegration = true;
       enableNushellIntegration = true;
+      enableBashIntegration = false;
       options = [ "--cmd cd" ];
     };
   };
