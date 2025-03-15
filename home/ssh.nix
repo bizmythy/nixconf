@@ -34,16 +34,16 @@ in
 
   # You can test the result by running:
   #  SSH_AUTH_SOCK=~/.1password/agent.sock ssh-add -l
-  xdg.configFile."1Password/ssh/agent.toml".text = ''
-    # Personal
-    [[ssh-keys]]
-    vault = "Private"
+  xdg.configFile."1Password/ssh/agent.toml".source =
+    (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml"
+      {
+        "ssh-keys" = [
+          # Personal
+          { vault = "Private"; }
 
-    # Dirac
-    [[ssh-keys]]
-    vault = "Employee"
-
-    [[ssh-keys]]
-    vault = "Engineering"
-  '';
+          # Dirac
+          { vault = "Employee"; }
+          { vault = "Engineering"; }
+        ];
+      };
 }
