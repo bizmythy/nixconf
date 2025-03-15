@@ -8,8 +8,8 @@ if (which nixfmt | is-empty) {
 
 # Get a list of staged files
 let staged_files = (
-    git diff --cached --name-only --diff-filter=ACMR 
-    | lines 
+    git diff --cached --name-only --diff-filter=ACMR
+    | lines
     | where { |line| (not ($line | str contains "lock")) }
 )
 
@@ -29,6 +29,11 @@ try {
 
 # Add the formatted files back to the staging area
 git add ...$staged_files
+
+let time_since_update = (date now) - (git log -1 --format="%ad" -- flake.lock | into datetime)
+if ($time_since_update > 1.wk) {
+    print "warning: flake.lock is out of date."
+}
 
 print "formatting complete"
 exit 0
