@@ -3,17 +3,18 @@
   ...
 }:
 let
-  personalIdentityFile = pkgs.writeTextFile {
-    name = "personal_id.pub";
-    text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOjbUnES0AUVvsqNzMdCix3Qp+XRpKiS7tm6PR6u7WTY";
-  };
-  diracIdentityFile = pkgs.writeTextFile {
-    name = "dirac_id.pub";
-    text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPIrRXpZt/U8OkMsWoft9+2JiITBsUyGVxuhZJhl+Xpm";
-  };
+  personalGithubID = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOjbUnES0AUVvsqNzMdCix3Qp+XRpKiS7tm6PR6u7WTY";
+  diracGithubID = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPIrRXpZt/U8OkMsWoft9+2JiITBsUyGVxuhZJhl+Xpm";
 
-  personalSSHCommand = "ssh -i ${personalIdentityFile}";
-  diracSSHCommand = "ssh -i ${diracIdentityFile}";
+  sshCommand =
+    filename: id:
+    let
+      pubKeyFile = pkgs.writeTextFile {
+        name = filename;
+        text = id;
+      };
+    in
+    "ssh -i ${pubKeyFile}";
 in
 {
   programs = {
@@ -35,10 +36,10 @@ in
         core.hooksPath = ".githooks";
 
         # configure multiple git accounts
-        core.sshCommand = personalSSHCommand;
+        core.sshCommand = sshCommand "personal_id.pub" personalGithubID;
 
         # 1password ssh commit signing
-        user.signingkey = builtins.readFile personalIdentityFile;
+        user.signingkey = personalGithubID;
         gpg.format = "ssh";
         # should be declared deterministically, but can't get same pkg as in nixos config
         "gpg \"ssh\"".program = "/run/current-system/sw/bin/op-ssh-sign";
@@ -55,9 +56,9 @@ in
             user = {
               name = "drew-dirac";
               email = "drew@diracinc.com";
-              signingkey = builtins.readFile diracIdentityFile;
+              signingkey = diracGithubID;
             };
-            core.sshCommand = diracSSHCommand;
+            core.sshCommand = sshCommand "dirac_id.pub" diracGithubID;
           };
         }
       ];
