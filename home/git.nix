@@ -1,9 +1,16 @@
 {
+  pkgs,
   ...
 }:
 let
-  personalIdentityFile = ./identity/personal_id.pub;
-  diracIdentityFile = ./identity/dirac_id.pub;
+  personalIdentityFile = pkgs.writeTextFile {
+    name = "personal_id.pub";
+    text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOjbUnES0AUVvsqNzMdCix3Qp+XRpKiS7tm6PR6u7WTY";
+  };
+  diracIdentityFile = pkgs.writeTextFile {
+    name = "dirac_id.pub";
+    text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPIrRXpZt/U8OkMsWoft9+2JiITBsUyGVxuhZJhl+Xpm";
+  };
 
   personalSSHCommand = "ssh -i ${personalIdentityFile}";
   diracSSHCommand = "ssh -i ${diracIdentityFile}";
