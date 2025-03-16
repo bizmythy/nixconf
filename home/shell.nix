@@ -64,7 +64,6 @@ let
       "bat"
       "curl"
       "docker"
-      "eza"
       "gh"
       "git"
       "less"
