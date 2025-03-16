@@ -139,6 +139,7 @@
       "networkmanager"
       "wheel"
       "docker"
+      "cdrom"
     ];
     # packages = with pkgs; [
     # ];
