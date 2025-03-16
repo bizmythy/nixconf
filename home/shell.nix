@@ -43,15 +43,42 @@ let
     rev = "861a99779d31010ba907e4d6aaf7b1629b9eb775";
     hash = "sha256-L/ySTOTGijpu+6Bncg+Rn7MBd/R5liSSPLlfoQvg7ps=";
   };
+  formatCompletions =
+    inputs:
+    let
+      formatInput = input: "use ${nuscripts}/custom-completions/${input}/${input}-completions.nu *";
+      formattedInputs = map formatInput inputs;
+    in
+    builtins.concatStringsSep "\n" formattedInputs;
 
-  nushellConfig = ''
-    source ${nushellCatppuccin}/themes/catppuccin_mocha.nu
-    source ${./utils.nu};
-    use ${nuscripts}/modules/jc/
+  nushellConfig =
+    ''
+      source ${nushellCatppuccin}/themes/catppuccin_mocha.nu
+      source ${./utils.nu};
+      use ${nuscripts}/modules/jc/
 
-    $env.config.show_banner = false
-    $env.config.buffer_editor = "${vars.defaults.termEditor}"
-  '';
+      $env.config.show_banner = false
+      $env.config.buffer_editor = "${vars.defaults.termEditor}"
+    ''
+    + formatCompletions [
+      "bat"
+      "curl"
+      "docker"
+      "eza"
+      "gh"
+      "git"
+      "less"
+      "make"
+      "man"
+      "nix"
+      "op"
+      "pytest"
+      "pre-commit"
+      "rg"
+      "ssh"
+      "tar"
+      "uv"
+    ];
 in
 {
   home = {
