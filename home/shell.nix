@@ -29,18 +29,29 @@ let
     cdb = "cd /home/drew/dirac/buildos-web";
     awsl = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login --profile ${mySessionVariables.AWS_PROFILE}'";
   };
+
+  # remove after https://github.com/catppuccin/nix/pull/478
   nushellCatppuccin = pkgs.fetchFromGitHub {
-    owner = "nik-rev";
-    repo = "catppuccin-nushell";
+    owner = "catppuccin";
+    repo = "nushell";
     rev = "82c31124b39294c722f5853cf94edc01ad5ddf34";
     hash = "sha256-O95OrdF9UA5xid1UlXzqrgZqw3fBpTChUDmyExmD2i4=";
   };
-  nushellConfig =
-    builtins.readFile "${nushellCatppuccin}/themes/catppuccin_mocha.nu"
-    + ''
-      $env.config.show_banner = false
-      $env.config.buffer_editor = "nvim"
-    '';
+  nuscripts = pkgs.fetchFromGitHub {
+    owner = "nushell";
+    repo = "nu_scripts";
+    rev = "861a99779d31010ba907e4d6aaf7b1629b9eb775";
+    hash = "sha256-L/ySTOTGijpu+6Bncg+Rn7MBd/R5liSSPLlfoQvg7ps=";
+  };
+
+  nushellConfig = ''
+    source ${nushellCatppuccin}/themes/catppuccin_mocha.nu
+    source ${./utils.nu};
+    use ${nuscripts}/modules/jc/
+
+    $env.config.show_banner = false
+    $env.config.buffer_editor = "${vars.defaults.termEditor}"
+  '';
 in
 {
   home = {
