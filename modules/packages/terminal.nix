@@ -67,6 +67,7 @@ in
     markdown-oxide
     shellcheck
     protobuf-language-server
+    dive
 
     # nix tools
     nix-output-monitor
