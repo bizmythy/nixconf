@@ -123,7 +123,7 @@
           follow_mouse = 1;
           mouse_refocus = false;
           touchpad = {
-            natural_scroll = false;
+            natural_scroll = true;
           };
           sensitivity = -0.2;
           accel_profile = "flat";
