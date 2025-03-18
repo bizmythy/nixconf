@@ -7,9 +7,9 @@
 
 {
   options = {
-    nvidiaEnable = lib.mkOption {
-      type = lib.types.bool;
+    nvidiaEnable = lib.mkEnableOption {
       default = false;
+      description = "NVIDIA GPU support";
     };
   };
 
