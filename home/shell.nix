@@ -8,6 +8,7 @@ let
     FLAKE = vars.flakePath;
     EDITOR = vars.defaults.termEditor;
     VISUAL = vars.defaults.editor;
+    BROWSER = vars.defaults.browser;
 
     # dirac
     AWS_PROFILE = "dirac-dev";
