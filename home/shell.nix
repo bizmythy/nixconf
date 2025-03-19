@@ -65,7 +65,6 @@ let
       "curl"
       "docker"
       "gh"
-      "git"
       "less"
       "make"
       "man"
@@ -74,7 +73,6 @@ let
       "pytest"
       "pre-commit"
       "rg"
-      "ssh"
       "tar"
       "uv"
     ];
