@@ -58,6 +58,8 @@ in
     lsof
     jc
     dig
+    jq
+    yq
 
     # language tools
     go
