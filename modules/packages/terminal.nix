@@ -38,7 +38,6 @@ in
     fd
     bat
     eza
-    yazi
     unzip
     btop
     htop
