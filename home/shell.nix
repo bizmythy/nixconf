@@ -88,6 +88,16 @@ in
       enable = true;
       syntaxHighlighting.enable = true;
       autosuggestion.enable = true;
+      initExtra = ''
+        function y() {
+         	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+         	yazi "$@" --cwd-file="$tmp"
+         	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+          		builtin cd -- "$cwd"
+         	fi
+         	rm -f -- "$tmp"
+        }
+      '';
     };
 
     bash.enable = true;
@@ -139,18 +149,18 @@ in
       };
     };
 
+    yazi = {
+      enable = true;
+      enableZshIntegration = true;
+      enableFishIntegration = true;
+      enableNushellIntegration = true;
+      enableBashIntegration = true;
+    };
+
     fzf = {
       enable = true;
       enableZshIntegration = false;
       enableFishIntegration = false;
-      enableBashIntegration = false;
-    };
-
-    yazi = {
-      enable = true;
-      enableZshIntegration = false;
-      enableFishIntegration = false;
-      enableNushellIntegration = true;
       enableBashIntegration = false;
     };
 
