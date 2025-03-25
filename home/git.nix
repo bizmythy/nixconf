@@ -140,6 +140,15 @@ in
             };
             # parseEmoji = true;
           };
+
+          customCommands = [
+            {
+              key = "C";
+              context = "files";
+              command = "git commit --no-verify";
+              subprocess = true;
+            }
+          ];
         };
       };
   };
