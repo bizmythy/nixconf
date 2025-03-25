@@ -132,6 +132,7 @@ in
           };
           # skips drop to terminal from signing commit
           promptToReturnFromSubprocess = false;
+          skipHookPrefix = "-";
 
           git = {
             paging = {
@@ -141,14 +142,14 @@ in
             # parseEmoji = true;
           };
 
-          customCommands = [
-            {
-              key = "C";
-              context = "files";
-              command = "git commit --no-verify";
-              subprocess = true;
-            }
-          ];
+          # customCommands = [
+          #   {
+          #     key = "C";
+          #     context = "files";
+          #     command = "git commit --no-verify";
+          #     subprocess = true;
+          #   }
+          # ];
         };
       };
   };
