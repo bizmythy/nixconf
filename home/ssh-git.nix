@@ -21,27 +21,22 @@ let
 in
 {
   # -------SSH CONFIGURATION-------
-  home.sessionVariables.SSH_AUTH_SOCK = onePassPath;
-
   # home manager version adds several extra options i do not want
+  # set github.com to be dirac key by default to get private flake inputs working
+  # this default is replaced in the git ssh command configuration
   home.file.".ssh/config".text = ''
     Host *
         IdentityAgent ${onePassPath}
+
+    Host github.com
+        HostName github.com
+        User git
+        IdentityFile ${publicKeyFiles.diracGitHub}
 
     Host diraclocalserver
         HostName 192.168.1.154
         User diraclocalserver
         IdentityFile ${publicKeyFiles.diraclocalserver}
-
-    Host github.com
-        HostName github.com
-        User git
-        IdentityFile ${publicKeyFiles.personalGitHub}
-
-    Host dirac-github
-        HostName github.com
-        User git
-        IdentityFile ${publicKeyFiles.diracGitHub}
   '';
 
   # You can test the result by running:

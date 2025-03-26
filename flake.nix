@@ -14,6 +14,14 @@
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
+
+    dirac = {
+      type = "git";
+      url = "git+ssh://git@github.com/diracq/buildos-web.git";
+      ref = "main";
+      shallow = true;
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
