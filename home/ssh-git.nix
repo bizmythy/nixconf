@@ -21,6 +21,8 @@ let
 in
 {
   # -------SSH CONFIGURATION-------
+  home.sessionVariables.SSH_AUTH_SOCK = onePassPath;
+
   # home manager version adds several extra options i do not want
   home.file.".ssh/config".text = ''
     Host *
