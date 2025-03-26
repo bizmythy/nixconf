@@ -31,13 +31,6 @@ let
     awsl = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login --profile ${mySessionVariables.AWS_PROFILE}'";
   };
 
-  # remove after https://github.com/catppuccin/nix/pull/478
-  nushellCatppuccin = pkgs.fetchFromGitHub {
-    owner = "catppuccin";
-    repo = "nushell";
-    rev = "82c31124b39294c722f5853cf94edc01ad5ddf34";
-    hash = "sha256-O95OrdF9UA5xid1UlXzqrgZqw3fBpTChUDmyExmD2i4=";
-  };
   nuscripts = pkgs.fetchFromGitHub {
     owner = "nushell";
     repo = "nu_scripts";
@@ -54,7 +47,6 @@ let
 
   nushellConfig =
     ''
-      source ${nushellCatppuccin}/themes/catppuccin_mocha.nu
       source ${./utils.nu};
       use ${nuscripts}/modules/jc/
 
