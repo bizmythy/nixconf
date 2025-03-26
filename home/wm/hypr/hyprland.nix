@@ -50,7 +50,7 @@
           drewdiracpc = [
             "1, monitor:${drewdirac.right}, default:true"
             "2, monitor:${drewdirac.main}, default:true"
-            "3, monitor:${drewdirac.top}, default:true"
+            "8, monitor:${drewdirac.top}, default:true"
           ];
           igneous = [
             "1, monitor:${igneous.top}, default:true"
