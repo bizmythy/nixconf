@@ -76,7 +76,15 @@
             nix-flatpak.nixosModules.nix-flatpak
 
             dirac.nixosModules.linux
-            { dirac.graphical = false; }
+            {
+              dirac.graphical = false;
+              # override what i am already managing in home manager
+              programs = {
+                direnv.enable = false;
+                git.enable = nixpkgs.lib.mkForce false;
+                starship.enable = false;
+              };
+            }
 
             ./modules/base.nix
             ./hosts/${hostname}/configuration.nix
