@@ -35,13 +35,13 @@
           engines = {
             "unduck" = {
               urls = [ { template = "https://unduck.link?q={searchTerms}"; } ];
-              iconUpdateURL = "https://unduck.link/favicon.ico";
+              icon = "https://unduck.link/favicon.ico";
               updateInterval = 24 * 60 * 60 * 1000; # every day
             };
-            "Bing".metaData.hidden = true;
+            bing.metaData.hidden = true;
           };
           default = "unduck";
-          privateDefault = "DuckDuckGo";
+          privateDefault = "ddg";
         };
       };
     };
