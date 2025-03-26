@@ -27,16 +27,16 @@
         "srvos": "srvos"
       },
       "locked": {
-        "lastModified": 1743003768,
-        "narHash": "sha256-1V9iqUo8cnLIzQFTo0/OoIGsa1D9BTBZmTvLKT31uzQ=",
-        "ref": "main",
-        "rev": "2db30cb308558d20f852552f0455a9d13423680b",
+        "lastModified": 1743006038,
+        "narHash": "sha256-xwlQQiBF3386F8NIB+dP0BL/ylJgkxM+suUlMOl6lgI=",
+        "ref": "onboarding-cleanup",
+        "rev": "d14bc72633122e44e4decf11ce88c71a8bad681c",
         "shallow": true,
         "type": "git",
         "url": "git+ssh://git@github.com/diracq/buildos-web.git"
       },
       "original": {
-        "ref": "main",
+        "ref": "onboarding-cleanup",
         "shallow": true,
         "type": "git",
         "url": "git+ssh://git@github.com/diracq/buildos-web.git"

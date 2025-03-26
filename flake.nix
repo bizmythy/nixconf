@@ -18,7 +18,7 @@
     dirac = {
       type = "git";
       url = "git+ssh://git@github.com/diracq/buildos-web.git";
-      ref = "main";
+      ref = "onboarding-cleanup";
       shallow = true;
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -30,6 +30,7 @@
       nixpkgs,
       catppuccin,
       nix-flatpak,
+      dirac,
       home-manager,
       ...
     }@inputs:
@@ -73,6 +74,9 @@
 
             catppuccin.nixosModules.catppuccin
             nix-flatpak.nixosModules.nix-flatpak
+
+            dirac.nixosModules.linux
+            { dirac.graphical = false; }
 
             ./modules/base.nix
             ./hosts/${hostname}/configuration.nix
