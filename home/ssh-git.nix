@@ -39,7 +39,7 @@ in
         IdentityFile ${publicKeyFiles.personalGitHub}
 
     Host dirac-github
-        HostName dirac.github.com
+        HostName github.com
         User git
         IdentityFile ${publicKeyFiles.diracGitHub}
   '';
