@@ -3,20 +3,61 @@
   ...
 }:
 let
-  personalGithubID = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOjbUnES0AUVvsqNzMdCix3Qp+XRpKiS7tm6PR6u7WTY";
-  diracGithubID = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPIrRXpZt/U8OkMsWoft9+2JiITBsUyGVxuhZJhl+Xpm";
+  genKeyFile =
+    name: value:
+    pkgs.writeTextFile {
+      name = "${name}.pub";
+      text = value;
+    };
 
-  sshCommand =
-    filename: id:
-    let
-      pubKeyFile = pkgs.writeTextFile {
-        name = filename;
-        text = id;
-      };
-    in
-    "ssh -i ${pubKeyFile}";
+  publicKeys = {
+    personalGitHub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOjbUnES0AUVvsqNzMdCix3Qp+XRpKiS7tm6PR6u7WTY";
+    diracGitHub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPIrRXpZt/U8OkMsWoft9+2JiITBsUyGVxuhZJhl+Xpm";
+    diraclocalserver = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEoZXGhcmj8ZUFPWWGw3fZAd0FOCZKXnKelZKaGD9Tq4";
+  };
+  publicKeyFiles = builtins.mapAttrs genKeyFile publicKeys;
+
+  onePassPath = "~/.1password/agent.sock";
 in
 {
+  # -------SSH CONFIGURATION-------
+  # home manager version adds several extra options i do not want
+  home.file.".ssh/config".text = ''
+    Host *
+        IdentityAgent ${onePassPath}
+
+    Host diraclocalserver
+        HostName 192.168.1.154
+        User diraclocalserver
+        IdentityFile ${publicKeyFiles.diraclocalserver}
+
+    Host github.com
+        HostName github.com
+        User git
+        IdentityFile ${publicKeyFiles.personalGitHub}
+
+    Host dirac-github
+        HostName dirac.github.com
+        User git
+        IdentityFile ${publicKeyFiles.diracGitHub}
+  '';
+
+  # You can test the result by running:
+  #  SSH_AUTH_SOCK=~/.1password/agent.sock ssh-add -l
+  xdg.configFile."1Password/ssh/agent.toml".source =
+    (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml"
+      {
+        "ssh-keys" = [
+          # Personal
+          { vault = "Private"; }
+
+          # Dirac
+          { vault = "Employee"; }
+          { vault = "Engineering"; }
+        ];
+      };
+
+  # -------GIT CONFIGURATION-------
   programs = {
     git = {
       enable = true;
@@ -36,10 +77,10 @@ in
         core.hooksPath = ".githooks";
 
         # configure multiple git accounts
-        core.sshCommand = sshCommand "personal_id.pub" personalGithubID;
+        core.sshCommand = "ssh -i ${publicKeyFiles.personalGitHub}";
 
         # 1password ssh commit signing
-        user.signingkey = personalGithubID;
+        user.signingkey = publicKeys.personalGitHub;
         gpg.format = "ssh";
         # should be declared deterministically, but can't get same pkg as in nixos config
         "gpg \"ssh\"".program = "/run/current-system/sw/bin/op-ssh-sign";
@@ -56,9 +97,9 @@ in
             user = {
               name = "drew-dirac";
               email = "drew@diracinc.com";
-              signingkey = diracGithubID;
+              signingkey = publicKeys.diracGitHub;
             };
-            core.sshCommand = sshCommand "dirac_id.pub" diracGithubID;
+            core.sshCommand = "ssh -i ${publicKeyFiles.diracGitHub}";
           };
         }
       ];

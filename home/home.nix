@@ -14,8 +14,7 @@ in
 {
   imports = [
     ./firefox.nix
-    ./git.nix
-    ./ssh.nix
+    ./ssh-git.nix
     ./shell.nix
     ./tty.nix
     ./wm/wm.nix
