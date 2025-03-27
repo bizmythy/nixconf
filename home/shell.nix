@@ -22,10 +22,16 @@ let
     nhos = "nh os switch";
     nhob = "nh os boot";
     hmclean = "fd '${vars.hmBackupFileExtension}' ~ -u -x rm";
+    dcd = "docker compose down";
 
     # dirac
     cdb = "cd /home/drew/dirac/buildos-web";
-    awsl = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login'";
+    alf = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login'";
+    al = "aws sso login";
+
+    mts = "make test-shell";
+    mcr = "make compose-reset";
+    mcs = "make compose";
   };
 
   nuscripts = pkgs.fetchFromGitHub {
