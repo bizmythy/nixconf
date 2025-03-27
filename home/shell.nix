@@ -25,7 +25,7 @@ let
 
     # dirac
     cdb = "cd /home/drew/dirac/buildos-web";
-    awsl = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login --profile ${mySessionVariables.AWS_PROFILE}'";
+    awsl = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login'";
   };
 
   nuscripts = pkgs.fetchFromGitHub {
@@ -93,7 +93,9 @@ in
 
     nushell = {
       enable = true;
-      environmentVariables = mySessionVariables;
+      environmentVariables = mySessionVariables // {
+        AWS_PROFILE = "dev";
+      };
       shellAliases = myShellAliases;
       extraConfig = nushellConfig;
     };
