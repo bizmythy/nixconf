@@ -28,7 +28,7 @@ in
     Host *
         IdentityAgent ${onePassPath}
 
-    Host github.com
+    Host dirac-github
         HostName github.com
         User git
         IdentityFile ${publicKeyFiles.diracGitHub}
