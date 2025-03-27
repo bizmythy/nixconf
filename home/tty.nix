@@ -69,9 +69,23 @@ in
       copy-on-select = "clipboard";
       app-notifications = "no-clipboard-copy";
       confirm-close-surface = false;
+      link-url = true;
+
+      # custom-shader =
+      #   let
+      #     ghostty-shaders = pkgs.fetchFromGitHub {
+      #       owner = "hackr-sh";
+      #       repo = "ghostty-shaders";
+      #       rev = "a17573fb254e618f92a75afe80faa31fd5e09d6f";
+      #       hash = "sha256-p0speO5BtLZZwGeuRvBFETnHspDYg2r5Uiu0yeqj1iE=";
+      #     };
+      #   in
+      #   "${ghostty-shaders}/bloom.glsl";
     };
     enableBashIntegration = true;
     enableZshIntegration = true;
+    enableFishIntegration = true;
+    installBatSyntax = true;
     package = pkgs.ghostty;
   };
 }
