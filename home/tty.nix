@@ -68,7 +68,7 @@ in
 
       copy-on-select = "clipboard";
       app-notifications = "no-clipboard-copy";
-
+      confirm-close-surface = false;
     };
     enableBashIntegration = true;
     enableZshIntegration = true;
