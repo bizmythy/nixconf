@@ -9,9 +9,6 @@ let
     EDITOR = vars.defaults.termEditor;
     VISUAL = vars.defaults.editor;
     BROWSER = vars.defaults.browser;
-
-    # dirac
-    AWS_PROFILE = "dirac-dev";
   };
   myShellAliases = {
     cdn = "cd ${vars.flakePath}";

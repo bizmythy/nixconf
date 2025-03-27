@@ -18,7 +18,7 @@
     dirac = {
       type = "git";
       url = "git+ssh://git@github.com/diracq/buildos-web.git";
-      ref = "onboarding-cleanup";
+      ref = "main";
       shallow = true;
       inputs.nixpkgs.follows = "nixpkgs";
     };
