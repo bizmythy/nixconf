@@ -27,10 +27,10 @@
         "srvos": "srvos"
       },
       "locked": {
-        "lastModified": 1743089968,
-        "narHash": "sha256-u3PeTUR63ALvdU+mTWdwlKy0b6tE8cTGHzLk0CPmCP8=",
+        "lastModified": 1743094200,
+        "narHash": "sha256-J54Ydq+aUCafaWvoB6DILu7CpFCy2pRSEUBBz5IvwKM=",
         "ref": "main",
-        "rev": "fc50492e3764e5cb96eeeb0fbdb0b8621f5e62a4",
+        "rev": "e2ebeee93872a1aed5c1b50e9a66d4810d084687",
         "shallow": true,
         "type": "git",
         "url": "git+ssh://git@dirac-github/diracq/buildos-web.git"
