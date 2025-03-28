@@ -24,19 +24,7 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 
 ## TODO:
 
-- [x] gpg signing github
-- [x] integrate 1password cli for logging into everything, better secrets
-- [x] signal encrypted kwallet backend
-- [x] firefox buttons at right place at startup
-- [x] atuin enter not running for specifically nushell?
-      ~~- [ ] sddm on all monitors~~ not real, can't work well with hidpi screens~~
-- [x] sddm theme if not broken
 - [ ] default apps for xdg-open
-- [x] switch to ghostty
-- [x] 1password autostart in background?
-- [x] fix zed settings
 - [ ] solaar setup
-- [x] default monitor settings
-- [x] terminal search
 - [ ] display audio from all displays not working (maybe caused by display mirror?)
-- [ ] check no duplicate package installed across hm and nixos configs
+- [ ] pen input from android tablet
