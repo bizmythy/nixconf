@@ -28,6 +28,11 @@ in
     Host *
         IdentityAgent ${onePassPath}
 
+    Host github.com
+        HostName github.com
+        User git
+        IdentityFile ${publicKeyFiles.personalGitHub}
+
     Host dirac-github
         HostName github.com
         User git
@@ -72,9 +77,6 @@ in
         init.defaultBranch = "main";
         push.autoSetupRemote = true;
         core.hooksPath = ".githooks";
-
-        # configure multiple git accounts
-        core.sshCommand = "ssh -i ${publicKeyFiles.personalGitHub}";
 
         # 1password ssh commit signing
         user.signingkey = publicKeys.personalGitHub;
