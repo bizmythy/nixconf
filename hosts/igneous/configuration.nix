@@ -8,7 +8,10 @@
   ];
 
   boot.initrd.kernelModules = [ "amdgpu" ];
+  # enable kernel for disc drive
   boot.kernelModules = [ "sg" ];
+  # fix clock for windows dual boot
+  time.hardwareClockInLocalTime = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
