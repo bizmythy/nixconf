@@ -232,6 +232,7 @@
 
           # Screenshots
           ", PRINT, exec, hyprshot -z -m region"
+          "$mainMod SHIFT, S, exec, hyprshot -z -m region"
           "$mainMod, PRINT, exec, hyprshot -z -m output"
           "$mainMod SHIFT, PRINT, exec, hyprshot -z -m window"
         ];
