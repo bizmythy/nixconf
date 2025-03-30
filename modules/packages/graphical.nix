@@ -4,6 +4,20 @@
   ...
 }:
 
+let
+  linear-appimage =
+    let
+      pname = "linear";
+      version = "0.2.1";
+      src = pkgs.fetchurl {
+        url = "https://github.com/kleo-dev/linear-linux/releases/download/v${version}/${pname}-linux-${version}.AppImage";
+        hash = "sha256-mvsoNWwji4Fme2C8fxwpRbNoAAJN0jan+cZ0tYjNghk=";
+      };
+    in
+    pkgs.appimageTools.wrapType2 {
+      inherit pname version src;
+    };
+in
 {
   imports = [
     ./flatpak.nix
@@ -33,6 +47,7 @@
     github-desktop
     postman
     # zoom-us
+    linear-appimage
 
     pcloud
     localsend
