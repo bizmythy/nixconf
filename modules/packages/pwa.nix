@@ -5,13 +5,12 @@
 }:
 let
   # modified from https://github.com/bjornfor/nixos-config/blob/master/lib/default.nix
-  makeSimpleWebApp =
+  makeWebApp =
     {
       name,
       url,
-      icon ? null,
-      comment ? null,
-      desktopName ? comment,
+      iconExtension,
+      iconHash,
       startupWMClass ? "${name} ${url}",
       categories ? null,
       browser ? "chromium-browser",
@@ -24,18 +23,26 @@ let
       in
       {
         inherit name startupWMClass exec;
+        comment = name;
+        desktopName = name;
+        icon = pkgs.fetchurl {
+          name = "${name}.${iconExtension}";
+          url = faviconURL url;
+          hash = iconHash;
+        };
       }
-      // (if icon != null then { inherit icon; } else { })
-      // (if comment != null then { inherit comment; } else { })
-      // (if desktopName != null then { inherit desktopName; } else { })
       // (if categories != null then { inherit categories; } else { })
     );
 
-  webApps = map makeSimpleWebApp [
+  # use icon.horse to get the favicons
+  faviconURL = url: "https://icon.horse/icon/${url}";
+
+  webApps = map makeWebApp [
     {
-      name = "linear";
+      name = "Linear";
       url = "linear.app";
-      comment = "Linear";
+      iconExtension = "svg";
+      iconHash = "sha256-VomIEAIlO1k7f3ZSFcMzyAbLJEDJ2e/aj7AIN3fsjr0=";
     }
   ];
 in
