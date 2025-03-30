@@ -25,6 +25,5 @@ The evaluation is curretly a bit slow; speeding this up is a future task.
 ## TODO:
 
 - [ ] default apps for xdg-open
-- [ ] solaar setup
 - [ ] display audio from all displays not working (maybe caused by display mirror?)
 - [ ] pen input from android tablet
