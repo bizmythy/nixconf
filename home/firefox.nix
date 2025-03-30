@@ -1,5 +1,6 @@
 {
   lib,
+  vars,
   ...
 }:
 
@@ -13,7 +14,7 @@
       profile_0 = {
         # choose a profile name; directory is /home/<user>/.mozilla/firefox/profile_0
         id = 0; # 0 is the default profile; see also option "isDefault"
-        name = "drew"; # name as listed in about:profiles
+        name = vars.user; # name as listed in about:profiles
         isDefault = true; # can be omitted; true if profile ID is 0
         settings = {
           # specify profile-specific preferences here; check about:config for options

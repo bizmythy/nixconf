@@ -35,8 +35,10 @@
       ...
     }@inputs:
     let
-      vars = {
-        flakePath = "/home/drew/nixconf";
+      vars = rec {
+        user = "drew";
+        home = "/home/${user}";
+        flakePath = "${home}/nixconf";
         hmBackupFileExtension = "hmbackup";
         defaults = {
           tty = "ghostty";
@@ -53,7 +55,7 @@
         home-manager = {
           extraSpecialArgs = { inherit vars; };
           backupFileExtension = vars.hmBackupFileExtension;
-          users.drew = {
+          users."${vars.user}" = {
             imports = [
               catppuccin.homeManagerModules.catppuccin
               ./home/home.nix

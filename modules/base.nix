@@ -1,5 +1,6 @@
 {
   inputs,
+  vars,
   ...
 }:
 
@@ -132,9 +133,9 @@
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.drew = {
+  users.users."${vars.user}" = {
     isNormalUser = true;
-    description = "drew";
+    description = vars.user;
     extraGroups = [
       "networkmanager"
       "wheel"

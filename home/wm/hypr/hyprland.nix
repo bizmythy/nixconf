@@ -152,8 +152,8 @@
           "$mainMod, EQUAL, exec, ${vars.defaults.calculator}"
 
           "$mainMod, Z, exec, ${vars.defaults.editor}"
-          "$mainMod, D, exec, ${vars.defaults.editor} /home/drew/dirac/buildos-web"
-          "$mainMod, N, exec, ${vars.defaults.editor} /home/drew/nixconf"
+          "$mainMod, D, exec, ${vars.defaults.editor} ${vars.home}/dirac/buildos-web"
+          "$mainMod, N, exec, ${vars.defaults.editor} ${vars.home}/nixconf"
 
           "SUPER, SUPER_L, exec, fuzzel"
           "$mainMod, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"

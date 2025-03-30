@@ -1,5 +1,6 @@
 {
   pkgs,
+  vars,
   ...
 }:
 let
@@ -90,7 +91,7 @@ in
         # dirac-specific git setup
         # need to `git init` in ~/dirac for this to work properly
         {
-          condition = "gitdir:/home/drew/dirac/";
+          condition = "gitdir:${vars.home}/dirac/";
           contentSuffix = ".dirac.gitconfig";
           contents = {
             user = {

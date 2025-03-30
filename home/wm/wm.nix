@@ -1,5 +1,6 @@
 {
   pkgs,
+  vars,
   ...
 }:
 
@@ -27,7 +28,7 @@
   };
 
   home.sessionVariables = {
-    HYPRSHOT_DIR = "/home/drew/Pictures/screenshots";
+    HYPRSHOT_DIR = "${vars.home}/Pictures/screenshots";
   };
 
   services.hyprpaper =

@@ -25,8 +25,8 @@ let
     dcd = "docker compose down";
 
     # dirac
-    cdb = "cd /home/drew/dirac/buildos-web";
-    alf = "zsh -c 'sudo rm -rf ~/.aws/cli ~/.aws/sso && aws sso login'";
+    cdb = "cd ${vars.home}/dirac/buildos-web";
+    alf = "zsh -c 'sudo rm -rf ${vars.home}/.aws/cli ${vars.home}/.aws/sso && aws sso login'";
     al = "aws sso login";
 
     mts = "make test-shell";
