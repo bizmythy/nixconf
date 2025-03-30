@@ -12,6 +12,7 @@ let
       icon ? null,
       comment ? null,
       desktopName ? comment,
+      startupWMClass ? "${name} ${url}",
       categories ? null,
       browser ? "chromium-browser",
       darkMode ? true,
@@ -19,13 +20,10 @@ let
     pkgs.makeDesktopItem (
       let
         darkModeArgs = if darkMode then "--force-dark-mode --enable-features=WebUIDarkMode " else "";
+        exec = "${browser} --ozone-platform-hint=auto ${darkModeArgs}--app=https://${url}/";
       in
       {
-        inherit name;
-        exec = "${browser} --ozone-platform-hint=auto ${darkModeArgs}--app=https://${url}/";
-        extraEntries = ''
-          StartupWMClass=${name} ${url}
-        '';
+        inherit name startupWMClass exec;
       }
       // (if icon != null then { inherit icon; } else { })
       // (if comment != null then { inherit comment; } else { })
