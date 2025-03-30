@@ -29,11 +29,6 @@ in
     Host *
         IdentityAgent ${onePassPath}
 
-    Host github.com
-        HostName github.com
-        User git
-        IdentityFile ${publicKeyFiles.personalGitHub}
-
     Host dirac-github
         HostName github.com
         User git
@@ -120,6 +115,16 @@ in
         repoPaths = {
           "diracq/*" = "~/dirac/*";
         };
+        # keybindings.prs = [
+        #   # {
+        #   #   key = "o";
+        #   #   command = "chromium-browser --ozone-platform-hint=auto --force-dark-mode --enable-features=WebUIDarkMode --app={{.URL}}";
+        #   # }
+        #   {
+        #     key = "t";
+        #     command = "echo {{.URL}}";
+        #   }
+        # ];
         prSections = [
           {
             title = "need review";
