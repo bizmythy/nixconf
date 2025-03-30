@@ -99,6 +99,8 @@ in
     wavemon
     # gpu monitoring
     nvtop-appimage
+    # for very productive and serious work
+    rust-stakeholder
 
     # language tools
     go
