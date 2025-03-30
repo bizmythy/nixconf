@@ -45,6 +45,7 @@
 
     audacity
     gimp
+    xournalpp
     kdePackages.kdenlive
 
     vlc
