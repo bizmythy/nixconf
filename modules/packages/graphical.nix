@@ -1,6 +1,7 @@
 {
   pkgs,
   inputs,
+  vars,
   ...
 }:
 
@@ -82,7 +83,7 @@
       enable = true;
       # Certain features, including CLI integration and system authentication support,
       # require enabling PolKit integration on some desktop environments (e.g. Plasma).
-      polkitPolicyOwners = [ "drew" ];
+      polkitPolicyOwners = [ vars.user ];
     };
 
     steam = {
@@ -93,10 +94,16 @@
     };
 
     virt-manager.enable = true;
+
+    weylus = {
+      enable = true;
+      openFirewall = true;
+      users = [ vars.user ];
+    };
   };
 
   # Set up virt manager
-  users.groups.libvirtd.members = [ "drew" ];
+  users.groups.libvirtd.members = [ vars.user ];
   virtualisation = {
     libvirtd.enable = true;
     spiceUSBRedirection.enable = true;
