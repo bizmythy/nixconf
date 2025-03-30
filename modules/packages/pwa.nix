@@ -14,11 +14,15 @@ let
       desktopName ? comment,
       categories ? null,
       browser ? "chromium-browser",
+      darkMode ? true,
     }:
     pkgs.makeDesktopItem (
+      let
+        darkModeArgs = if darkMode then "--force-dark-mode --enable-features=WebUIDarkMode " else "";
+      in
       {
         inherit name;
-        exec = "${browser} --app=https://${url}/";
+        exec = "${browser} --ozone-platform-hint=auto ${darkModeArgs}--app=https://${url}/";
         extraEntries = ''
           StartupWMClass=${name} ${url}
         '';
@@ -28,7 +32,15 @@ let
       // (if desktopName != null then { inherit desktopName; } else { })
       // (if categories != null then { inherit categories; } else { })
     );
+
+  webApps = map makeSimpleWebApp [
+    {
+      name = "linear";
+      url = "linear.app";
+      comment = "Linear";
+    }
+  ];
 in
 {
-
+  environment.systemPackages = lib.mkAfter webApps;
 }

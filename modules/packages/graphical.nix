@@ -8,8 +8,9 @@
 {
   imports = [
     ./flatpak.nix
-    ./kwallet.nix
     ./fonts.nix
+    ./kwallet.nix
+    ./pwa.nix
   ];
 
   environment.systemPackages = with pkgs; [
