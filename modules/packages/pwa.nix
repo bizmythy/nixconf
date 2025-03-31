@@ -9,7 +9,6 @@ let
     {
       name,
       url,
-      iconExtension,
       iconHash,
       startupWMClass ? "${name} ${url}",
       categories ? null,
@@ -26,23 +25,24 @@ let
         comment = name;
         desktopName = name;
         icon = pkgs.fetchurl {
-          name = "${name}.${iconExtension}";
-          url = faviconURL url;
+          name = "${name}.ico";
+          url = "${url}/favicon.ico";
           hash = iconHash;
         };
       }
       // (if categories != null then { inherit categories; } else { })
     );
 
-  # use icon.horse to get the favicons
-  faviconURL = url: "https://icon.horse/icon/${url}";
-
   webApps = map makeWebApp [
     {
       name = "Linear";
       url = "linear.app";
-      iconExtension = "svg";
-      iconHash = "sha256-VomIEAIlO1k7f3ZSFcMzyAbLJEDJ2e/aj7AIN3fsjr0=";
+      iconHash = "sha256-D/X3IJT7uNHC0lANroJhCM7eyo4BnMc9M9H44sCbij8=";
+    }
+    {
+      name = "GitHub";
+      url = "github.com";
+      iconHash = "sha256-LuQyN9GWEAIQ8Xhue3O1fNFA9gE8Byxw29/9npvGlfg=";
     }
   ];
 in
