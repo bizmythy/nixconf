@@ -22,7 +22,7 @@
     kdePackages.okular
 
     chromium
-    brave
+    vivaldi
     inputs.zen-browser.packages.${pkgs.system}.default
     # firefox in home manager
 
