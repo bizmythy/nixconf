@@ -9,8 +9,8 @@ let
     {
       name,
       url,
-      iconHash,
       startupWMClass ? "${name} ${url}",
+      icon ? null,
       categories ? null,
       browser ? "chromium-browser",
       darkMode ? true,
@@ -24,12 +24,8 @@ let
         inherit name startupWMClass exec;
         comment = name;
         desktopName = name;
-        icon = pkgs.fetchurl {
-          name = "${name}.ico";
-          url = "${url}/favicon.ico";
-          hash = iconHash;
-        };
       }
+      // (if icon != null then { inherit icon; } else { })
       // (if categories != null then { inherit categories; } else { })
     );
 
@@ -37,12 +33,10 @@ let
     {
       name = "Linear";
       url = "linear.app";
-      iconHash = "sha256-D/X3IJT7uNHC0lANroJhCM7eyo4BnMc9M9H44sCbij8=";
     }
     {
       name = "GitHub";
       url = "github.com";
-      iconHash = "sha256-LuQyN9GWEAIQ8Xhue3O1fNFA9gE8Byxw29/9npvGlfg=";
     }
   ];
 in
