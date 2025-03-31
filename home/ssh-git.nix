@@ -18,7 +18,7 @@ let
   };
   publicKeyFiles = builtins.mapAttrs genKeyFile publicKeys;
 
-  onePassPath = "~/.1password/agent.sock";
+  onePassPath = "${vars.home}/.1password/agent.sock";
 in
 {
   # -------SSH CONFIGURATION-------
@@ -115,39 +115,48 @@ in
         repoPaths = {
           "diracq/*" = "~/dirac/*";
         };
-        # keybindings.prs = [
-        #   # {
-        #   #   key = "o";
-        #   #   command = "chromium-browser --ozone-platform-hint=auto --force-dark-mode --enable-features=WebUIDarkMode --app={{.URL}}";
-        #   # }
-        #   {
-        #     key = "t";
-        #     command = "echo {{.URL}}";
-        #   }
-        # ];
-        prSections = [
-          {
-            title = "need review";
-            filters = "is:open draft:false review:required -review:approved-by:@me";
-          }
-          {
-            title = "mine";
-            filters = "is:open author:@me";
-            layout.author.hidden = true;
-          }
-          {
-            title = "review requested";
-            filters = "is:open review-requested:@me";
-          }
-          {
-            title = "all ready";
-            filters = "is:open draft:false";
-          }
-          {
-            title = "all";
-            filters = "is:open";
-          }
-        ];
+        keybindings.prs =
+          let
+            url = "https://github.com/{{.RepoName}}/pull/{{.PrNumber}}";
+            prInWebapp = "chromium-browser --ozone-platform-hint=auto --force-dark-mode --enable-features=WebUIDarkMode --app=${url} > /dev/null";
+          in
+          [
+            {
+              key = "o";
+              command = prInWebapp;
+            }
+          ];
+        prSections =
+          let
+            needReview = "is:open draft:false review:required";
+          in
+          [
+            {
+              title = "need my review";
+              filters = needReview + " -review:approved-by:@me -author:@me";
+            }
+            {
+              title = "mine";
+              filters = "is:open author:@me";
+              layout.author.hidden = true;
+            }
+            {
+              title = "review requested";
+              filters = "is:open review-requested:@me";
+            }
+            {
+              title = "all ready";
+              filters = "is:open draft:false";
+            }
+            {
+              title = "all";
+              filters = "is:open";
+            }
+            {
+              title = "need review";
+              filters = needReview;
+            }
+          ];
       };
     };
 
