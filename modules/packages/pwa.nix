@@ -18,7 +18,7 @@ let
     pkgs.makeDesktopItem (
       let
         darkModeArgs = if darkMode then "--force-dark-mode --enable-features=WebUIDarkMode " else "";
-        exec = "${browser} --ozone-platform-hint=auto ${darkModeArgs}--app=https://${url}/";
+        exec = "${browser} --ozone-platform-hint=auto ${darkModeArgs}--app=${url}/";
       in
       {
         inherit name startupWMClass exec;
@@ -32,11 +32,19 @@ let
   webApps = map makeWebApp [
     {
       name = "Linear";
-      url = "linear.app";
+      url = "https://linear.app";
     }
     {
       name = "GitHub";
-      url = "github.com";
+      url = "https://github.com";
+    }
+    {
+      name = "BuildOS";
+      url = "http://localhost:5173";
+    }
+    {
+      name = "Google Calendar";
+      url = "https://calendar.google.com";
     }
   ];
 in

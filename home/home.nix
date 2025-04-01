@@ -78,6 +78,14 @@ in
       };
     };
 
+    chromium = {
+      enable = true;
+      commandLineArgs = [
+        "--use-gl=angle"
+        "--use-angle=swiftshader"
+      ];
+    };
+
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
   };
