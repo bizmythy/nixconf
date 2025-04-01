@@ -101,6 +101,10 @@ in
     nvtop-appimage
     # for very productive and serious work
     rust-stakeholder
+    # determine type of FILEs
+    file
+    # exfat support
+    exfatprogs
 
     # language tools
     go
