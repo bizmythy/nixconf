@@ -118,12 +118,12 @@ in
         keybindings.prs =
           let
             url = "https://github.com/{{.RepoName}}/pull/{{.PrNumber}}";
-            prInWebapp = "chromium-browser --ozone-platform-hint=auto --force-dark-mode --enable-features=WebUIDarkMode --app=${url} > /dev/null";
+            command = "chromium-browser --ozone-platform-hint=auto --force-dark-mode --enable-features=WebUIDarkMode --app=${url} &> /dev/null &";
           in
           [
             {
               key = "o";
-              command = prInWebapp;
+              inherit command;
             }
           ];
         prSections =
@@ -132,7 +132,7 @@ in
           in
           [
             {
-              title = "need my review";
+              title = "need my approval";
               filters = needReview + " -review:approved-by:@me -author:@me";
             }
             {
