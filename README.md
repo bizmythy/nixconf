@@ -20,10 +20,8 @@ This config uses [catppuccin-nix](https://github.com/catppuccin/nix) to automati
 
 I have made an effort to stick primarily to Nix language configuration where possible, as opposed to various `.json`, `.toml`, `.yaml`, etc. files being added by home manager.
 
-The evaluation is curretly a bit slow; speeding this up is a future task.
-
 ## TODO:
 
 - [ ] default apps for xdg-open
 - [ ] display audio from all displays not working (maybe caused by display mirror?)
-- [ ] pen input from android tablet
+- [x] pen input from android tablet
