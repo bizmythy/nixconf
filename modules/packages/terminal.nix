@@ -105,6 +105,8 @@ in
     file
     # exfat support
     exfatprogs
+    # advanced docker build stuff
+    docker-buildx
 
     # language tools
     go
