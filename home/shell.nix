@@ -168,10 +168,11 @@ in
       enableNushellIntegration = true;
       enableBashIntegration = false;
       settings = {
-        format = "$all$shell$character";
-        aws = {
-          disabled = true;
-        };
+        aws.disabled = true;
+        git_status.disabled = true;
+        golang.disabled = true;
+        cmake.disabled = true;
+        buf.disabled = true;
         character = {
           success_symbol = "[➜](bold green)";
           error_symbol = "[➜](bold red)";
