@@ -57,7 +57,7 @@
           backupFileExtension = vars.hmBackupFileExtension;
           users."${vars.user}" = {
             imports = [
-              catppuccin.homeManagerModules.catppuccin
+              catppuccin.homeModules.catppuccin
               ./home/home.nix
             ];
           };
