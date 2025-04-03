@@ -35,6 +35,10 @@ let
       url = "https://linear.app";
     }
     {
+      name = "Notion";
+      url = "https://www.notion.so";
+    }
+    {
       name = "GitHub";
       url = "https://github.com";
     }
