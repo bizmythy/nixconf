@@ -15,13 +15,13 @@
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
-    dirac = {
-      type = "git";
-      url = "ssh://git@dirac-github/diracq/buildos-web.git";
-      ref = "main";
-      shallow = true;
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # dirac = {
+    #   type = "git";
+    #   url = "ssh://git@dirac-github/diracq/buildos-web.git";
+    #   ref = "main";
+    #   shallow = true;
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
   outputs =
@@ -30,7 +30,7 @@
       nixpkgs,
       catppuccin,
       nix-flatpak,
-      dirac,
+      # dirac,
       home-manager,
       ...
     }@inputs:
@@ -77,16 +77,16 @@
             catppuccin.nixosModules.catppuccin
             nix-flatpak.nixosModules.nix-flatpak
 
-            dirac.nixosModules.linux
-            {
-              dirac.graphical = false;
-              # override what i am already managing in home manager
-              programs = {
-                direnv.enable = false;
-                git.enable = nixpkgs.lib.mkForce false;
-                starship.enable = false;
-              };
-            }
+            # dirac.nixosModules.linux
+            # {
+            #   dirac.graphical = false;
+            #   # override what i am already managing in home manager
+            #   programs = {
+            #     direnv.enable = false;
+            #     git.enable = nixpkgs.lib.mkForce false;
+            #     starship.enable = false;
+            #   };
+            # }
 
             ./modules/base.nix
             ./hosts/${hostname}/configuration.nix
