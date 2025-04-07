@@ -77,6 +77,7 @@ in
         # 1password ssh commit signing
         user.signingkey = publicKeys.personalGitHub;
         gpg.format = "ssh";
+        core.sshCommand = "ssh -i ${publicKeyFiles.personalGitHub}";
         # should be declared deterministically, but can't get same pkg as in nixos config
         "gpg \"ssh\"".program = "/run/current-system/sw/bin/op-ssh-sign";
         commit.gpgsign = true;
