@@ -102,20 +102,9 @@ in
 
     gh = {
       enable = true;
-      extensions = with pkgs; [
-        gh-dash
-        gh-s
-        gh-i
-        gh-f
-        gh-copilot
-        gh-markdown-preview
-      ];
       settings = {
         git_protocol = "ssh";
-        aliases = {
-          cs = "copilot suggest";
-          ce = "copilot explain";
-        };
+        # aliases = {};
       };
     };
 

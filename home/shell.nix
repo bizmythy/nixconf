@@ -23,7 +23,6 @@ let
     nhob = "nh os boot";
     hmclean = "fd '${vars.hmBackupFileExtension}' ~ -u -x rm";
     dcd = "docker compose down";
-    "??" = "gh copilot suggest -t shell";
 
     # dirac
     cdb = "cd ${vars.home}/dirac/buildos-web";
