@@ -116,6 +116,7 @@ in
     markdown-oxide
     shellcheck
     protobuf-language-server
+    buf
     dive
 
     # nix tools
