@@ -103,7 +103,6 @@ in
     gh = {
       enable = true;
       extensions = with pkgs; [
-        gh-dash
         gh-s
         gh-i
         gh-f
