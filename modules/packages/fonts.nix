@@ -7,16 +7,19 @@
   # configure fonts
   fonts = {
     enableDefaultPackages = true;
-    packages = with pkgs; [
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.hack
-      nerd-fonts.fira-code
-      nerd-fonts.ubuntu-mono
-
-      noto-fonts
-      noto-fonts-color-emoji
-      ibm-plex
-    ];
+    packages =
+      (with pkgs.nerd-fonts; [
+        jetbrains-mono
+        hack
+        fira-code
+        ubuntu-mono
+        departure-mono
+      ])
+      ++ (with pkgs; [
+        noto-fonts
+        noto-fonts-color-emoji
+        ibm-plex
+      ]);
 
     fontconfig = {
       enable = true;
