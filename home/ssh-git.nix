@@ -126,17 +126,17 @@ in
         repoPaths = {
           "diracq/*" = "~/dirac/*";
         };
-        keybindings.prs =
-          let
-            url = "https://github.com/{{.RepoName}}/pull/{{.PrNumber}}";
-            command = "chromium-browser --ozone-platform-hint=auto --force-dark-mode --enable-features=WebUIDarkMode --app=${url} &> /dev/null &";
-          in
-          [
-            {
-              key = "o";
-              inherit command;
-            }
-          ];
+        # keybindings.prs =
+        #   let
+        #     url = "https://github.com/{{.RepoName}}/pull/{{.PrNumber}}";
+        #     command = "chromium-browser --ozone-platform-hint=auto --force-dark-mode --enable-features=WebUIDarkMode --app=${url} &> /dev/null &";
+        #   in
+        #   [
+        #     {
+        #       key = "o";
+        #       inherit command;
+        #     }
+        #   ];
         prSections =
           let
             needReview = "is:open draft:false review:required";
