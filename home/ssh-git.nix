@@ -35,7 +35,7 @@ in
         IdentityFile ${publicKeyFiles.diracGitHub}
 
     Host diraclocalserver
-        HostName 192.168.1.154
+        HostName 192.168.1.244
         User diraclocalserver
         IdentityFile ${publicKeyFiles.diraclocalserver}
   '';
