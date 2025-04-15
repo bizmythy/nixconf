@@ -19,8 +19,6 @@ let
 
     lg = "lazygit";
     ld = "lazydocker";
-    nhos = "nh os switch";
-    nhob = "nh os boot";
     hmclean = "fd '${vars.hmBackupFileExtension}' ~ -u -x rm";
     dcd = "docker compose down";
     "??" = "gh copilot suggest -t shell";
