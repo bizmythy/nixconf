@@ -110,6 +110,8 @@ in
     # language tools
     go
     gopls
+    golangci-lint
+    golangci-lint-langserver
     nil
     nixd
     markdown-oxide
