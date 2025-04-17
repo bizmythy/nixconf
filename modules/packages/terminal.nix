@@ -107,11 +107,13 @@ in
     # advanced docker build stuff
     docker-buildx
 
-    # language tools
+    # go tools
     go
     gopls
     golangci-lint
     golangci-lint-langserver
+
+    # language tools
     nil
     nixd
     markdown-oxide
@@ -119,6 +121,7 @@ in
     protobuf-language-server
     buf
     dive
+    pyright
 
     # nix tools
     nix-output-monitor
