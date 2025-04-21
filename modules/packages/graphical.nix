@@ -65,8 +65,6 @@
     alacritty
     ghostty
 
-    space-cadet-pinball
-
     kdePackages.qtwayland
     kdePackages.qtsvg
     kdePackages.qt6ct
