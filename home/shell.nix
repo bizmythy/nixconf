@@ -172,6 +172,7 @@ in
         golang.disabled = true;
         cmake.disabled = true;
         buf.disabled = true;
+        python.disabled = true;
         character = {
           success_symbol = "[➜](bold green)";
           error_symbol = "[➜](bold red)";
