@@ -5,7 +5,6 @@
 }:
 let
   mySessionVariables = {
-    FLAKE = vars.flakePath;
     EDITOR = vars.defaults.termEditor;
     VISUAL = vars.defaults.editor;
     BROWSER = vars.defaults.browser;
@@ -82,7 +81,7 @@ in
       enable = true;
       syntaxHighlighting.enable = true;
       autosuggestion.enable = true;
-      initExtra = ''
+      initContent = ''
         function y() {
          	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
          	yazi "$@" --cwd-file="$tmp"
