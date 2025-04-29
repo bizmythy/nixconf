@@ -18,7 +18,7 @@ let
     pkgs.makeDesktopItem (
       let
         darkModeArgs = if darkMode then "--force-dark-mode --enable-features=WebUIDarkMode " else "";
-        exec = "${browser} --ozone-platform-hint=auto ${darkModeArgs}--app=${url}/";
+        exec = "${browser} ${darkModeArgs}--app=${url}/";
       in
       {
         inherit name startupWMClass exec;

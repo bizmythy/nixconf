@@ -81,8 +81,7 @@ in
     chromium = {
       enable = true;
       commandLineArgs = [
-        "--use-gl=angle"
-        "--use-angle=swiftshader"
+        "--ozone-platform-hint=x11"
       ];
     };
 

@@ -13,6 +13,12 @@
     ./pwa.nix
   ];
 
+  # Enable OpenGL
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+
   environment.systemPackages = with pkgs; [
     kdePackages.dolphin
     lxqt.pcmanfm-qt
@@ -22,7 +28,6 @@
     kdePackages.okular
 
     vivaldi
-    google-chrome
 
     inputs.zen-browser.packages.${pkgs.system}.default
     # firefox in home manager
