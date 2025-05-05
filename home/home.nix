@@ -99,6 +99,7 @@ in
     #   enable = true;
     #   apply = true;
     # };
+    mako.enable = false;
   };
 
   home.pointerCursor = cursor;
