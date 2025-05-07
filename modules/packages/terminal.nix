@@ -143,6 +143,7 @@ in
     buf
     dive
     pyright
+    uv
 
     # nix tools
     nix-output-monitor
