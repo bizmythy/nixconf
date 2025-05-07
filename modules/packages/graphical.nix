@@ -20,6 +20,8 @@
   };
 
   environment.systemPackages = with pkgs; [
+    mesa-demos
+
     kdePackages.dolphin
     lxqt.pcmanfm-qt
 
@@ -28,7 +30,6 @@
     kdePackages.okular
 
     vivaldi
-
     inputs.zen-browser.packages.${pkgs.system}.default
     # firefox in home manager
 
