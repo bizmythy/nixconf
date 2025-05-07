@@ -19,12 +19,6 @@
       nvitop
     ];
 
-    # Enable OpenGL
-    hardware.graphics = {
-      enable = true;
-      enable32Bit = true;
-    };
-
     boot.kernelPackages = pkgs.linuxPackages_latest;
     boot.kernelParams = [
       "nvidia-drm.modeset=1"
