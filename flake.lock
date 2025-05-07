@@ -91,10 +91,10 @@
         "srvos": "srvos"
       },
       "locked": {
-        "lastModified": 1746462526,
-        "narHash": "sha256-R5bYLc0LxVztuLbDKqckjQyTDeVXUSheNpFdgrDGQbM=",
+        "lastModified": 1746486179,
+        "narHash": "sha256-fVAq5KeG2bAKd2BRX2A8V8RqT+5n667x1t+/ghckPN8=",
         "ref": "main",
-        "rev": "3b4791ad644f2e3903cf1de74e1669703e86b47c",
+        "rev": "1516f668f20a80d70c206b56cc1b1a89414ab540",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@dirac-github/diracq/buildos-web.git"
@@ -478,11 +478,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1746462331,
-        "narHash": "sha256-5vYuiOmaK78HBKIH6Bn3No6FQ2MrjkEYa2s0swLXtMo=",
+        "lastModified": 1746526870,
+        "narHash": "sha256-wiYAuu919SIBaH0WqTIQLrjkq8R8NxCy8CDxRNb1SAM=",
         "owner": "0xc000022070",
         "repo": "zen-browser-flake",
-        "rev": "5866c62d3aba150251f244fafebd47c7a384fb47",
+        "rev": "3ad6fc80856ef6b3959bcf57a57ff2526a945215",
         "type": "github"
       },
       "original": {
