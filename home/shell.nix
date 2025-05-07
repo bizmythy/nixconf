@@ -55,26 +55,21 @@ let
       $env.config.buffer_editor = "${vars.defaults.termEditor}"
     ''
     + formatCompletions [
-      "bat"
       "curl"
-      "docker"
-      "gh"
       "less"
       "make"
       "man"
-      "nix"
       "op"
-      "pytest"
-      "pre-commit"
-      "rg"
       "tar"
-      "uv"
     ];
 in
 {
   home = {
     shellAliases = myShellAliases;
     sessionVariables = mySessionVariables;
+    sessionPath = [
+      "${vars.home}/.local/bin"
+    ];
   };
   programs = {
     zsh = {
