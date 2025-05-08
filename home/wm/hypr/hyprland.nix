@@ -148,7 +148,7 @@
           "$mainMod, E, exec, ${vars.defaults.fileManager}"
           "$mainMod, B, exec, ${vars.defaults.browser}"
           "$mainMod SHIFT, B, exec, ${vars.defaults.browser} --private-window duckduckgo.com"
-          "$mainMod, P, exec, hyprpicker"
+          "$mainMod, P, exec, hyprpicker -a"
           "$mainMod, EQUAL, exec, ${vars.defaults.calculator}"
 
           "$mainMod, Z, exec, ${vars.defaults.editor}"
