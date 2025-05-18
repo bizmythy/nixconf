@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  vars,
   ...
 }:
 let
@@ -19,7 +20,7 @@ let
       ls
       substituteInPlace theme.conf \
       --replace-fail "WELCOME!" "${config.networking.hostName}" \
-      --replace-fail "Backgrounds/mountain.png" "Backgrounds/mountain.png" \
+      --replace-fail "Backgrounds/mountain.png" "${vars.lockScreenPic}" \
       --replace-fail "HH:mm" "hh:mm AP"
     '';
 
