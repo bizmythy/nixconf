@@ -43,7 +43,7 @@
         home = "/home/${user}";
         flakePath = "${home}/nixconf";
         hmBackupFileExtension = "hmbackup";
-        lockScreenPic = nixpkgs.fetchurl {
+        lockScreenPic = builtins.fetchurl {
           url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/lockscreen.png";
           sha256 = "14bd14bbwi295q95jm3sff8j4rs5xpf5qpffczmqshf54hgm35kz";
         };
