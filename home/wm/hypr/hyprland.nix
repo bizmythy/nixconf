@@ -57,6 +57,8 @@
             "2, monitor:${igneous.main}, default:true"
           ];
         };
+
+        launchWork = pkgs.writeNu "laucnchwork" (builtins.readFile ./launchwork.nu);
       in
       {
         xwayland.force_zero_scaling = true;
@@ -153,6 +155,7 @@
 
           "$mainMod, Z, exec, ${vars.defaults.editor}"
           "$mainMod, D, exec, ${vars.defaults.editor} ${vars.home}/dirac/buildos-web"
+          "$mainMod SHIFT, D, exec, ${launchWork}"
           "$mainMod, N, exec, ${vars.defaults.editor} ${vars.home}/nixconf"
 
           "SUPER, SUPER_L, exec, fuzzel"
