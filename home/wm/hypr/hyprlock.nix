@@ -6,7 +6,7 @@
   ...
 }:
 let
-  isWork = builtins.elem osConfig.networking.hostname [
+  isWork = builtins.elem osConfig.networking.hostName [
     "drewdirac"
     "drewdiracpc"
   ];
