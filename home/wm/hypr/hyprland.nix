@@ -58,7 +58,7 @@
           ];
         };
 
-        launchWork = pkgs.writeNu "laucnchwork" (builtins.readFile ./launchwork.nu);
+        launchWork = pkgs.writers.writeNu "laucnchwork" (builtins.readFile ./launchwork.nu);
       in
       {
         xwayland.force_zero_scaling = true;
