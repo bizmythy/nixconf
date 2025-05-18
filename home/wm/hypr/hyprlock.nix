@@ -10,7 +10,7 @@ let
     "drewdirac"
     "drewdiracpc"
   ];
-  lockScreenTimeout = 60 / 2; # inactive seconds before lock screen
+  lockScreenTimeout = 60 * 10; # inactive seconds before lock screen
 in
 {
   programs.hyprlock = {
