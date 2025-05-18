@@ -45,7 +45,7 @@
         hmBackupFileExtension = "hmbackup";
         lockScreenPic = builtins.fetchurl {
           url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/lockscreen.png";
-          sha256 = "14bd14bbwi295q95jm3sff8j4rs5xpf5qpffczmqshf54hgm35kz";
+          sha256 = "1w3biszx1iy9qavr2cvl4gxrlf3lbrjpp50bp8wbi3rdpzjgv4kl";
         };
         defaults = {
           tty = "ghostty";
