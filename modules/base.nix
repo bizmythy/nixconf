@@ -164,7 +164,7 @@
         "theseus"
       ])
       {
-        device = "192.168.1.237:/mnt/tungsten/tungsten-vault";
+        device = "192.168.1.202:/mnt/tungsten/tungsten-vault";
         fsType = "nfs";
         options = [
           "x-systemd.automount"
