@@ -52,6 +52,7 @@
 
     audacity
     gimp
+    upscayl
     xournalpp
     kdePackages.kdenlive
 
