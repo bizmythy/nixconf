@@ -95,6 +95,26 @@ in
     home-manager.enable = true;
   };
 
+  # catppuccin theme for lazydocker
+  xdg.configFile."lazydocker/config.yml".source = (pkgs.formats.yaml { }).generate "config.yml" {
+    gui.theme = {
+      activeBorderColor = [
+        "#cba6f7"
+        "bold"
+      ];
+      inactiveBorderColor = [
+        "#a6adc8"
+        "bold"
+      ];
+      selectedLineBgColor = [
+        "#313244"
+      ];
+      optionsTextColor = [
+        "#89b4fa"
+      ];
+    };
+  };
+
   fonts.fontconfig.enable = true;
 
   # Theming
