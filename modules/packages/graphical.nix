@@ -42,7 +42,6 @@
     wireshark
     transmission_4-qt
 
-    ventoy
     gparted
 
     audacity
