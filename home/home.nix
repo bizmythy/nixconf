@@ -123,7 +123,7 @@ in
         "bold"
       ];
       selectedLineBgColor = [
-        "#313244"
+        "default"
       ];
       optionsTextColor = [
         "#89b4fa"
