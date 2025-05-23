@@ -61,6 +61,8 @@ in
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
+    # coreutils rust rewrite, testing it out
+    uutils-coreutils-noprefix
     # terminal tools
     neovim
     wget
@@ -91,6 +93,30 @@ in
     dig
     jq
     yq
+    # curl replacement, http requests
+    xh
+    # disk usage, more intuative du
+    dust
+    # interactive disk usage
+    dua
+    # benchmarking tool
+    hyperfine
+    # SQL queries for files
+    fselect
+    # ripgrep lots of file types
+    ripgrep-all
+    # count ammount of code by language
+    tokei
+    # wikipedia search
+    wiki-tui
+    # modern make replacement
+    just
+    # self-documenting command runner
+    mask
+    # tui for running multiple processes
+    mprocs
+    # terminal presentation
+    presenterm
     # find replace with confirmation
     repgrep
     # git log with tree
