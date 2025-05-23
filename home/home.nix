@@ -1,6 +1,6 @@
 {
+  lib,
   pkgs,
-  libs,
   vars,
   osConfig,
   ...
@@ -88,7 +88,7 @@ in
 
     chromium = {
       enable = true;
-      commandLineArgs = libs.mkIf osConfig.nvidiaEnable [
+      commandLineArgs = lib.mkIf osConfig.nvidiaEnable [
         "--ozone-platform-hint=x11"
       ];
     };
