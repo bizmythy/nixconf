@@ -6,6 +6,7 @@
       },
       "locked": {
         "lastModified": 1747519437,
+        "narHash": "sha256-uv9Wv59d+mckS2CkorOF484wp2G5TNGijdoBZ5RkAk0=",
         "owner": "catppuccin",
         "repo": "nix",
         "rev": "3ba714046ee32373e88166e6e9474d6ae6a5b734",
@@ -91,9 +92,10 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1747664374,
+        "lastModified": 1747853506,
+        "narHash": "sha256-5IEuRCzgdQ9LPnxrGMpALTZwH+41qfRRRXGEEkqazcM=",
         "ref": "main",
-        "rev": "cd2cadcd28df1d6aeaab80ca4eb5e38008f01723",
+        "rev": "910437b14dc332a81d9f3cc7ae5a6c23f6236bac",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@dirac-github/diracq/buildos-web.git"
@@ -202,10 +204,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1747565775,
+        "lastModified": 1747834438,
+        "narHash": "sha256-AHJt79W8wADzur2htCx1U8FtEk4XjvrHb9/3iDfNedI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "97118a310eb8e13bc1b9b12d67267e55b7bee6c8",
+        "rev": "6c2eb1e24cd0e76d88bdd633ef4c50d6286586e0",
         "type": "github"
       },
       "original": {
@@ -259,6 +262,7 @@
     "nix-flatpak": {
       "locked": {
         "lastModified": 1739444422,
+        "narHash": "sha256-iAVVHi7X3kWORftY+LVbRiStRnQEob2TULWyjMS6dWg=",
         "owner": "gmodena",
         "repo": "nix-flatpak",
         "rev": "5e54c3ca05a7c7d968ae1ddeabe01d2a9bc1e177",
@@ -419,10 +423,11 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1747542820,
+        "lastModified": 1747744144,
+        "narHash": "sha256-W7lqHp0qZiENCDwUZ5EX/lNhxjMdNapFnbErcbnP11Q=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "292fa7d4f6519c074f0a50394dbbe69859bb6043",
+        "rev": "2795c506fe8fb7b03c36ccb51f75b6df0ab2553f",
         "type": "github"
       },
       "original": {
@@ -503,10 +508,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1747658502,
+        "lastModified": 1747852083,
+        "narHash": "sha256-AitWK0alpojxNu3pFiLDbT5DVQWZXV3i8BlWkfQPET0=",
         "owner": "0xc000022070",
         "repo": "zen-browser-flake",
-        "rev": "d4005e943d4276023fb81d598811c9ab04d141d0",
+        "rev": "8a9ca8f89923eeda6c1a9ce164a1c0eb6f712420",
         "type": "github"
       },
       "original": {
