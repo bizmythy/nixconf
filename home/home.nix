@@ -93,9 +93,23 @@ in
       ];
     };
 
+    helix = {
+      enable = true;
+    };
+
+    # spotify TUI
+    ncspot = {
+      enable = true;
+    };
+
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
   };
+
+  # text expander
+  # services.espanso = {
+  #   enable = true;
+  # };
 
   # catppuccin theme for lazydocker
   xdg.configFile."lazydocker/config.yml".source = (pkgs.formats.yaml { }).generate "config.yml" {
