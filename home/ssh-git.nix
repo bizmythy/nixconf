@@ -218,5 +218,9 @@ in
           # ];
         };
       };
+
+    gitui = {
+      enable = true;
+    };
   };
 }
