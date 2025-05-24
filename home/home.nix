@@ -59,6 +59,7 @@ in
         "x-scheme-handler/unknown" = browser;
         "inode/directory" = fileManager;
         "text/plain" = editor;
+        "application/pdf" = "org.kde.okular.desktop";
       };
   };
 
