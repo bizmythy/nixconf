@@ -87,6 +87,13 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  # Detect network printers
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
   hardware.bluetooth = {
     enable = true; # enables support for Bluetooth
     powerOnBoot = true; # powers up the default Bluetooth controller on boot

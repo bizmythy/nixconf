@@ -28,6 +28,7 @@
     thunderbird
     libreoffice-qt6-fresh
     kdePackages.okular
+    system-config-printer
 
     vivaldi
     inputs.zen-browser.packages.${pkgs.system}.default
