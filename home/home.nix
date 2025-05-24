@@ -50,6 +50,7 @@ in
         browser = "${vars.defaults.browser}.desktop";
         fileManager = "org.kde.dolphin.desktop";
         editor = "dev.zed.Zed.desktop";
+        # imageViewer =
       in
       {
         "text/html" = browser;
@@ -100,6 +101,11 @@ in
 
     # spotify TUI
     ncspot = {
+      enable = true;
+    };
+
+    # simple image viewer
+    pqiv = {
       enable = true;
     };
 

@@ -25,7 +25,6 @@
     hyprsysteminfo
     hyprpaper
 
-    pqiv
     playerctl
     brightnessctl
     udiskie
