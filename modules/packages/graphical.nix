@@ -35,7 +35,8 @@
     # firefox in home manager
 
     signal-desktop
-    discord
+    # discord
+    vesktop
 
     qalculate-qt
 
