@@ -82,6 +82,7 @@ in
     lazydocker
     cht-sh
     nerdfetch
+    fastfetch
     ffmpeg
     imagemagick
     zstd

@@ -54,6 +54,7 @@
 
     audacity
     gimp
+    inkscape
     feh
     upscayl
     xournalpp
