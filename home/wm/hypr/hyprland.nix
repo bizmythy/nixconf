@@ -45,7 +45,7 @@
         theseus = {
           laptop = "desc:BOE 0x095F";
         };
-        scaleHiDPI = "1.3333333";
+        scaleHiDPI = "1.5";
         wsByHost = {
           drewdiracpc = [
             "1, monitor:${drewdirac.right}, default:true"
