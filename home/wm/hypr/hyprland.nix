@@ -112,7 +112,7 @@
           "${drewdirac.razer}, highres, auto, 1.333333"
 
           "${drewdirac.main}, 3840x2160, 0x0, ${scaleHiDPI}"
-          "${drewdirac.right}, 2560x2880@60, auto-right, ${scaleHiDPI}"
+          "${drewdirac.right}, 2560x2880@60, auto-right, 1.333333"
           "${drewdirac.top}, 1920x1080@60, 575x-1080, 1.0"
 
           "${theseus.laptop}, preferred, auto, 1.566667"
