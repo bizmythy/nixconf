@@ -21,7 +21,6 @@
       type = "git";
       url = "ssh://git@dirac-github/diracq/buildos-web.git";
       ref = "main";
-      shallow = true;
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
