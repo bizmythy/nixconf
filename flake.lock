@@ -92,11 +92,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1748438123,
-        "narHash": "sha256-DHZwwxeMRZetdCf0wepTUVuprk6lRT6JBWsYuvKm604=",
+        "lastModified": 1748442712,
+        "narHash": "sha256-6L07lEnYCa/7xTGNizd4sH4xnGH0Rjs/oPdqOai9rus=",
         "ref": "main",
-        "rev": "6af48901fa70c8328bd3b9e04677d69d32024618",
-        "revCount": 1465,
+        "rev": "76be3f471e34a4ae5adbf1130c7381abab179618",
+        "revCount": 1466,
         "type": "git",
         "url": "ssh://git@dirac-github/diracq/buildos-web.git"
       },
