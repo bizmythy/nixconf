@@ -96,6 +96,9 @@ in
           ];
         };
         device.name = "${osConfig.networking.hostName}-spotify-player";
+        cover_img_width = 9;
+        cover_img_length = 18;
+        border_type = "Rounded";
         layout = {
           playback_window_position = "Bottom";
           playback_window_height = 10;
