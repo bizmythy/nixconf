@@ -119,6 +119,16 @@
   #   '';
   # };
 
+  # use sudo-rs instead of default sudo
+  security = {
+    sudo.enable = false;
+    sudo-rs = {
+      enable = true;
+      execWheelOnly = true;
+      wheelNeedsPassword = true;
+    };
+  };
+
   # service to allow automount USB drives
   services.udisks2.enable = true;
 
