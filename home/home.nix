@@ -84,6 +84,29 @@ in
     };
     spotify-player = {
       enable = true;
+      settings = {
+        # fetch the client ID using 1Password
+        client_id_command = {
+          command = "op";
+          args = [
+            "--account"
+            "L23KMYOBNVHLPGSIPDX7BAQ5LA"
+            "read"
+            "op://smfpz5gfxgz5meqdqachl7lqw4/spotify-player/credential"
+          ];
+        };
+        device.name = "${osConfig.networking.hostName}-spotify-player";
+        layout = {
+          playback_window_position = "Bottom";
+          playback_window_height = 10;
+        };
+      };
+      actions = [
+        {
+          command = "ToggleLiked";
+          key_sequence = "C-l";
+        }
+      ];
     };
 
     # simple image viewer
