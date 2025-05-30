@@ -33,6 +33,7 @@ in
         HostName github.com
         User git
         IdentityFile ${publicKeyFiles.diracGitHub}
+        IdentitiesOnly yes
 
     Host diraclocalserver
         HostName 192.168.1.244
