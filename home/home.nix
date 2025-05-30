@@ -78,8 +78,11 @@ in
       enable = true;
     };
 
-    # spotify TUI
+    # spotify TUIs
     ncspot = {
+      enable = true;
+    };
+    spotify-player = {
       enable = true;
     };
 
