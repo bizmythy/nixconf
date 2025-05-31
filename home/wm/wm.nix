@@ -46,5 +46,4 @@
         wallpaper = " , ${wallpaper.outPath}";
       };
     };
-
 }
