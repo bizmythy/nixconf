@@ -54,7 +54,7 @@ in
 
   programs.ghostty =
     let
-      bloomAmmount = "0.04";
+      bloomAmmount = "0.03";
       ghosttyShaders = pkgs.stdenv.mkDerivation {
         name = "bloom-shader";
         src = pkgs.fetchFromGitHub {
