@@ -12,9 +12,12 @@
     enable = true;
     style = ./waybar.css;
     settings.mainBar = {
-      height = 10;
-      spacing = 4;
-
+      # "layer" = "top"; # Waybar at top layer
+      # "position" = "bottom"; # Waybar position (top|bottom|left|right)
+      height = 10; # Waybar height (to be removed for auto height)
+      # "width" = 1280; # Waybar width
+      spacing = 4; # Gaps between modules (4px)
+      # Choose the order of the modules
       modules-left = [
         "hyprland/workspaces"
         "custom/media"
@@ -32,39 +35,55 @@
         "clock"
         "custom/power"
       ];
-
+      # Modules configuration
+      # hyprland/workspaces = {
+      #   disable-scroll = true;
+      #   all-outputs = true;
+      #   warp-on-scroll = false;
+      #   format = "{name}: {icon}";
+      #   format-icons = {
+      #     1 = ""
+      #     2 = ""
+      #     3 = ""
+      #     4 = ""
+      #     5 = ""
+      #     urgent = ""
+      #     focused = ""
+      #     default = ""
+      #   };
+      # };
       "keyboard-state" = {
         numlock = true;
         capslock = true;
         format = "{name} {icon}";
         format-icons = {
-          locked = "";
-          unlocked = "";
+          locked = "";
+          unlocked = "";
         };
       };
 
       mpd = {
         format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ";
-        format-disconnected = "Disconnected ";
-        format-stopped = "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
+        format-disconnected = "Disconnected ";
+        format-stopped = "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
         unknown-tag = "N/A";
         interval = 5;
         consume-icons = {
-          "on" = " ";
+          on = " ";
         };
         random-icons = {
-          "off" = "<span color=\"#f53c3c\"></span> ";
-          "on" = " ";
+          off = "<span color=\"#f53c3c\"></span> ";
+          on = " ";
         };
         repeat-icons = {
-          "on" = " ";
+          on = " ";
         };
         single-icons = {
-          "on" = "1 ";
+          on = "1 ";
         };
         state-icons = {
-          paused = "";
-          playing = "";
+          paused = "";
+          playing = "";
         };
         tooltip-format = "MPD (connected)";
         tooltip-format-disconnected = "MPD (disconnected)";
@@ -73,37 +92,42 @@
       idle_inhibitor = {
         format = "{icon}";
         format-icons = {
-          activated = "";
-          deactivated = "";
+          activated = "";
+          deactivated = "";
         };
       };
 
       tray = {
+        # icon-size = 21;
         spacing = 10;
       };
 
       clock = {
-        format = "{:%I:%M}";
+        format = "{:%I:%M}"; # 12-hour format
+        # timezone = "America/New_York";
         tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
         format-alt = "{:%Y-%m-%d}";
       };
 
       cpu = {
-        format = "{usage}% ";
+        format = "{usage}% ";
         tooltip = false;
       };
 
       memory = {
-        format = "{}% ";
+        format = "{}% ";
       };
 
       temperature = {
+        # thermal-zone = 2;
+        # hwmon-path = "/sys/class/hwmon/hwmon2/temp1_input";
         critical-threshold = 80;
+        # format-critical = "{temperatureC}°C {icon}";
         format = "{temperatureC}°C {icon}";
         format-icons = [
-          ""
-          ""
-          ""
+          ""
+          ""
+          ""
         ];
       };
 
@@ -124,6 +148,7 @@
 
       battery = {
         states = {
+          # good = 95;
           warning = 30;
           critical = 15;
         };
@@ -132,12 +157,14 @@
         format-charging = "{capacity}% ";
         format-plugged = "{capacity}% ";
         format-alt = "{time} {icon}";
+        # format-good = ""; # An empty format will hide the module
+        # format-full = "";
         format-icons = [
-          ""
-          ""
-          ""
-          ""
-          ""
+          ""
+          ""
+          ""
+          ""
+          ""
         ];
       };
 
@@ -150,25 +177,27 @@
         tooltip-format = "Power profile: {profile}\nDriver: {driver}";
         tooltip = true;
         format-icons = {
-          "default" = "";
-          performance = "";
-          balanced = "";
-          power-saver = "";
+          default = "";
+          performance = "";
+          balanced = "";
+          power-saver = "";
         };
       };
 
       network = {
-        format-wifi = "{essid} ";
-        format-ethernet = "{ipaddr}/{cidr} ";
+        # interface = "wlp2*"; # (Optional) To force the use of this interface
+        format-wifi = "{essid} ";
+        format-ethernet = "{ipaddr}/{cidr} ";
         tooltip-format = "{ifname} via {gwaddr}";
-        format-linked = "{ifname} (No IP) ";
+        format-linked = "{ifname} (No IP) ";
         format-disconnected = "Disconnected ⚠";
+        # format-alt = "{ifname}: {ipaddr}/{cidr} ({signalStrength}%)";
         on-click = "nm-connection-editor";
       };
 
       bluetooth = {
         format = " {status}";
-        format-disabled = "";
+        format-disabled = ""; # an empty format will hide the module
         format-connected = " {num_connections}";
         tooltip-format = "{device_alias}";
         tooltip-format-connected = " {device_enumerate}";
@@ -177,19 +206,22 @@
       };
 
       pulseaudio = {
+        scroll-step = 5; # %, can be a float
         format = "{volume}% {icon} {format_source}";
         format-bluetooth = "{volume}% {icon} {format_source}";
-        format-source = "";
-        format-source-muted = "";
+        # format-bluetooth-muted = " {icon} {format_source}";
+        # format-muted = " {format_source}";
+        format-source = "";
+        format-source-muted = "";
         format-icons = {
-          headphone = "";
-          phone = "";
-          portable = "";
-          car = "";
-          "default" = [
-            ""
-            ""
-            ""
+          headphone = "";
+          phone = "";
+          portable = "";
+          car = "";
+          default = [
+            ""
+            ""
+            ""
           ];
         };
         on-click = "pavucontrol";
@@ -200,11 +232,12 @@
         return-type = "json";
         max-length = 40;
         format-icons = {
-          spotify = "";
-          "default" = "🎜";
+          spotify = "";
+          default = "🎜";
         };
         escape = true;
-        exec = "$HOME/.config/waybar/mediaplayer.py 2> /dev/null";
+        # exec = "$HOME/.config/waybar/mediaplayer.py 2> /dev/null";
+        # exec = "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null"; # Filter player based on name
       };
 
       "custom/notification" = {
@@ -212,13 +245,13 @@
         format = "{icon}";
         format-icons = {
           notification = "<span foreground='red'><sup></sup></span> ";
-          none = " ";
+          none = " ";
           dnd-notification = "<span foreground='red'><sup></sup></span> ";
-          dnd-none = " ";
-          inhibited-notification = "<span foreground='red'><sup></sup></span> ";
-          inhibited-none = " ";
-          dnd-inhibited-notification = "<span foreground='red'><sup></sup></span> ";
-          dnd-inhibited-none = " ";
+          dnd-none = " ";
+          inhibited-notification = "<span foreground='red'><sup></sup></span> ";
+          inhibited-none = " ";
+          dnd-inhibited-notification = "<span foreground='red'><sup></sup></span> ";
+          dnd-inhibited-none = " ";
         };
         return-type = "json";
         exec-if = "which swaync-client";
@@ -242,8 +275,4 @@
       };
     };
   };
-
-  # xdg.configFile = {
-  #   "waybar/power_menu.xml".source = ./power_menu.xml;
-  # };
 }
