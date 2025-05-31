@@ -14,8 +14,6 @@ let
       hash = "sha256-BkqtSh944QIVyYvXCCU8Pucs/2RpWXlwNFSC9zVlRoc=";
     };
 
-    # patches = [ ./sddmtheme.patch ];
-
     postPatch = ''
       ls
       substituteInPlace theme.conf \

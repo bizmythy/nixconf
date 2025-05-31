@@ -1,10 +1,11 @@
 {
   pkgs,
   osConfig,
+  ...
 }:
 {
   # spotify TUI player
-  spotify-player = {
+  programs.spotify-player = {
     enable = true;
     settings = {
       # fetch the client ID using 1Password
@@ -89,23 +90,15 @@
   };
 
   # create desktop shortcut for launching
-  xdg.desktopEntries.spotify-player =
-    let
-      ghostty-shaders = pkgs.fetchFromGitHub {
-        owner = "hackr-sh";
-        repo = "ghostty-shaders";
-        rev = "a17573fb254e618f92a75afe80faa31fd5e09d6f";
-        hash = "sha256-p0speO5BtLZZwGeuRvBFETnHspDYg2r5Uiu0yeqj1iE=";
-      };
-    in
-    {
-      name = "spotify-player";
-      exec = "ghostty --custom-shader=${ghostty-shaders}/bloom.glsl -e spotify_player";
-      terminal = false;
-      type = "Application";
-      categories = [
-        "Audio"
-        "Music"
-      ];
-    };
+  xdg.desktopEntries.spotify-player = {
+    name = "spotify-player";
+    exec = "ghostty -e spotify_player";
+    terminal = false;
+    type = "Application";
+    categories = [
+      "Audio"
+      "AudioVideo"
+      "Music"
+    ];
+  };
 }
