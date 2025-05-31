@@ -20,7 +20,7 @@
       # Choose the order of the modules
       modules-left = [
         "hyprland/workspaces"
-        "custom/media"
+        # "custom/media"
       ];
       modules-center = [
         "hyprland/window"
