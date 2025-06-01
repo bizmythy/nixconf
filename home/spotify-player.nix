@@ -20,7 +20,7 @@
 
       device = {
         name = "${osConfig.networking.hostName}-spotify-player";
-        volume = 75;
+        volume = 85;
         type = "computer";
         normalization = true;
       };
