@@ -18,7 +18,12 @@
         ];
       };
 
-      device.name = "${osConfig.networking.hostName}-spotify-player";
+      device = {
+        name = "${osConfig.networking.hostName}-spotify-player";
+        volume = 75;
+        type = "computer";
+        normalization = true;
+      };
 
       # weird values needed to make album art square
       cover_img_width = 9;
