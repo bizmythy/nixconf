@@ -1,7 +1,8 @@
 {
   config,
-  lib,
   inputs,
+  lib,
+  pkgs,
   vars,
   ...
 }:
@@ -15,6 +16,8 @@
     ./packages/terminal.nix
     ./packages/graphical.nix
   ];
+
+  boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
 
   # Bootloader.
   boot.loader = {
