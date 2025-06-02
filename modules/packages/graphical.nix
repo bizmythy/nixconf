@@ -30,7 +30,6 @@
     kdePackages.okular
     system-config-printer
 
-    vivaldi
     inputs.zen-browser.packages.${pkgs.system}.default
     # firefox in home manager
 
