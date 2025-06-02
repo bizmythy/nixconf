@@ -8,6 +8,7 @@ let
     EDITOR = vars.defaults.termEditor;
     VISUAL = vars.defaults.editor;
     BROWSER = vars.defaults.browser;
+    NH_NO_CHECKS = 1;
   };
   myShellAliases = {
     cdn = "cd ${vars.flakePath}";
