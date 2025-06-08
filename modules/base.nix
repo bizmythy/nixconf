@@ -100,6 +100,12 @@
     openFirewall = true;
   };
 
+  services.clamav = {
+    daemon.enable = false;
+    scanner.enable = false;
+    updater.enable = false;
+  };
+
   hardware.bluetooth = {
     enable = true; # enables support for Bluetooth
     powerOnBoot = true; # powers up the default Bluetooth controller on boot
