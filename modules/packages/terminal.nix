@@ -155,6 +155,8 @@ in
     docker-buildx
     # openai codex CLI for AI slop
     openai-codex
+    # includes `jstest`, a tool for testing joystick inputs
+    linuxConsoleTools
 
     # go tools
     go
