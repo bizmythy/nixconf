@@ -174,6 +174,7 @@ in
     dive
     pyright
     uv
+    zizmor
 
     # nix tools
     nix-output-monitor
