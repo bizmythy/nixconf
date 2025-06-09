@@ -94,6 +94,7 @@ in
     dig
     jq
     yq
+    tetris
     # curl replacement, http requests
     xh
     # disk usage, more intuative du
