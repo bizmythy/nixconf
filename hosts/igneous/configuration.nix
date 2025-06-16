@@ -7,9 +7,25 @@
     ./hardware-configuration.nix
   ];
 
-  boot.initrd.kernelModules = [ "amdgpu" ];
-  # enable kernel for disc drive
-  boot.kernelModules = [ "sg" ];
+  boot = {
+    # start amd driver at boot
+    initrd.kernelModules = [ "amdgpu" ];
+    # enable kernel for disc drive
+    kernelModules = [ "sg" ];
+    # support ntfs for mounting windows partition
+    supportedFilesystems = [ "ntfs" ];
+  };
+
+  # mount windows partition
+  fileSystems."/mnt/windows" = {
+    device = "/dev/nvme0n1p3";
+    fsType = "ntfs";
+    options = [
+      "rw"
+      "uid=1000"
+    ];
+  };
+
   # fix clock for windows dual boot
   time.hardwareClockInLocalTime = true;
 
