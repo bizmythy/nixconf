@@ -48,6 +48,7 @@
     localsend
     wireshark
     transmission_4-qt
+    mullvad-vpn
 
     gparted
 
