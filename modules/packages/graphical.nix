@@ -48,7 +48,6 @@
     localsend
     wireshark
     transmission_4-qt
-    mullvad-vpn
 
     gparted
 
@@ -113,6 +112,14 @@
       users = [ vars.user ];
     };
   };
+  services = {
+    mullvad-vpn = {
+      enable = true;
+      package = pkgs.mullvad-vpn;
+    };
+
+    desktopManager.plasma6.enableQt5Integration = true;
+  };
 
   # Set up virt manager
   users.groups.libvirtd.members = [ vars.user ];
@@ -132,7 +139,6 @@
 
   catppuccin.enable = true;
 
-  services.desktopManager.plasma6.enableQt5Integration = true;
   qt = {
     enable = true;
     platformTheme = "qt5ct";
