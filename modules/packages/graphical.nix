@@ -47,7 +47,7 @@
     pcloud
     localsend
     wireshark
-    transmission_4-qt
+    qbittorrent
 
     gparted
 
