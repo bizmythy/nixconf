@@ -107,7 +107,7 @@
 
           "${igneous.main}, 3840x2160@160, 0x0, ${scaleHiDPI}"
           "${igneous.top}, 1920x1080@60, 575x-1080, 1.0"
-          "${igneous.tv}, 3840x2160@120, auto-right, ${scaleHiDPI}, mirror, ${igneous.main}"
+          "${igneous.tv}, 3840x2160@120, auto-right, ${scaleHiDPI}"
 
           "${drewdirac.razer}, highres, auto, 1.333333"
 
