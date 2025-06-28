@@ -55,6 +55,7 @@
           igneous = [
             "1, monitor:${igneous.top}, default:true"
             "2, monitor:${igneous.main}, default:true"
+            "10, monitor:${igneous.tv}, default:true"
           ];
         };
 
@@ -117,6 +118,8 @@
 
           "${theseus.laptop}, preferred, auto, 1.566667"
         ];
+
+        experimental.xx_color_management_v4 = (osConfig.networking.hostName == "igneous");
 
         workspace = wsByHost.${osConfig.networking.hostName} or [ ];
 
@@ -220,8 +223,8 @@
           "SUPER SHIFT, right, movetoworkspace, e+1"
 
           # Example special workspace (scratchpad)
-          "SUPER, S, togglespecialworkspace, magic"
-          "SUPER CTRL, S, movetoworkspace, special:magic"
+          # "SUPER, S, togglespecialworkspace, magic"
+          # "SUPER CTRL, S, movetoworkspace, special:magic"
 
           # Scroll through existing workspaces with mainMod + scroll
           "SUPER, mouse_down, workspace, e+1"
@@ -293,6 +296,11 @@
               "fadeLayersOut, 1, 1.39, almostLinear"
               "workspaces, 0, 1.94, almostLinear, fade"
             ];
+        };
+
+        misc = {
+          disable_hyprland_logo = true;
+          middle_click_paste = false;
         };
       };
   };
