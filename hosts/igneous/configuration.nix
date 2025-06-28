@@ -16,15 +16,28 @@
     supportedFilesystems = [ "ntfs" ];
   };
 
-  # mount windows partition
-  fileSystems."/mnt/windows" = {
-    device = "/dev/nvme0n1p3";
-    fsType = "ntfs";
-    options = [
-      "rw"
-      "uid=1000"
-      "gid=100"
-    ];
+  fileSystems = {
+    # mount windows partition
+    "/mnt/windows" = {
+      device = "/dev/disk/by-uuid/5E06928506925DB9";
+      fsType = "ntfs";
+      options = [
+        "rw"
+        "uid=1000"
+        "gid=100"
+      ];
+    };
+
+    # mount storage drive
+    "/mnt/storage" = {
+      device = "/dev/disk/by-uuid/6422C81A22C7EF5C";
+      fsType = "ntfs";
+      options = [
+        "rw"
+        "uid=1000"
+        "gid=100"
+      ];
+    };
   };
 
   # fix clock for windows dual boot
