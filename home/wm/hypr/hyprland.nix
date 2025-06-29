@@ -143,6 +143,7 @@
 
         cursor = {
           no_hardware_cursors = true;
+          inactive_timeout = 5;
         };
 
         bind = [
