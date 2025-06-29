@@ -36,6 +36,7 @@
     signal-desktop
     # discord
     vesktop
+    element-desktop
 
     qalculate-qt
 
@@ -70,7 +71,8 @@
     zed-editor
     meld
 
-    warp-terminal
+    # failing to build, never use anyways
+    # warp-terminal
     alacritty
     ghostty
     kitty
