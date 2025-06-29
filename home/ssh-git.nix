@@ -26,19 +26,21 @@ in
   # set github.com to be dirac key by default to get private flake inputs working
   # this default is replaced in the git ssh command configuration
   home.file.".ssh/config".text = ''
-    Host *
-        IdentityAgent ${onePassPath}
-
     Host dirac-github
         HostName github.com
         User git
         IdentityFile ${publicKeyFiles.diracGitHub}
         IdentitiesOnly yes
+        IdentityAgent ${onePassPath}
 
     Host diraclocalserver
         HostName 192.168.1.244
         User diraclocalserver
         IdentityFile ${publicKeyFiles.diraclocalserver}
+        IdentityAgent ${onePassPath}
+
+    Host *
+        IdentityAgent ${onePassPath}
   '';
 
   # You can test the result by running:
