@@ -9,6 +9,7 @@ let
     VISUAL = vars.defaults.editor;
     BROWSER = vars.defaults.browser;
     NH_NO_CHECKS = 1;
+    NIXPKGS_ALLOW_UNFREE = 1;
   };
   myShellAliases = {
     cdn = "cd ${vars.flakePath}";
