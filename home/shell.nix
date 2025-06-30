@@ -37,8 +37,8 @@ let
   nuscripts = pkgs.fetchFromGitHub {
     owner = "nushell";
     repo = "nu_scripts";
-    rev = "861a99779d31010ba907e4d6aaf7b1629b9eb775";
-    hash = "sha256-L/ySTOTGijpu+6Bncg+Rn7MBd/R5liSSPLlfoQvg7ps=";
+    rev = "6faa666e558bc53be9bf8836d4d1734926fa84d2";
+    hash = "sha256-BPuWq1ld2eqSvugOCNToEA9+Q6q94TfI7OjkLnBS+oY=";
   };
   formatCompletions =
     inputs:
@@ -58,6 +58,7 @@ let
     ''
     + formatCompletions [
       "curl"
+      "docker"
       "less"
       "make"
       "man"
