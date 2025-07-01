@@ -33,6 +33,7 @@ let
     msb = "mask services build";
     msu = "mask services up";
     gen = "mask generate";
+    savelogs = "mask services savelogs";
   };
 
   nuscripts = pkgs.fetchFromGitHub {
