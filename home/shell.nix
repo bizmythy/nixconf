@@ -29,9 +29,10 @@ let
     alf = "zsh -c 'sudo rm -rf ${vars.home}/.aws/cli ${vars.home}/.aws/sso && aws sso login'";
     al = "aws sso login";
 
-    mts = "make test-shell";
-    mcr = "make compose-reset";
-    mcs = "make compose";
+    msr = "zsh -c 'mask services reset && lazydocker'";
+    msb = "mask services build";
+    msu = "mask services up";
+    gen = "mask generate";
   };
 
   nuscripts = pkgs.fetchFromGitHub {
