@@ -37,6 +37,7 @@ in
         HostName 192.168.1.244
         User diraclocalserver
         IdentityFile ${publicKeyFiles.diraclocalserver}
+        IdentitiesOnly yes
         IdentityAgent ${onePassPath}
 
     Host *
