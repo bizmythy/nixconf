@@ -151,12 +151,14 @@ in
     file
     # exfat support
     exfatprogs
-    # advanced docker build stuff
-    docker-buildx
     # openai codex CLI for AI slop
     openai-codex
     # includes `jstest`, a tool for testing joystick inputs
     linuxConsoleTools
+
+    # docker tools
+    docker-buildx
+    dive
 
     # go tools
     go
@@ -164,16 +166,17 @@ in
     golangci-lint
     golangci-lint-langserver
 
+    # python tools
+    pyright
+    uv
+    ruff
+    ty
+
     # language tools
-    nil
-    nixd
     markdown-oxide
     shellcheck
     protobuf-language-server
     buf
-    dive
-    pyright
-    uv
 
     # nix tools
     nix-output-monitor
@@ -181,6 +184,8 @@ in
     nurl
     manix
     nix-search-cli
+    nil
+    nixd
   ];
 
   # https://github.com/viperML/nh
