@@ -30,9 +30,6 @@
     kdePackages.okular
     system-config-printer
 
-    inputs.zen-browser.packages.${pkgs.system}.default
-    # firefox in home manager
-
     signal-desktop
     # discord
     vesktop
