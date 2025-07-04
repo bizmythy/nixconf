@@ -134,13 +134,22 @@ in
       name = "Adwaita-dark";
       package = pkgs.gnome-themes-extra;
     };
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.catppuccin-papirus-folders.override {
-        accent = "mauve";
-        flavor = "mocha";
+    iconTheme =
+      let
+        noCheckCatppuccinFolders = pkgs.pkgs.catppuccin-papirus-folders.overrideAttrs (
+          finalAttrs: previousAttrs: {
+            doCheck = false;
+          }
+        );
+        themedCatppuccinFolders = noCheckCatppuccinFolders.override {
+          accent = "mauve";
+          flavor = "mocha";
+        };
+      in
+      {
+        name = "Papirus-Dark";
+        package = themedCatppuccinFolders;
       };
-    };
     cursorTheme = cursor;
   };
 
