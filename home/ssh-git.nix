@@ -19,6 +19,7 @@ let
   publicKeyFiles = builtins.mapAttrs genKeyFile publicKeys;
 
   onePassPath = "${vars.home}/.1password/agent.sock";
+  settingsformat = pkgs.formats.toml { };
 in
 {
   # -------SSH CONFIGURATION-------
@@ -45,23 +46,31 @@ in
 
   # You can test the available keys and their order of attempt by running:
   #  SSH_AUTH_SOCK=~/.1password/agent.sock ssh-add -l
-  xdg.configFile."1Password/ssh/agent.toml".text = ''
-    [[ssh-keys]]
-    item = "drew-dirac SSH Key"
-    vault = "Employee"
+  xdg.configFile."1Password/ssh/agent.toml".text =
+    builtins.readFile (
+      (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml" {
+        "ssh-keys" = [
+          # dirac github
+          {
+            item = "drew-dirac SSH Key";
+            vault = "Employee";
+          }
 
-    [[ssh-keys]]
-    item = "AndrewCouncil SSH Key"
-    vault = "Private"
+          # rest of personal keys
+          {
+            item = "AndrewCouncil SSH Key";
+            vault = "Private";
+          }
 
-    [[ssh-keys]]
-    item = "diraclocalserver SSH Key"
-    vault = "Engineering"
-
-    [[ssh-keys]]
-    vault = "Private"
-
-  ''; # signifigant that this newline is here for some god forsaken reason
+          # diraclocalserver SSH Key
+          {
+            item = "diraclocalserver SSH Key";
+            vault = "Engineering";
+          }
+        ];
+      }
+    )
+    + "\n";
 
   # -------GIT CONFIGURATION-------
   programs = {
