@@ -1,10 +1,12 @@
 {
+  lib,
   vars,
   ...
 }:
 {
 
   # set default applications
+  xdg.configFile."mimeapps.list".force = lib.mkForce true;
   xdg.mimeApps = {
     enable = true;
     defaultApplications =
