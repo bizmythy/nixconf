@@ -23,17 +23,21 @@
       ref = "main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   outputs =
     {
       self,
       nixpkgs,
+      systems,
       # determinate,
       catppuccin,
       nix-flatpak,
       dirac,
       home-manager,
+      treefmt-nix,
       ...
     }@inputs:
     let
@@ -103,6 +107,12 @@
             home
           ];
         };
+
+      # Small tool to iterate over each systems
+      eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f nixpkgs.legacyPackages.${system});
+
+      # Eval the treefmt modules from ./treefmt.nix
+      treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
     in
     {
       nixosConfigurations = builtins.listToAttrs (
@@ -120,6 +130,10 @@
           ]
       );
 
-      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
+      formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+
+      checks = eachSystem (pkgs: {
+        formatting = treefmtEval.${pkgs.system}.config.build.check self;
+      });
     };
 }
