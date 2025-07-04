@@ -55,20 +55,21 @@ in
       "ssh-keys" = [
         # dirac github
         {
-          item = "drew-dirac SSH Key";
           vault = "Employee";
           account = diracAccount;
         }
 
         # rest of personal keys
-        { account = personalAccount; }
+        {
+          vault = "Private";
+        }
 
         # diraclocalserver SSH Key
-        {
-          item = "diraclocalserver SSH Key";
-          vault = "Engineering";
-          account = diracAccount;
-        }
+        # {
+        #   item = "diraclocalserver SSH Key";
+        #   vault = "Engineering";
+        #   account = diracAccount;
+        # }
       ];
     };
 
