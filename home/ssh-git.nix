@@ -45,29 +45,20 @@ in
 
   # You can test the result by running:
   #  SSH_AUTH_SOCK=~/.1password/agent.sock ssh-add -l
-  xdg.configFile."1Password/ssh/agent.toml".source =
-    (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml"
-      {
-        "ssh-keys" = [
-          # dirac github
-          {
-            item = "drew-dirac SSH Key";
-            vault = "Employee";
-          }
+  xdg.configFile."1Password/ssh/agent.toml".text = ''
+    [[ssh-keys]]
+    item = "drew-dirac SSH Key"
+    vault = "Employee"
 
-          # rest of personal keys
-          {
-            item = "AndrewCouncil SSH Key";
-            vault = "Private";
-          }
+    [[ssh-keys]]
+    item = "AndrewCouncil SSH Key"
+    vault = "Private"
 
-          # diraclocalserver SSH Key
-          {
-            item = "diraclocalserver SSH Key";
-            vault = "Engineering";
-          }
-        ];
-      };
+    [[ssh-keys]]
+    item = "diraclocalserver SSH Key"
+    vault = "Engineering"
+
+  '';
 
   # -------GIT CONFIGURATION-------
   programs = {
