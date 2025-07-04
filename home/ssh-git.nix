@@ -55,6 +55,7 @@ in
       "ssh-keys" = [
         # dirac github
         {
+          item = "wtjniyvaszfbfdt567snocygqq";
           vault = "Employee";
           account = diracAccount;
         }
