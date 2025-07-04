@@ -5,7 +5,7 @@
 }:
 
 {
-  # home.file.".mozilla/firefox/profile_0/search.json.mozlz4".force = lib.mkForce true;
+  home.file.".mozilla/firefox/default/search.json.mozlz4".force = lib.mkForce true;
   programs.firefox = {
     enable = true;
 
@@ -13,8 +13,8 @@
     profiles = {
       default = {
         # choose a profile name; directory is /home/<user>/.mozilla/firefox/profile_0
-        id = 0; # 0 is the default profile; see also option "isDefault"
         name = vars.user; # name as listed in about:profiles
+        id = 0; # 0 is the default profile; see also option "isDefault"
         isDefault = true; # can be omitted; true if profile ID is 0
         settings = {
           # specify profile-specific preferences here; check about:config for options
