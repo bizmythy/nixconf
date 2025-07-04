@@ -59,7 +59,19 @@
           ];
         };
 
-        launchWork = pkgs.writers.writeNu "laucnchwork" (builtins.readFile ./launchwork.nu);
+        launchWork = pkgs.writers.writeNu "laucnchwork" ''
+          def launch [app: string, workspace: int] {
+              hyprctl dispatch workspace $workspace
+              sleep 500ms
+              hyprctl dispatch exec $app
+              sleep 2sec
+          }
+
+          launch "${vars.defaults.tty}" 1
+          launch "slack" 8
+          launch "${vars.defaults.editor} ~/dirac/buildos-web" 2
+          launch "${vars.defaults.browser}" 3
+        '';
       in
       {
         xwayland.force_zero_scaling = true;
