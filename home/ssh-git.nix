@@ -45,34 +45,29 @@ in
 
   # You can test the result by running:
   #  SSH_AUTH_SOCK=~/.1password/agent.sock ssh-add -l
-  # xdg.configFile."1Password/ssh/agent.toml".source =
-  #   let
-  #     # full 1Password account IDs
-  #     personalAccount = "L23KMYOBNVHLPGSIPDX7BAQ5LA";
-  #     diracAccount = "PLU4HO2JCJF23NNQK2ERWIYIZI";
-  #   in
-  #   (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml" {
-  #     "ssh-keys" = [
-  #       # dirac github
-  #       {
-  #         item = "wtjniyvaszfbfdt567snocygqq";
-  #         vault = "Employee";
-  #         account = diracAccount;
-  #       }
+  xdg.configFile."1Password/ssh/agent.toml".source =
+    (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml"
+      {
+        "ssh-keys" = [
+          # dirac github
+          {
+            item = "drew-dirac SSH Key";
+            vault = "Employee";
+          }
 
-  #       # rest of personal keys
-  #       {
-  #         vault = "Private";
-  #       }
+          # rest of personal keys
+          {
+            item = "AndrewCouncil SSH Key";
+            vault = "Private";
+          }
 
-  #       # diraclocalserver SSH Key
-  #       # {
-  #       #   item = "diraclocalserver SSH Key";
-  #       #   vault = "Engineering";
-  #       #   account = diracAccount;
-  #       # }
-  #     ];
-  #   };
+          # diraclocalserver SSH Key
+          {
+            item = "diraclocalserver SSH Key";
+            vault = "Engineering";
+          }
+        ];
+      };
 
   # -------GIT CONFIGURATION-------
   programs = {
