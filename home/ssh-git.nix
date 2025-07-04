@@ -53,6 +53,16 @@ in
     in
     (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml" {
       "ssh-keys" = [
+        # rest of personal keys
+        { vault = "Private"; }
+
+        # diraclocalserver
+        {
+          item = "diraclocalserver SSH Key";
+          vault = "Engineering";
+          account = diracAccount;
+        }
+
         # dirac github
         {
           item = "drew-dirac SSH Key";
@@ -60,22 +70,13 @@ in
           account = diracAccount;
         }
 
-        # personal github
-        {
-          item = "AndrewCouncil SSH Key";
-          vault = "Private";
-          account = personalAccount;
-        }
+        # # personal github
+        # {
+        #   item = "AndrewCouncil SSH Key";
+        #   vault = "Personal";
+        #   account = personalAccount;
+        # }
 
-        # diraclocalserver
-        {
-          item = "te6zz2ycolprvsfedj4iqd3jja";
-          vault = "Engineering";
-          account = diracAccount;
-        }
-
-        # rest of personal keys
-        { vault = "Personal"; }
       ];
     };
 
