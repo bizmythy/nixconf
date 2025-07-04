@@ -43,7 +43,7 @@ in
         IdentityAgent ${onePassPath}
   '';
 
-  # You can test the result by running:
+  # You can test the available keys and their order of attempt by running:
   #  SSH_AUTH_SOCK=~/.1password/agent.sock ssh-add -l
   xdg.configFile."1Password/ssh/agent.toml".text = ''
     [[ssh-keys]]
@@ -58,7 +58,7 @@ in
     item = "diraclocalserver SSH Key"
     vault = "Engineering"
 
-  '';
+  ''; # signifigant that this newline is here for some god forsaken reason
 
   # -------GIT CONFIGURATION-------
   programs = {
