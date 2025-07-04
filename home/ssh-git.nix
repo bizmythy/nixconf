@@ -58,6 +58,9 @@ in
     item = "diraclocalserver SSH Key"
     vault = "Engineering"
 
+    [[ssh-keys]]
+    vault = "Private"
+
   ''; # signifigant that this newline is here for some god forsaken reason
 
   # -------GIT CONFIGURATION-------
