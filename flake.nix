@@ -66,7 +66,7 @@
 
       home = {
         home-manager = {
-          extraSpecialArgs = { inherit vars; };
+          extraSpecialArgs = { inherit inputs vars; };
           backupFileExtension = vars.hmBackupFileExtension;
           users."${vars.user}" = {
             imports = [
