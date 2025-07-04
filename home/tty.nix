@@ -93,7 +93,7 @@ in
         confirm-close-surface = false;
         link-url = true;
 
-        custom-shader = "${ghosttyShaders}/bloom.glsl";
+        # custom-shader = "${ghosttyShaders}/bloom.glsl";
       };
       enableBashIntegration = true;
       enableZshIntegration = true;
