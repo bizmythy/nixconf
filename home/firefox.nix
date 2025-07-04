@@ -5,13 +5,13 @@
 }:
 
 {
-  home.file.".mozilla/firefox/profile_0/search.json.mozlz4".force = lib.mkForce true;
+  # home.file.".mozilla/firefox/profile_0/search.json.mozlz4".force = lib.mkForce true;
   programs.firefox = {
     enable = true;
 
     # https://nix-community.github.io/home-manager/options.html#opt-programs.firefox.profiles
     profiles = {
-      profile_0 = {
+      default = {
         # choose a profile name; directory is /home/<user>/.mozilla/firefox/profile_0
         id = 0; # 0 is the default profile; see also option "isDefault"
         name = vars.user; # name as listed in about:profiles
@@ -44,6 +44,7 @@
           default = "unduck";
           privateDefault = "ddg";
         };
+        extensions.force = true; # needed to enable catppuccin theming
       };
     };
   };
