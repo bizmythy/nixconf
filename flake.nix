@@ -53,7 +53,7 @@
         defaults = {
           tty = "alacritty";
           fileManager = "dolphin";
-          browser = "firefox";
+          browser = "zen";
           calculator = "qalculate-qt";
           editor = "zeditor";
           termEditor = "nvim";
