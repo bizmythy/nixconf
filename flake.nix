@@ -47,7 +47,7 @@
           sha256 = "1w3biszx1iy9qavr2cvl4gxrlf3lbrjpp50bp8wbi3rdpzjgv4kl";
         };
         defaults = {
-          tty = "ghostty";
+          tty = "alacritty";
           fileManager = "dolphin";
           browser = "firefox";
           calculator = "qalculate-qt";

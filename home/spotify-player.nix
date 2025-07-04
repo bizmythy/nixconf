@@ -1,4 +1,5 @@
 {
+  vars,
   osConfig,
   ...
 }:
@@ -96,7 +97,7 @@
   # create desktop shortcut for launching
   xdg.desktopEntries.spotify-player = {
     name = "spotify-player";
-    exec = "ghostty -e spotify_player";
+    exec = "${vars.defaults.tty} -e spotify_player";
     terminal = false;
     type = "Application";
     categories = [

@@ -16,7 +16,7 @@ def launch [app: string, workspace: int] {
 
 def main [] {
     # Start applications in their respective workspaces
-    launch "ghostty" 1
+    launch "alacritty" 1
     launch "slack" 8
     launch "zeditor ~/dirac/buildos-web" 2
     launch "firefox" 3
