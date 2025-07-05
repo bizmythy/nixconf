@@ -36,37 +36,6 @@ let
     savelogs = "mask services savelogs";
   };
 
-  nuscripts = pkgs.fetchFromGitHub {
-    owner = "nushell";
-    repo = "nu_scripts";
-    rev = "6faa666e558bc53be9bf8836d4d1734926fa84d2";
-    hash = "sha256-BPuWq1ld2eqSvugOCNToEA9+Q6q94TfI7OjkLnBS+oY=";
-  };
-  formatCompletions =
-    inputs:
-    let
-      formatInput = input: "use ${nuscripts}/custom-completions/${input}/${input}-completions.nu *";
-      formattedInputs = map formatInput inputs;
-    in
-    builtins.concatStringsSep "\n" formattedInputs;
-
-  nushellConfig =
-    ''
-      source ${./utils.nu};
-      use ${nuscripts}/modules/jc/
-
-      $env.config.show_banner = false
-      $env.config.buffer_editor = "${vars.defaults.termEditor}"
-    ''
-    + formatCompletions [
-      "curl"
-      "docker"
-      "less"
-      "make"
-      "man"
-      "op"
-      "tar"
-    ];
 in
 {
   home = {
@@ -95,14 +64,45 @@ in
 
     bash.enable = true;
 
-    nushell = {
-      enable = true;
-      environmentVariables = mySessionVariables // {
-        AWS_PROFILE = "dev";
+    nushell =
+      let
+        nuscripts = pkgs.fetchFromGitHub {
+          owner = "nushell";
+          repo = "nu_scripts";
+          rev = "6faa666e558bc53be9bf8836d4d1734926fa84d2";
+          hash = "sha256-BPuWq1ld2eqSvugOCNToEA9+Q6q94TfI7OjkLnBS+oY=";
+        };
+
+        formatInput = input: "use ${nuscripts}/custom-completions/${input}/${input}-completions.nu *";
+        formatCompletions = inputs: (builtins.concatStringsSep "\n" (map formatInput inputs)) + "\n";
+      in
+      {
+        enable = true;
+        environmentVariables = mySessionVariables // {
+          AWS_PROFILE = "dev";
+        };
+        shellAliases = myShellAliases;
+        extraConfig =
+          formatCompletions [
+            "curl"
+            "docker"
+            "less"
+            "make"
+            "man"
+            "op"
+            "tar"
+          ]
+          + ''
+
+            source ${./utils.nu};
+            use ${nuscripts}/modules/jc/
+
+            $env.config.show_banner = false
+            $env.config.buffer_editor = "${vars.defaults.termEditor}"
+
+            nerdfetch
+          '';
       };
-      shellAliases = myShellAliases;
-      extraConfig = nushellConfig;
-    };
 
     direnv = {
       enable = true;
