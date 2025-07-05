@@ -16,6 +16,12 @@ in
     settings = {
       window = {
         opacity = backgroundOpacity;
+
+        padding = {
+          x = 10;
+          y = 10;
+        };
+        dynamic_padding = true;
       };
 
       scrolling.history = 10000;
