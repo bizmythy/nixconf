@@ -1,8 +1,8 @@
 #!/usr/bin/env nu
 
-# Check if nixfmt is installed
-if (which nixfmt | is-empty) {
-    print "error: nixfmt is not installed."
+# Check if nix is installed
+if (which nix | is-empty) {
+    print "error: nix is not installed, cannot `nix fmt`"
     exit 1
 }
 
@@ -19,11 +19,11 @@ if ($staged_files | is-empty) {
 }
 
 # Format the staged files using prettier
-print "running nixfmt on staged files..."
+print "running nix fmt..."
 try {
-    nixfmt ...$staged_files
+    nix fmt
 } catch {
-    print $"(ansi red)error: nixfmt formatting failed.(ansi reset)"
+    print $"(ansi red)error: nix fmt formatting failed.(ansi reset)"
     exit 1
 }
 
