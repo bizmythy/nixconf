@@ -8,6 +8,7 @@ let
   fontFamily = "JetBrainsMono Nerd Font";
   fontSize = 12;
   backgroundOpacity = 0.9;
+  scrollback = 10000;
 in
 {
   programs.alacritty = {
@@ -22,6 +23,14 @@ in
       selection.save_to_clipboard = true;
 
       terminal.shell.program = vars.defaults.shell;
+
+      cursor = {
+        style = {
+          shape = "Beam";
+          blinking = "Off";
+        };
+        unfocused_hollow = true;
+      };
 
       font = {
         normal = {
@@ -71,7 +80,7 @@ in
       enable = true;
       settings = {
         command = vars.defaults.shell;
-        gtk-single-instance = true;
+        # gtk-single-instance = true;
 
         font-family = fontFamily;
         font-size = fontSize;
@@ -107,6 +116,11 @@ in
       cursor_shape = "beam";
       copy_on_select = true;
       shell = vars.defaults.shell;
+
+      background_opacity = backgroundOpacity;
+      enable_audio_bell = false;
+      scrollback_lines = scrollback;
+      cursor_blink_interval = 0;
     };
   };
 }
