@@ -120,13 +120,18 @@ in
 
     settings = {
       cursor_shape = "beam";
-      copy_on_select = true;
+      copy_on_select = "clipboard";
       shell = vars.defaults.shell;
 
       background_opacity = backgroundOpacity;
       enable_audio_bell = false;
       scrollback_lines = scrollback;
       cursor_blink_interval = 0;
+
+      scrollback_fill_enlarged_window = true;
+      clear_selection_on_clipboard_loss = true;
+      paste_actions = "quote-urls-at-prompt,confirm,confirm-if-large";
+      focus_follows_mouse = true;
     };
   };
 }
