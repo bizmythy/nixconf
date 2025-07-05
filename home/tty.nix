@@ -8,7 +8,6 @@ let
   fontFamily = "JetBrainsMono Nerd Font";
   fontSize = 12;
   backgroundOpacity = 0.9;
-  startCommand = "nerdfetch && ${vars.defaults.shell}";
 in
 {
   programs.alacritty = {
@@ -22,13 +21,7 @@ in
 
       selection.save_to_clipboard = true;
 
-      terminal.shell = {
-        program = "zsh";
-        args = [
-          "-c"
-          startCommand
-        ];
-      };
+      terminal.shell.program = vars.defaults.shell;
 
       font = {
         normal = {
@@ -77,7 +70,7 @@ in
     {
       enable = true;
       settings = {
-        command = startCommand;
+        command = vars.defaults.shell;
         gtk-single-instance = true;
 
         font-family = fontFamily;
@@ -104,5 +97,16 @@ in
 
   programs.kitty = {
     enable = true;
+    font = {
+      name = fontFamily;
+      size = fontSize;
+    };
+    shellIntegration.enableZshIntegration = true;
+
+    settings = {
+      cursor_shape = "beam";
+      copy_on_select = true;
+      shell = vars.defaults.shell;
+    };
   };
 }
