@@ -240,4 +240,5 @@ in
       enable = true;
     };
   };
+  catppuccin.lazygit.enable = true;
 }
