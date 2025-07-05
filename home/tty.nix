@@ -119,19 +119,23 @@ in
     shellIntegration.enableZshIntegration = true;
 
     settings = {
-      cursor_shape = "beam";
       copy_on_select = "clipboard";
+      clear_selection_on_clipboard_loss = true;
+      paste_actions = "quote-urls-at-prompt,confirm,confirm-if-large";
+
       shell = vars.defaults.shell;
+
+      cursor_shape = "beam";
+      cursor_blink_interval = 0;
 
       background_opacity = backgroundOpacity;
       enable_audio_bell = false;
-      scrollback_lines = scrollback;
-      cursor_blink_interval = 0;
 
+      scrollback_lines = scrollback;
       scrollback_fill_enlarged_window = true;
-      clear_selection_on_clipboard_loss = true;
-      paste_actions = "quote-urls-at-prompt,confirm,confirm-if-large";
       focus_follows_mouse = true;
+
+      confirm_os_window_close = 0;
     };
   };
 }
