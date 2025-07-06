@@ -136,6 +136,16 @@ in
       focus_follows_mouse = true;
 
       confirm_os_window_close = 0;
+
+      scrollback_pager =
+        let
+          pager = pkgs.writeShellApplication {
+            name = "nvim-pager";
+            runtimeInputs = [ pkgs.neovim ];
+            text = builtins.readFile ./nvim_pager.sh;
+          };
+        in
+        "${pager}/bin/nvim-pager 'INPUT_LINE_NUMBER' 'CURSOR_LINE' 'CURSOR_COLUMN'";
     };
   };
 }
