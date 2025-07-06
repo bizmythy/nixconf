@@ -21,7 +21,7 @@ in
     ./shell.nix
     ./spotify-player.nix
     ./ssh-git.nix
-    ./tty.nix
+    ./tty/tty.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should

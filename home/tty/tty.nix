@@ -137,12 +137,13 @@ in
 
       confirm_os_window_close = 0;
 
+      # configure using neovim as scrollback pager
       scrollback_pager =
         let
           pager = pkgs.writeShellApplication {
             name = "nvim-pager";
             runtimeInputs = [ pkgs.neovim ];
-            text = builtins.readFile ./nvim_pager.sh;
+            text = builtins.readFile ./kitty_nvim_pager.sh;
           };
         in
         "${pager}/bin/nvim-pager 'INPUT_LINE_NUMBER' 'CURSOR_LINE' 'CURSOR_COLUMN'";
