@@ -19,7 +19,6 @@ let
   publicKeyFiles = builtins.mapAttrs genKeyFile publicKeys;
 
   onePassPath = "${vars.home}/.1password/agent.sock";
-  settingsformat = pkgs.formats.toml { };
 in
 {
   # -------SSH CONFIGURATION-------
@@ -70,7 +69,7 @@ in
         ];
       }
     )
-    + "\n";
+    + "\n"; # needs to end with newline or we get strange undefined behavior
 
   # -------GIT CONFIGURATION-------
   programs = {
