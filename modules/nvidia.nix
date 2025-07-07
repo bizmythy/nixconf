@@ -19,7 +19,7 @@
       nvitop
     ];
 
-    boot.kernelPackages = pkgs.linuxPackages_6_14;
+    boot.kernelPackages = pkgs.linuxPackages_latest;
     boot.kernelParams = [
       "nvidia-drm.modeset=1"
       "nvidia-drm.fbdev=1"
