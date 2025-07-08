@@ -24,7 +24,7 @@
     dirac = {
       type = "git";
       url = "ssh://git@dirac-github/diracq/buildos-web.git";
-      ref = "fix-nixos-build";
+      ref = "main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

@@ -137,16 +137,16 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1751937895,
-        "narHash": "sha256-Dwwg63nLkIYpzJFIMbAsES0ttoRy+yqnxwfawB5uXjc=",
-        "ref": "fix-nixos-build",
-        "rev": "056026cb2cfb3f9d09bf994afb78fc75915fb294",
-        "revCount": 1631,
+        "lastModified": 1752007054,
+        "narHash": "sha256-+LXWMZOJuqNDHLBbQioMFMXaKS2EiXEDJ+FYEWcEbSE=",
+        "ref": "main",
+        "rev": "3b2ead0b6bc71f92b8baa9e0996d47feb1403730",
+        "revCount": 1636,
         "type": "git",
         "url": "ssh://git@dirac-github/diracq/buildos-web.git"
       },
       "original": {
-        "ref": "fix-nixos-build",
+        "ref": "main",
         "type": "git",
         "url": "ssh://git@dirac-github/diracq/buildos-web.git"
       }
@@ -262,11 +262,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1751824240,
-        "narHash": "sha256-aDDC0CHTlL7QDKWWhdbEgVPK6KwWt+ca0QkmHYZxMzI=",
+        "lastModified": 1751990210,
+        "narHash": "sha256-krWErNDl9ggMLSfK00Q2BcoSk3+IRTSON/DiDgUzzMw=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "fd9e55f5fac45a26f6169310afca64d56b681935",
+        "rev": "218da00bfa73f2a61682417efe74549416c16ba6",
         "type": "github"
       },
       "original": {
