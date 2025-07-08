@@ -137,16 +137,16 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1751924616,
-        "narHash": "sha256-ISaTDSYz5MANWxCNZjUI1u90hiVBWTn2lWzk0RZMwDY=",
-        "ref": "main",
-        "rev": "b90c4d3f93d56de039d0c207cd7585f540c14eb7",
-        "revCount": 1630,
+        "lastModified": 1751937895,
+        "narHash": "sha256-Dwwg63nLkIYpzJFIMbAsES0ttoRy+yqnxwfawB5uXjc=",
+        "ref": "fix-nixos-build",
+        "rev": "056026cb2cfb3f9d09bf994afb78fc75915fb294",
+        "revCount": 1631,
         "type": "git",
         "url": "ssh://git@dirac-github/diracq/buildos-web.git"
       },
       "original": {
-        "ref": "main",
+        "ref": "fix-nixos-build",
         "type": "git",
         "url": "ssh://git@dirac-github/diracq/buildos-web.git"
       }
