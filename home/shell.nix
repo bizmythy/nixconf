@@ -28,8 +28,8 @@ let
     cdb = "cd ${vars.home}/dirac/buildos-web";
 
     msr = "zsh -c 'mask services reset && lazydocker'";
+    msu = "zsh -c 'mask services build && mask services up && lazydocker'";
     msb = "mask services build";
-    msu = "mask services up";
     gen = "mask generate";
     savelogs = "mask services savelogs";
     diraclocalserver = "ssh diraclocalserver -t 'nu'"; # connect and use nushell
