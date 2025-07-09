@@ -1,6 +1,7 @@
 {
   pkgs,
   vars,
+  inputs,
   ...
 }:
 
@@ -107,7 +108,7 @@ in
       enableZshIntegration = true;
       enableFishIntegration = true;
       installBatSyntax = true;
-      package = pkgs.ghostty;
+      package = inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
     };
 
   programs.kitty = {
