@@ -155,6 +155,10 @@ in
     openai-codex
     # includes `jstest`, a tool for testing joystick inputs
     linuxConsoleTools
+    # disk imaging/flashing
+    caligula
+    # command-line tool to generate, analyze, convert and manipulate colors
+    pastel
 
     # docker tools
     docker-buildx
