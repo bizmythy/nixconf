@@ -53,7 +53,7 @@
     gparted
 
     audacity
-    gimp
+    # gimp
     inkscape
     feh
     upscayl
