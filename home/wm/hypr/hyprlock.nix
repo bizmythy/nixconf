@@ -1,13 +1,10 @@
 {
   lib,
   osConfig,
+  vars,
   ...
 }:
 let
-  isWork = builtins.elem osConfig.networking.hostName [
-    "drewdirac"
-    "drewdiracpc"
-  ];
   lockScreenTimeout = 60 * 10; # inactive seconds before lock screen
 in
 {
@@ -15,7 +12,7 @@ in
     enable = true;
     # settings = {};
   };
-  services.hypridle = lib.mkIf isWork {
+  services.hypridle = lib.mkIf (!vars.isPersonal osConfig) {
     enable = true;
     settings = {
       general = {

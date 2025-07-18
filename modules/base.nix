@@ -185,21 +185,14 @@
   '';
 
   # Mount NAS, optional for boot
-  fileSystems."/mnt/tungsten-vault" =
-    lib.mkIf
-      (builtins.elem config.networking.hostName [
-        "xps"
-        "igneous"
-        "theseus"
-      ])
-      {
-        device = "192.168.1.202:/mnt/tungsten/tungsten-vault";
-        fsType = "nfs";
-        options = [
-          "x-systemd.automount"
-          "noauto"
-        ];
-      };
+  fileSystems."/mnt/tungsten-vault" = lib.mkIf (vars.isPersonal config) {
+    device = "192.168.1.202:/mnt/tungsten/tungsten-vault";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+    ];
+  };
 
   # Enable SSH
   services.openssh = {
