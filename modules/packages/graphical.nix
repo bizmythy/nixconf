@@ -92,7 +92,21 @@
             signal-desktop
             element-desktop
 
-            retroarch-full
+            (retroarch.withCores (
+              # specify retroarch cores to include
+              cores: with cores; [
+                # snes
+                snes9x
+                # gba
+                mgba
+                # nes
+                mesen
+                # psx
+                beetle-psx-hw
+                # wii gamecube
+                dolphin
+              ]
+            ))
           ]
         else
           [ ]
