@@ -102,20 +102,15 @@
             catppuccin.nixosModules.catppuccin
             nix-flatpak.nixosModules.nix-flatpak
 
+            # import module from dirac flake and override some settings
             dirac.nixosModules.linux
-            {
-              dirac.graphical = false;
-              # override what i am already managing in home manager
-              programs = {
-                direnv.enable = false;
-                git.enable = nixpkgs.lib.mkForce false;
-                starship.enable = false;
-              };
-            }
+            ./dirac.nix
 
+            # my nixos configuration
             ./modules/base.nix
             ./hosts/${hostname}/configuration.nix
 
+            # home-manager module and my home-manager config
             home-manager.nixosModules.home-manager
             home
           ];
