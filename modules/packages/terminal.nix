@@ -78,6 +78,7 @@ in
     hwinfo
     lshw
     gh
+    gitea
     lazygit
     lazydocker
     cht-sh
