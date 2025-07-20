@@ -66,7 +66,7 @@
 
         # function that will give whether the config refers to a personal machine
         isPersonal =
-          { config }:
+          config:
           (builtins.elem config.networking.hostName [
             "xps"
             "igneous"
