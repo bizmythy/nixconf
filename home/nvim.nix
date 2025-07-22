@@ -7,6 +7,10 @@
 {
   programs.nixvim = {
     enable = true;
-    plugins.lightline.enable = true;
+    colorschemes.catppuccin = {
+      enable = true;
+      flavor = "mocha";
+    };
+    # plugins.lightline.enable = true;
   };
 }
