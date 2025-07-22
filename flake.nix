@@ -5,22 +5,32 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
-    systems.url = "github:nix-systems/default";
 
+    # set up config files and user settings
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # catppuccin theming for all applications
     catppuccin.url = "github:catppuccin/nix";
 
+    # flakpak installation management
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
 
+    # latest zen browser, patched over prebuilt firefox
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # neovim configured in nix
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # work configuration modules
     dirac = {
       type = "git";
       url = "ssh://git@dirac-github/diracq/buildos-web.git";
@@ -28,22 +38,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    systems.url = "github:nix-systems/default";
+    # formatter
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      systems,
-      # determinate,
-      catppuccin,
-      nix-flatpak,
-      dirac,
-      home-manager,
-      treefmt-nix,
-      ...
-    }@inputs:
+    { nixpkgs, self, ... }@inputs:
     let
       vars = rec {
         user = "drew";
@@ -80,7 +81,8 @@
           backupFileExtension = vars.hmBackupFileExtension;
           users."${vars.user}" = {
             imports = [
-              catppuccin.homeModules.catppuccin
+              inputs.catppuccin.homeModules.catppuccin
+              inputs.nixvim.homeModules.nixvim
               ./home/home.nix
             ];
           };
@@ -99,11 +101,11 @@
 
             # dirac config already sets this
             # determinate.nixosModules.default
-            catppuccin.nixosModules.catppuccin
-            nix-flatpak.nixosModules.nix-flatpak
+            inputs.catppuccin.nixosModules.catppuccin
+            inputs.nix-flatpak.nixosModules.nix-flatpak
 
             # import module from dirac flake and override some settings
-            dirac.nixosModules.linux
+            inputs.dirac.nixosModules.linux
             ./dirac.nix
 
             # my nixos configuration
@@ -111,16 +113,17 @@
             ./hosts/${hostname}/configuration.nix
 
             # home-manager module and my home-manager config
-            home-manager.nixosModules.home-manager
+            inputs.home-manager.nixosModules.home-manager
             home
           ];
         };
 
       # Small tool to iterate over each systems
-      eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f nixpkgs.legacyPackages.${system});
+      eachSystem =
+        f: nixpkgs.lib.genAttrs (import inputs.systems) (system: f nixpkgs.legacyPackages.${system});
 
       # Eval the treefmt modules from ./treefmt.nix
-      treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
+      treefmtEval = eachSystem (pkgs: inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
     in
     {
       nixosConfigurations = builtins.listToAttrs (
