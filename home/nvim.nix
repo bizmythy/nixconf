@@ -14,8 +14,8 @@
     # set up color scheme
     colorschemes.catppuccin = {
       enable = true;
-      flavor = "mocha";
-      transparent_background = true;
+      # flavor = "mocha";
+      # transparent_background = true;
     };
 
     opts = {

@@ -15,6 +15,7 @@ let
 in
 {
   imports = [
+    # keep-sorted start
     ./wm/wm.nix
     ./defaults.nix
     ./firefox.nix
@@ -22,6 +23,8 @@ in
     ./spotify-player.nix
     ./ssh-git.nix
     ./tty/tty.nix
+    ./nvim.nix
+    # keep-sorted end
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
