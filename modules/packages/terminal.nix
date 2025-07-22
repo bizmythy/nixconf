@@ -64,7 +64,6 @@ in
     # coreutils rust rewrite, testing it out
     uutils-coreutils-noprefix
     # terminal tools
-    neovim
     wget
     git
     git-lfs
