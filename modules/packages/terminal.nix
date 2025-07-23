@@ -160,6 +160,10 @@ in
     # command-line tool to generate, analyze, convert and manipulate colors
     pastel
 
+    # document tools
+    # latex-killer, create documents in expressive language
+    typst
+
     # docker tools
     docker-buildx
     dive
