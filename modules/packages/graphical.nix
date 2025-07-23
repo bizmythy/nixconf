@@ -50,8 +50,6 @@
     wireshark
     qbittorrent
     wayvnc
-    # use any device as sedondary display
-    deskreen
 
     gparted
 
