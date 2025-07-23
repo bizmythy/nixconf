@@ -72,8 +72,6 @@
           launch "${vars.defaults.editor} ~/dirac/buildos-web" 2
           launch "${vars.defaults.browser}" 3
         '';
-
-        modKey = "SUPER&ALT_R";
       in
       {
         xwayland.force_zero_scaling = true;
@@ -162,88 +160,88 @@
 
         bind = [
           # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
-          "${modKey}, RETURN, exec, ${vars.defaults.tty}"
-          # "${modKey} SHIFT, RETURN, exec, ${vars.defaults.tty}"
-          "${modKey}, E, exec, ${vars.defaults.fileManager}"
-          "${modKey}, B, exec, ${vars.defaults.browser}"
-          "${modKey} SHIFT, B, exec, ${vars.defaults.browser} --private-window duckduckgo.com"
-          "${modKey}, P, exec, hyprpicker -a"
-          "${modKey}, EQUAL, exec, ${vars.defaults.calculator}"
+          "SUPER, RETURN, exec, ${vars.defaults.tty}"
+          # "SUPER SHIFT, RETURN, exec, ${vars.defaults.tty}"
+          "SUPER, E, exec, ${vars.defaults.fileManager}"
+          "SUPER, B, exec, ${vars.defaults.browser}"
+          "SUPER SHIFT, B, exec, ${vars.defaults.browser} --private-window duckduckgo.com"
+          "SUPER, P, exec, hyprpicker -a"
+          "SUPER, EQUAL, exec, ${vars.defaults.calculator}"
 
-          "${modKey}, Z, exec, ${vars.defaults.editor}"
-          "${modKey}, D, exec, ${vars.defaults.editor} ${vars.home}/dirac/buildos-web"
-          "${modKey} SHIFT, D, exec, ${launchWork}"
-          "${modKey}, N, exec, ${vars.defaults.editor} ${vars.home}/nixconf"
+          "SUPER, Z, exec, ${vars.defaults.editor}"
+          "SUPER, D, exec, ${vars.defaults.editor} ${vars.home}/dirac/buildos-web"
+          "SUPER SHIFT, D, exec, ${launchWork}"
+          "SUPER, N, exec, ${vars.defaults.editor} ${vars.home}/nixconf"
 
-          "${modKey}, ${modKey}_L, exec, fuzzel"
-          "${modKey}, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
-          "${modKey}, SLASH, exec, bemoji -t"
+          "SUPER, SUPER_L, exec, fuzzel"
+          "SUPER, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
+          "SUPER, SLASH, exec, bemoji -t"
 
-          "${modKey}, COMMA, exec, playerctl previous"
-          "${modKey}, PERIOD, exec, playerctl next"
-          "${modKey}, SPACE, exec, playerctl play-pause"
+          "SUPER, COMMA, exec, playerctl previous"
+          "SUPER, PERIOD, exec, playerctl next"
+          "SUPER, SPACE, exec, playerctl play-pause"
 
-          "${modKey}, W, killactive,"
-          # "${modKey}, M, exit,"
-          "${modKey}, F, togglefloating,"
-          "${modKey}, M, fullscreen,"
-          # "${modKey}, P, pseudo," # dwindle
-          # "${modKey}, J, togglesplit," # dwindle
+          "SUPER, W, killactive,"
+          # "SUPER, M, exit,"
+          "SUPER, F, togglefloating,"
+          "SUPER, M, fullscreen,"
+          # "SUPER, P, pseudo," # dwindle
+          # "SUPER, J, togglesplit," # dwindle
 
           # Move focus with mainMod + arrow keys or VIM keys
-          "${modKey}, left, movefocus, l"
-          "${modKey}, H, movefocus, l"
-          "${modKey}, right, movefocus, r"
-          "${modKey}, L, movefocus, r"
-          "${modKey}, up, movefocus, u"
-          "${modKey}, K, movefocus, u"
-          "${modKey}, down, movefocus, d"
-          "${modKey}, J, movefocus, d"
+          "SUPER, left, movefocus, l"
+          "SUPER, H, movefocus, l"
+          "SUPER, right, movefocus, r"
+          "SUPER, L, movefocus, r"
+          "SUPER, up, movefocus, u"
+          "SUPER, K, movefocus, u"
+          "SUPER, down, movefocus, d"
+          "SUPER, J, movefocus, d"
 
-          "${modKey}, Tab, cyclenext" # change focus to another window
-          "${modKey}, Tab, bringactivetotop" # bring it to the top
+          "SUPER, Tab, cyclenext" # change focus to another window
+          "SUPER, Tab, bringactivetotop" # bring it to the top
 
           # Switch workspaces with mainMod + [0-9]
-          "${modKey}, 1, focusworkspaceoncurrentmonitor, 1"
-          "${modKey}, 2, focusworkspaceoncurrentmonitor, 2"
-          "${modKey}, 3, focusworkspaceoncurrentmonitor, 3"
-          "${modKey}, 4, focusworkspaceoncurrentmonitor, 4"
-          "${modKey}, 5, focusworkspaceoncurrentmonitor, 5"
-          "${modKey}, 6, focusworkspaceoncurrentmonitor, 6"
-          "${modKey}, 7, focusworkspaceoncurrentmonitor, 7"
-          "${modKey}, 8, focusworkspaceoncurrentmonitor, 8"
-          "${modKey}, 9, focusworkspaceoncurrentmonitor, 9"
-          "${modKey}, 0, focusworkspaceoncurrentmonitor, 10"
+          "SUPER, 1, focusworkspaceoncurrentmonitor, 1"
+          "SUPER, 2, focusworkspaceoncurrentmonitor, 2"
+          "SUPER, 3, focusworkspaceoncurrentmonitor, 3"
+          "SUPER, 4, focusworkspaceoncurrentmonitor, 4"
+          "SUPER, 5, focusworkspaceoncurrentmonitor, 5"
+          "SUPER, 6, focusworkspaceoncurrentmonitor, 6"
+          "SUPER, 7, focusworkspaceoncurrentmonitor, 7"
+          "SUPER, 8, focusworkspaceoncurrentmonitor, 8"
+          "SUPER, 9, focusworkspaceoncurrentmonitor, 9"
+          "SUPER, 0, focusworkspaceoncurrentmonitor, 10"
 
-          "${modKey} CONTROL, H, workspace, e-1"
-          "${modKey} CONTROL, L, workspace, e+1"
-          "${modKey} CONTROL, left, workspace, e-1"
-          "${modKey} CONTROL, right, workspace, e+1"
+          "SUPER CONTROL, H, workspace, e-1"
+          "SUPER CONTROL, L, workspace, e+1"
+          "SUPER CONTROL, left, workspace, e-1"
+          "SUPER CONTROL, right, workspace, e+1"
 
           # Move active window to a workspace with mainMod + SHIFT + [0-9]
-          "${modKey} SHIFT, 1, movetoworkspace, 1"
-          "${modKey} SHIFT, 2, movetoworkspace, 2"
-          "${modKey} SHIFT, 3, movetoworkspace, 3"
-          "${modKey} SHIFT, 4, movetoworkspace, 4"
-          "${modKey} SHIFT, 5, movetoworkspace, 5"
-          "${modKey} SHIFT, 6, movetoworkspace, 6"
-          "${modKey} SHIFT, 7, movetoworkspace, 7"
-          "${modKey} SHIFT, 8, movetoworkspace, 8"
-          "${modKey} SHIFT, 9, movetoworkspace, 9"
-          "${modKey} SHIFT, 0, movetoworkspace, 10"
+          "SUPER SHIFT, 1, movetoworkspace, 1"
+          "SUPER SHIFT, 2, movetoworkspace, 2"
+          "SUPER SHIFT, 3, movetoworkspace, 3"
+          "SUPER SHIFT, 4, movetoworkspace, 4"
+          "SUPER SHIFT, 5, movetoworkspace, 5"
+          "SUPER SHIFT, 6, movetoworkspace, 6"
+          "SUPER SHIFT, 7, movetoworkspace, 7"
+          "SUPER SHIFT, 8, movetoworkspace, 8"
+          "SUPER SHIFT, 9, movetoworkspace, 9"
+          "SUPER SHIFT, 0, movetoworkspace, 10"
 
-          "${modKey} SHIFT, H, movetoworkspace, e-1"
-          "${modKey} SHIFT, L, movetoworkspace, e+1"
-          "${modKey} SHIFT, left, movetoworkspace, e-1"
-          "${modKey} SHIFT, right, movetoworkspace, e+1"
+          "SUPER SHIFT, H, movetoworkspace, e-1"
+          "SUPER SHIFT, L, movetoworkspace, e+1"
+          "SUPER SHIFT, left, movetoworkspace, e-1"
+          "SUPER SHIFT, right, movetoworkspace, e+1"
 
           # Example special workspace (scratchpad)
-          # "${modKey}, S, togglespecialworkspace, magic"
-          # "${modKey} CTRL, S, movetoworkspace, special:magic"
+          # "SUPER, S, togglespecialworkspace, magic"
+          # "SUPER CTRL, S, movetoworkspace, special:magic"
 
           # Scroll through existing workspaces with mainMod + scroll
-          "${modKey}, mouse_down, workspace, e+1"
-          "${modKey}, mouse_up, workspace, e-1"
+          "SUPER, mouse_down, workspace, e+1"
+          "SUPER, mouse_up, workspace, e-1"
           ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
           ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%+"
           ", XF86AudioLowerVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%-"
@@ -256,14 +254,14 @@
 
           # Screenshots
           ", PRINT, exec, hyprshot -z -m region"
-          "${modKey} SHIFT, S, exec, hyprshot -z -m region"
-          "${modKey}, PRINT, exec, hyprshot -z -m output"
-          "${modKey} SHIFT, PRINT, exec, hyprshot -z -m window"
+          "SUPER SHIFT, S, exec, hyprshot -z -m region"
+          "SUPER, PRINT, exec, hyprshot -z -m output"
+          "SUPER SHIFT, PRINT, exec, hyprshot -z -m window"
         ];
         bindm = [
           # Move/resize windows with mainMod + LMB/RMB and dragging
-          "${modKey}, mouse:272, movewindow"
-          "${modKey}, mouse:273, resizewindow"
+          "SUPER, mouse:272, movewindow"
+          "SUPER, mouse:273, resizewindow"
         ];
 
         windowrulev2 =
