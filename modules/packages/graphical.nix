@@ -49,6 +49,7 @@
     localsend
     wireshark
     qbittorrent
+    wayvnc
 
     gparted
 
