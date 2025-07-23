@@ -189,13 +189,13 @@
           "${modKey} SHIFT, D, exec, ${launchWork}"
           "${modKey}, N, exec, ${vars.defaults.editor} ${vars.home}/nixconf"
 
-          "${modKey}, SPACE, exec, fuzzel"
+          "${modKey}, ${modKey}_L, exec, fuzzel"
           "${modKey}, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
           "${modKey}, SLASH, exec, bemoji -t"
 
           "${modKey}, COMMA, exec, playerctl previous"
           "${modKey}, PERIOD, exec, playerctl next"
-          "${modKey}, S, exec, playerctl play-pause"
+          "${modKey}, SPACE, exec, playerctl play-pause"
 
           "${modKey}, W, killactive,"
           # "${modKey}, M, exit,"
@@ -250,6 +250,10 @@
           "${modKey} SHIFT, L, movetoworkspace, e+1"
           "${modKey} SHIFT, left, movetoworkspace, e-1"
           "${modKey} SHIFT, right, movetoworkspace, e+1"
+
+          # Example special workspace (scratchpad)
+          # "${modKey}, S, togglespecialworkspace, magic"
+          # "${modKey} CTRL, S, movetoworkspace, special:magic"
 
           # Scroll through existing workspaces with mainMod + scroll
           "${modKey}, mouse_down, workspace, e+1"
