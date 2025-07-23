@@ -78,15 +78,15 @@
         forAllModKeys =
           let
             modKeys =
-              if osConfig.networking.hostName == "theseus" then
-                [
-                  "SUPER"
-                  "ALT_R"
-                ]
-              else
-                [
-                  "SUPER"
-                ];
+              # if osConfig.networking.hostName == "theseus" then
+              #   [
+              #     "SUPER"
+              #     "ALT_R"
+              #   ]
+              # else
+              [
+                "SUPER"
+              ];
           in
           bindFunc: lib.lists.unique (lib.lists.flatten (map bindFunc modKeys));
       in
