@@ -3,8 +3,6 @@
 # script to use as pager in kitty that launches neovim
 # taken from https://github.com/kovidgoyal/kitty/issues/719#issuecomment-952039731
 
-set -eu
-
 if [ "$#" -eq 3 ]; then
     INPUT_LINE_NUMBER=${1:-0}
     CURSOR_LINE=${2:-1}
