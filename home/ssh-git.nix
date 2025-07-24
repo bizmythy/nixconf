@@ -51,20 +51,20 @@ in
         "ssh-keys" = [
           # dirac github
           {
-            item = "drew-dirac SSH Key";
-            vault = "Employee";
+            item = "wtjniyvaszfbfdt567snocygqq";
+            # vault = "Employee";
           }
 
-          # rest of personal keys
+          # personal github
           {
-            item = "AndrewCouncil SSH Key";
-            vault = "Private";
+            item = "tf64ipw7poybpzazfzz3geyefu";
+            # vault = "Private";
           }
 
-          # diraclocalserver SSH Key
+          # diraclocalserver
           {
-            item = "diraclocalserver SSH Key";
-            vault = "Engineering";
+            item = "te6zz2ycolprvsfedj4iqd3jja";
+            # vault = "Engineering";
           }
         ];
       }
@@ -77,7 +77,7 @@ in
       enable = true;
       lfs.enable = true;
       userEmail = "andrew.p.council@gmail.com";
-      userName = "AndrewCouncil";
+      userName = "bizmythy";
       delta = {
         enable = true;
         options = {
