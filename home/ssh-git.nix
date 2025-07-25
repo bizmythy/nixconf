@@ -48,24 +48,10 @@ in
   xdg.configFile."1Password/ssh/agent.toml".text =
     builtins.readFile (
       (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml" {
-        "ssh-keys" = [
-          # dirac github
-          {
-            item = "wtjniyvaszfbfdt567snocygqq";
-            # vault = "Employee";
-          }
-
-          # personal github
-          {
-            item = "tf64ipw7poybpzazfzz3geyefu";
-            # vault = "Private";
-          }
-
-          # diraclocalserver
-          {
-            item = "te6zz2ycolprvsfedj4iqd3jja";
-            # vault = "Engineering";
-          }
+        "ssh-keys" = map (item: { inherit item; }) [
+          "wtjniyvaszfbfdt567snocygqq" # dirac github
+          "tf64ipw7poybpzazfzz3geyefu" # personal github
+          "te6zz2ycolprvsfedj4iqd3jja" # diraclocalserver
         ];
       }
     )
