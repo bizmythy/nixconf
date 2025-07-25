@@ -75,6 +75,7 @@ in
         init.defaultBranch = "main";
         push.autoSetupRemote = true;
         core.hooksPath = ".githooks";
+        core.editor = vars.termEditor;
 
         # 1password ssh commit signing
         user.signingkey = publicKeys.personalGitHub;
