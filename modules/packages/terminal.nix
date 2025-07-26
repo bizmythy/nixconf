@@ -159,6 +159,12 @@ in
     caligula
     # command-line tool to generate, analyze, convert and manipulate colors
     pastel
+    # take screenshots of colored terminal output
+    termshot
+    # lightweight terminal session recordings
+    asciinema
+    # silly fish swimming around
+    asciiquarium-transparent
 
     # document tools
     # latex-killer, create documents in expressive language
