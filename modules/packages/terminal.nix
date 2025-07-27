@@ -144,6 +144,8 @@ in
     asciinema
     # silly fish swimming around
     asciiquarium-transparent
+    # ai coding agent
+    opencode
 
     # document tools
     # latex-killer, create documents in expressive language
