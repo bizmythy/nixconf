@@ -2,18 +2,7 @@
   pkgs,
   ...
 }:
-let
-  # plugin that toggles between relative and absolute line number based on mode
-  numbertoggle = pkgs.vimUtils.buildVimPlugin {
-    name = "nvim-numbertoggle";
-    src = pkgs.fetchFromGitHub {
-      owner = "sitiom";
-      repo = "nvim-numbertoggle";
-      rev = "4b898b84d6f31f76bd563330d76177d5eb299efa";
-      hash = "sha256-NTcbTBzK9otf73dutdWpYwyphXhKVoa6sr5vTg56tLk=";
-    };
-  };
-in
+
 {
   # configure neovim using nixvim
   programs.nixvim = {
@@ -92,6 +81,20 @@ in
       };
     };
 
-    extraPlugins = [ numbertoggle ];
+    extraPlugins = [
+      # plugin that toggles between relative and absolute line number based on mode
+      (pkgs.vimUtils.buildVimPlugin {
+        name = "nvim-numbertoggle";
+        src = pkgs.fetchFromGitHub {
+          owner = "sitiom";
+          repo = "nvim-numbertoggle";
+          rev = "4b898b84d6f31f76bd563330d76177d5eb299efa";
+          hash = "sha256-NTcbTBzK9otf73dutdWpYwyphXhKVoa6sr5vTg56tLk=";
+        };
+      })
+    ];
   };
+
+  # allows use of nvim as pager
+  home.packages = [ pkgs.nvimpager ];
 }
