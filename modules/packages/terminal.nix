@@ -32,25 +32,6 @@ let
     pkgs.appimageTools.wrapType2 {
       inherit pname version src;
     };
-
-  openai-codex = pkgs.buildNpmPackage rec {
-    pname = "codex";
-    version = "0.1.2504161510"; # from codex-cli/package.json
-
-    src = pkgs.fetchFromGitHub {
-      owner = "openai";
-      repo = "codex";
-      rev = "b0ccca555685b1534a0028cb7bfdcad8fe2e477a";
-      hash = "sha256-WTnP6HZfrMjUoUZL635cngpfvvjrA2Zvm74T2627GwA=";
-    };
-
-    sourceRoot = "${src.name}/codex-cli";
-
-    npmDepsHash = "sha256-riVXC7T9zgUBUazH5Wq7+MjU1FepLkp9kHLSq+ZVqbs=";
-
-    doInstallCheck = true;
-    nativeInstallCheckInputs = [ pkgs.versionCheckHook ];
-  };
 in
 {
   # Enable zsh and make default
@@ -151,8 +132,6 @@ in
     file
     # exfat support
     exfatprogs
-    # openai codex CLI for AI slop
-    openai-codex
     # includes `jstest`, a tool for testing joystick inputs
     linuxConsoleTools
     # disk imaging/flashing
