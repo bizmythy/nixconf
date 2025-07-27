@@ -1,5 +1,7 @@
 {
   pkgs,
+  lib,
+  config,
   inputs,
   vars,
   ...
@@ -19,73 +21,99 @@
     enable32Bit = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    mesa-demos
+  environment.systemPackages =
+    with pkgs;
+    (
+      [
+        mesa-demos
 
-    kdePackages.dolphin
-    lxqt.pcmanfm-qt
+        kdePackages.dolphin
+        lxqt.pcmanfm-qt
 
-    thunderbird
-    libreoffice-qt6-fresh
-    kdePackages.okular
-    system-config-printer
+        thunderbird
+        libreoffice-qt6-fresh
+        kdePackages.okular
+        system-config-printer
 
-    inputs.zen-browser.packages.${pkgs.system}.default
-    # firefox in home manager
+        inputs.zen-browser.packages.${pkgs.system}.default
+        # firefox in home manager
 
-    signal-desktop
-    # discord
-    vesktop
-    element-desktop
+        qalculate-qt
 
-    qalculate-qt
+        slack
+        github-desktop
+        postman
+        # zoom-us
 
-    slack
-    github-desktop
-    postman
-    # zoom-us
+        pcloud
+        localsend
+        wireshark
 
-    pcloud
-    localsend
-    wireshark
-    qbittorrent
-    wayvnc
+        wayvnc
+        gparted
 
-    gparted
+        audacity
+        gimp
+        inkscape
+        feh
+        xournalpp
+        kdePackages.kdenlive
 
-    audacity
-    gimp
-    inkscape
-    feh
-    upscayl
-    xournalpp
-    kdePackages.kdenlive
+        vlc
+        mpv
+        spotify
+        calibre
+        handbrake
 
-    vlc
-    mpv
-    spotify
-    jellyfin-media-player
-    calibre
-    handbrake
+        code-cursor
+        zed-editor
 
-    code-cursor
-    zed-editor
-    meld
+        # failing to build, never use anyways
+        # warp-terminal
+        alacritty
+        ghostty
+        kitty
 
-    # failing to build, never use anyways
-    # warp-terminal
-    alacritty
-    ghostty
-    kitty
+        kdePackages.qtwayland
+        kdePackages.qtsvg
+        kdePackages.qt6ct
+        kdePackages.kio-fuse
+        kdePackages.kio-extras
+        kdePackages.plasma-workspace
+        kdePackages.kconfig
+      ]
+      ++ (
+        if (vars.isPersonal config) then
+          [
+            qbittorrent
+            # discord
+            vesktop
 
-    kdePackages.qtwayland
-    kdePackages.qtsvg
-    kdePackages.qt6ct
-    kdePackages.kio-fuse
-    kdePackages.kio-extras
-    kdePackages.plasma-workspace
-    kdePackages.kconfig
-  ];
+            jellyfin-media-player
+
+            signal-desktop
+            element-desktop
+
+            (retroarch.withCores (
+              # specify retroarch cores to include
+              cores: with cores; [
+                # snes
+                snes9x
+                # gba
+                mgba
+                # nes
+                mesen
+                # psx
+                beetle-psx-hw
+                # wii gamecube
+                dolphin
+              ]
+            ))
+          ]
+        else
+          [ ]
+      )
+    );
 
   # fix dolphin default programs
   # https://discourse.nixos.org/t/dolphin-does-not-have-mime-associations/48985/8
@@ -100,7 +128,7 @@
       polkitPolicyOwners = [ vars.user ];
     };
 
-    steam = {
+    steam = lib.mkIf (vars.isPersonal config) {
       enable = true;
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
@@ -116,7 +144,7 @@
     };
   };
   services = {
-    mullvad-vpn = {
+    mullvad-vpn = lib.mkIf (vars.isPersonal config) {
       enable = true;
       package = pkgs.mullvad-vpn;
     };
