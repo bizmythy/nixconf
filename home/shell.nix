@@ -10,7 +10,7 @@ let
     BROWSER = vars.defaults.browser;
     NH_NO_CHECKS = 1;
     NIXPKGS_ALLOW_UNFREE = 1;
-    PAGER = "${pkgs.nvimpager}";
+    PAGER = "nvimpager";
   };
   myShellAliases = {
     cdn = "cd ${vars.flakePath}";
