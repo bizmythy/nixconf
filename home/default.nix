@@ -20,6 +20,7 @@ in
     ./gh.nix
     ./lazygit.nix
     ./nvim.nix
+    ./scripts
     ./shell.nix
     ./spotify-player.nix
     ./ssh-git.nix
