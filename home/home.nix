@@ -16,14 +16,16 @@ in
 {
   imports = [
     # keep-sorted start
-    ./wm/wm.nix
     ./defaults.nix
     ./firefox.nix
+    ./gh.nix
+    ./lazygit.nix
+    ./nvim.nix
     ./shell.nix
     ./spotify-player.nix
     ./ssh-git.nix
     ./tty/tty.nix
-    ./nvim.nix
+    ./wm/wm.nix
     # keep-sorted end
   ];
 
