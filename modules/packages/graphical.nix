@@ -61,7 +61,6 @@
         vlc
         mpv
         spotify
-        jellyfin-media-player
         calibre
         handbrake
 
@@ -88,6 +87,8 @@
             qbittorrent
             # discord
             vesktop
+
+            jellyfin-media-player
 
             signal-desktop
             element-desktop
