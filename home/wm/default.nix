@@ -6,9 +6,9 @@
 
 {
   imports = [
-    ./bar/waybar.nix
-    ./hypr/hyprland.nix
-    ./hypr/hyprlock.nix
+    ./waybar
+    ./hyprland.nix
+    ./hyprlock.nix
   ];
 
   programs.fuzzel = {

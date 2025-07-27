@@ -24,7 +24,7 @@ in
     ./spotify-player.nix
     ./ssh-git.nix
     ./tty/tty.nix
-    ./wm/wm.nix
+    ./wm
     ./xdg-mime.nix
     # keep-sorted end
   ];
