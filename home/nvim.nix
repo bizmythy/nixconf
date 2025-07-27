@@ -70,10 +70,10 @@ in
 
     plugins = {
       # keep-sorted start
-      lualine.enable = true;
-      scrollview.enable = true;
       direnv.enable = true;
+      lualine.enable = true;
       oil.enable = true;
+      scrollview.enable = true;
       telescope.enable = true;
       web-devicons.enable = true;
       # keep-sorted end
