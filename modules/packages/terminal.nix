@@ -140,6 +140,8 @@ in
     pastel
     # take screenshots of colored terminal output
     termshot
+    # get html of terminal output
+    aha
     # lightweight terminal session recordings
     asciinema
     # silly fish swimming around
