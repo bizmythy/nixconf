@@ -16,7 +16,6 @@ in
 {
   imports = [
     # keep-sorted start
-    ./defaults.nix
     ./firefox.nix
     ./gh.nix
     ./lazygit.nix
@@ -26,6 +25,7 @@ in
     ./ssh-git.nix
     ./tty/tty.nix
     ./wm/wm.nix
+    ./xdg-mime.nix
     # keep-sorted end
   ];
 
