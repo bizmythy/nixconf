@@ -63,6 +63,7 @@
         mpv
         spotify
         calibre
+        pdfarranger
         handbrake
 
         code-cursor
