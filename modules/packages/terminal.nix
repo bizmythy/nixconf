@@ -126,6 +126,8 @@ in
     wavemon
     # gpu monitoring
     nvtop-appimage
+    # check opencl devices
+    clinfo
     # for very productive and serious work
     rust-stakeholder
     # determine type of FILEs

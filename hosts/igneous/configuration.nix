@@ -1,4 +1,5 @@
 {
+  pkgs,
   ...
 }:
 
@@ -15,6 +16,8 @@
     # support ntfs for mounting windows partition
     supportedFilesystems = [ "ntfs" ];
   };
+
+  hardware.graphics.extraPackages = with pkgs; [ rocmPackages.clr.icd ];
 
   fileSystems = {
     # mount windows partition
