@@ -32,7 +32,7 @@
 
       exrc = true; # allow use of a local .nvimrc file
 
-      clipboard = "unnamed"; # yank to and from system clipboard
+      clipboard = "unnamedplus"; # yank to and from system clipboard
 
       colorcolumn = "80"; # show color column at 80 characters
 
