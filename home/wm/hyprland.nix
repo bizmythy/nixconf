@@ -61,10 +61,7 @@
 
         launchWork = pkgs.writers.writeNu "laucnchwork" ''
           def launch [app: string, workspace: int] {
-              hyprctl dispatch workspace $workspace
-              sleep 500ms
-              hyprctl dispatch exec $app
-              sleep 2sec
+              hyprctl dispatch $"exec [workspace ($workspace) silent] ($app)"
           }
 
           launch "${vars.defaults.tty}" 1
