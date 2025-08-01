@@ -50,6 +50,7 @@
         wireshark
 
         wayvnc
+        libnotify
         gparted
 
         audacity
