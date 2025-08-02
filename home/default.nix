@@ -44,9 +44,6 @@ in
   # release notes.
   home.stateVersion = "24.11"; # Please read the comment before changing.
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
   # home.packages = with pkgs; [
   # ];
 

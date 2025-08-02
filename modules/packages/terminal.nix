@@ -38,9 +38,6 @@ in
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
   environment.systemPackages = with pkgs; [
     # coreutils rust rewrite, testing it out
     uutils-coreutils-noprefix

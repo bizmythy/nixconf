@@ -57,7 +57,6 @@
 
     nixpkgs = {
       config = {
-        allowUnfree = true;
         pulseaudio = true;
         nvidia.acceptLicense = true;
         # packageOverrides = pkgs: { inherit (pkgs) linuxPackages_latest nvidia_x11; };

@@ -69,16 +69,26 @@
         isPersonal = config: !(nixpkgs.lib.strings.hasInfix "dirac" config.networking.hostName);
       };
 
+      nixpkgsSettings = {
+        # Allow unfree packages
+        config.allowUnfree = true;
+        overlays = [
+          (import ./overlays.nix)
+        ];
+      };
+
       home = {
         home-manager = {
           extraSpecialArgs = { inherit inputs vars; };
           backupFileExtension = vars.hmBackupFileExtension;
           users."${vars.user}" = {
+            nixpkgs = nixpkgsSettings;
             imports = [
               inputs.catppuccin.homeModules.catppuccin
               inputs.nixvim.homeModules.nixvim
               ./home
             ];
+
           };
         };
       };
@@ -89,7 +99,9 @@
           specialArgs = { inherit inputs vars; };
           modules = [
             {
-              nixpkgs.hostPlatform = "x86_64-linux";
+              nixpkgs = nixpkgsSettings // {
+                hostPlatform = "x86_64-linux";
+              };
               networking.hostName = hostname;
             }
 
