@@ -9,7 +9,7 @@
     ./waybar
     ./hyprland.nix
     ./hyprlock.nix
-    ./hyprpy
+    ./hyprlaunch
   ];
 
   programs.fuzzel = {

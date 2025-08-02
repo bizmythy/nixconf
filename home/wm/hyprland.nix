@@ -59,16 +59,15 @@
           ];
         };
 
-        launchWork = pkgs.writers.writeNu "laucnchwork" ''
-          def launch [app: string, workspace: int] {
-              hyprctl dispatch $"exec [workspace ($workspace) silent] ($app)"
-          }
-
-          launch "${vars.defaults.tty}" 1
-          launch "slack" 8
-          launch "${vars.defaults.editor} ~/dirac/buildos-web" 2
-          launch "${vars.defaults.browser}" 3
-        '';
+        launchWork = pkgs.writeShellApplication {
+          name = "laucnchwork";
+          text = ''
+            hyprlaunch \
+              ${vars.defaults.tty}":1 \
+              slack:8 \
+              ${vars.defaults.browser}:3
+          '';
+        };
 
         # for each mod key, call the function. take the lists of binds,
         # flatten them, and ensure they are unique.
