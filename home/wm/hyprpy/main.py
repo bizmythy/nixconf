@@ -27,13 +27,13 @@ def main():
         for window in windows:
             print(window.title)
 
-    # Show a desktop notification every time we switch to workspace 6
-    def on_workspace_changed(sender, **kwargs):
-        workspace_id = kwargs.get("workspace_id")
-        print(f"We are on workspace {workspace_id}.")
+    # # Show a desktop notification every time we switch to workspace 6
+    # def on_workspace_changed(sender, **kwargs):
+    #     workspace_id = kwargs.get("workspace_id")
+    #     print(f"We are on workspace {workspace_id}.")
 
-    instance.signals.workspacev2.connect(on_workspace_changed)
-    instance.watch()
+    # instance.signals.workspacev2.connect(on_workspace_changed)
+    # instance.watch()
 
 
 if __name__ == "__main__":
