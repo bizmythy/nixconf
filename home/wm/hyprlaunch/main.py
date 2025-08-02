@@ -7,7 +7,13 @@ from collections import Counter
 
 @click.command()
 @click.argument("directives", nargs=-1)
-@click.option("-r", "--restore", is_flag=True, default=False)
+@click.option(
+    "-r",
+    "--restore",
+    is_flag=True,
+    default=False,
+    help="Restore the initial workspace after launching applications",
+)
 def main(directives: list[str], restore: bool):
     instance = Hyprland()
 
