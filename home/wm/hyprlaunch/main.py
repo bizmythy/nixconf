@@ -7,7 +7,8 @@ from collections import Counter
 
 @click.command()
 @click.argument("directives", nargs=-1)
-def main(directives: list[str]):
+@click.option("-r", "--restore", is_flag=True, default=False)
+def main(directives: list[str], restore: bool):
     instance = Hyprland()
 
     initial_workspace = instance.get_active_workspace()
@@ -29,7 +30,8 @@ def main(directives: list[str]):
             sleep(0.1)
         click.secho(f"{command} opened in workspace {workspace}", fg="blue")
 
-    switch_workspace(initial_workspace.id)
+    if restore:
+        switch_workspace(initial_workspace.id)
 
 
 if __name__ == "__main__":
