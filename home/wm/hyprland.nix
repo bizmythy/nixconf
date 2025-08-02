@@ -5,7 +5,18 @@
   vars,
   ...
 }:
-
+let
+  launchwork = pkgs.writeShellApplication {
+    name = "launchwork";
+    text = ''
+      hyprlaunch \
+        ${vars.defaults.tty}:1 \
+        slack:8 \
+        ${vars.defaults.browser}:3 \
+        ${vars.defaults.editor}:2
+    '';
+  };
+in
 {
   catppuccin.hyprland = {
     enable = true;
@@ -57,16 +68,6 @@
             "2, monitor:${igneous.main}, default:true"
             "10, monitor:${igneous.tv}, default:true"
           ];
-        };
-
-        launchWork = pkgs.writeShellApplication {
-          name = "laucnchwork";
-          text = ''
-            hyprlaunch \
-              ${vars.defaults.tty}":1 \
-              slack:8 \
-              ${vars.defaults.browser}:3
-          '';
         };
 
         # for each mod key, call the function. take the lists of binds,
@@ -182,7 +183,7 @@
 
           "${modKey}, Z, exec, ${vars.defaults.editor}"
           "${modKey}, D, exec, ${vars.defaults.editor} ${vars.home}/dirac/buildos-web"
-          "${modKey} SHIFT, D, exec, ${launchWork}"
+          "${modKey} SHIFT, D, exec, ${lib.getExe launchwork}"
           "${modKey}, N, exec, ${vars.defaults.editor} ${vars.home}/nixconf"
 
           "${modKey}, ${modKey}_L, exec, fuzzel"
@@ -333,5 +334,5 @@
         };
       };
   };
-
+  home.packages = [ launchwork ];
 }
