@@ -10,6 +10,9 @@
           "command": "nixfmt"
         }
       }
+    },
+    "Python": {
+      "tab_size": 4
     }
   }
 }
