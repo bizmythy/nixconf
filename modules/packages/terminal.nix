@@ -4,21 +4,6 @@
   ...
 }:
 
-let
-  # nixpkgs version takes forever to build all the driver versions
-  nvtop-appimage =
-    let
-      pname = "nvtop";
-      version = "3.1.0";
-      src = pkgs.fetchurl {
-        url = "https://github.com/Syllo/nvtop/releases/download/${version}/${pname}-x86_64.AppImage";
-        hash = "sha256-7qmNZtliJc97yZBQE9+adQZMn8VMOKkJe91j4U9GMN8=";
-      };
-    in
-    pkgs.appimageTools.wrapType2 {
-      inherit pname version src;
-    };
-in
 {
   # Enable zsh and make default
   programs.zsh.enable = true;
