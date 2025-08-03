@@ -5,20 +5,6 @@
 }:
 
 let
-  protobuf-language-server = pkgs.buildGoModule {
-    pname = "protobuf-language-server";
-    version = "0.1.0";
-    src = pkgs.fetchFromGitHub {
-      owner = "lasorda";
-      repo = "protobuf-language-server";
-      rev = "8e82adc0984f3c7a4d5179ad19fd86a034659e76";
-      hash = "sha256-R/enXn6korpZxnrDyLXfEDnCnW+OaBfgN1sW9dmcFNg=";
-    };
-
-    vendorHash = "sha256-dRria1zm5Jk7ScXh0HXeU686EmZcRrz5ZgnF0ca9aUQ=";
-    doCheck = false;
-  };
-
   # nixpkgs version takes forever to build all the driver versions
   nvtop-appimage =
     let

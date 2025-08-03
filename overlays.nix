@@ -4,4 +4,6 @@ self: super: {
       hyprpy = super.callPackage ./pkgs/hyprpy.nix { };
     }
   );
+
+  protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
 }
