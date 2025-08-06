@@ -20,4 +20,11 @@ self: super: {
     super.appimageTools.wrapType2 {
       inherit pname version src;
     };
+
+  # this package takes an *extremely* long time to check through all the files
+  catppuccin-papirus-folders = super.catppuccin-papirus-folders.overrideAttrs (
+    finalAttrs: previousAttrs: {
+      doCheck = false;
+    }
+  );
 }
