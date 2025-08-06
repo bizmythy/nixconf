@@ -85,7 +85,6 @@ in
         extraConfig =
           formatCompletions [
             "curl"
-            "docker"
             "less"
             "make"
             "man"
