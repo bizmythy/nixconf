@@ -22,6 +22,5 @@ I have made an effort to stick primarily to Nix language configuration where pos
 
 ## TODO:
 
-- [ ] default apps for xdg-open
-- [ ] display audio from all displays not working (maybe caused by display mirror?)
-- [x] pen input from android tablet
+- [ ] audio output picker
+- [ ] app launcher thoroughly tested
