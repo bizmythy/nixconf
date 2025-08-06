@@ -19,6 +19,11 @@
 
   hardware.graphics.extraPackages = with pkgs; [ rocmPackages.clr.icd ];
 
+  services.ollama = {
+    enable = true;
+    acceleration = "rocm";
+  };
+
   fileSystems = {
     # mount windows partition
     "/mnt/windows" = {
