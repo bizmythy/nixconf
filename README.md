@@ -24,3 +24,4 @@ I have made an effort to stick primarily to Nix language configuration where pos
 
 - [ ] audio output picker
 - [ ] app launcher thoroughly tested
+- [ ] fix atuin nushell completion
