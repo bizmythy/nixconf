@@ -69,8 +69,8 @@ in
         nuscripts = pkgs.fetchFromGitHub {
           owner = "nushell";
           repo = "nu_scripts";
-          rev = "6faa666e558bc53be9bf8836d4d1734926fa84d2";
-          hash = "sha256-BPuWq1ld2eqSvugOCNToEA9+Q6q94TfI7OjkLnBS+oY=";
+          rev = "ec945380be3981522f9bb55e764a5254a908e652";
+          hash = "sha256-0fw0fJSlUnT5vbBHDubqLrk3F+OU7CE15vIeU295C4w=";
         };
 
         formatInput = input: "use ${nuscripts}/custom-completions/${input}/${input}-completions.nu *";
