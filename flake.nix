@@ -147,6 +147,12 @@
           ]
       );
 
+      packages = eachSystem (pkgs: {
+        nvim = inputs.nixvim.legacyPackages.${pkgs.system}.makeNixvim (
+          import ./nixvim.nix { inherit pkgs; }
+        );
+      });
+
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
 
       checks = eachSystem (pkgs: {
