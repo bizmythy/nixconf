@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 use std/assert
 
 let pw_ports = (pw-dump | from json | where type == "PipeWire:Interface:Port")
