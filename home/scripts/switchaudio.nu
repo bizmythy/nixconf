@@ -8,10 +8,8 @@ let ports_info = ($pw_ports | get info | reject params change-mask)
 # crazy parse of wpctl status to extract the audio sink devices
 def get_sinks [] {
     wpctl status |
-    split row "Sinks:" |
-    get 1 |
-    split row "Sources" |
-    get 0 |
+    split row "Sinks:" | get 1 |
+    split row "Sources" | get 0 |
     lines |
     drop 2 |
     split column "[" |
@@ -30,7 +28,7 @@ let choices = (
     str join "\n"
 )
 let selected_idx = ($choices | fuzzel --dmenu --index --use-bold | into int)
-let selected = ($sinks | get $selected_idx)
+let selected = ($sinks | get $selected_idx | reject selected)
 print $selected
 
 wpctl set-default $selected.id
