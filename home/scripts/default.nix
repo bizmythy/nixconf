@@ -11,5 +11,6 @@ in
 {
   home.packages = map makeScript [
     ./flakeup.nu
+    ./switchaudio.nu
   ];
 }
