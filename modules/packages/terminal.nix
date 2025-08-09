@@ -144,6 +144,7 @@
     shellcheck
     protobuf-language-server
     buf
+    zig
 
     # nix tools
     nix-output-monitor
