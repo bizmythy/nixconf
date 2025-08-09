@@ -224,7 +224,8 @@
             ""
           ];
         };
-        on-click = "pavucontrol";
+        on-click = "switchaudio";
+        on-click-right = "pavucontrol";
       };
 
       "custom/media" = {
