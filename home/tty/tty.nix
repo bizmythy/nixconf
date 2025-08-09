@@ -147,5 +147,9 @@ in
         in
         "${pager}/bin/nvim-pager 'INPUT_LINE_NUMBER' 'CURSOR_LINE' 'CURSOR_COLUMN'";
     };
+
+    keybindings = {
+      "ctrl+shift+space" = "send_text all lazygit\\r";
+    };
   };
 }
