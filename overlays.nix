@@ -11,10 +11,10 @@ self: super: {
   nvtop-appimage =
     let
       pname = "nvtop";
-      version = "3.1.0";
+      version = "3.2.0";
       src = super.fetchurl {
-        url = "https://github.com/Syllo/nvtop/releases/download/${version}/${pname}-x86_64.AppImage";
-        hash = "sha256-7qmNZtliJc97yZBQE9+adQZMn8VMOKkJe91j4U9GMN8=";
+        url = "https://github.com/Syllo/nvtop/releases/download/3.2.0/${pname}-${version}-x86_64.AppImage";
+        hash = "sha256-M8VPtwJfQ6IT246YMIhg1ADbM0mmH8k4L+RzbH0lgMQ=";
       };
     in
     super.appimageTools.wrapType2 {
