@@ -52,3 +52,7 @@ def "main edit" [] {
         err
     }
 }
+
+def "main reset" [] {
+    hyprctl reload
+}
