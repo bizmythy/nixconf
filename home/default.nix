@@ -98,21 +98,24 @@ in
 
   # catppuccin theme for lazydocker
   xdg.configFile."lazydocker/config.yml".source = (pkgs.formats.yaml { }).generate "config.yml" {
-    gui.theme = {
-      activeBorderColor = [
-        "#cba6f7"
-        "bold"
-      ];
-      inactiveBorderColor = [
-        "#a6adc8"
-        "bold"
-      ];
-      selectedLineBgColor = [
-        "default"
-      ];
-      optionsTextColor = [
-        "#89b4fa"
-      ];
+    gui = {
+      returnImmediately = true;
+      theme = {
+        activeBorderColor = [
+          "#cba6f7"
+          "bold"
+        ];
+        inactiveBorderColor = [
+          "#a6adc8"
+          "bold"
+        ];
+        selectedLineBgColor = [
+          "default"
+        ];
+        optionsTextColor = [
+          "#89b4fa"
+        ];
+      };
     };
   };
 
