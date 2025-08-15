@@ -154,6 +154,7 @@
     nix-search-cli
     nil
     nixd
+    cachix
   ];
 
   # https://github.com/viperML/nh
