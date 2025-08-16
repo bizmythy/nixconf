@@ -7,7 +7,10 @@
     tokenFile = "/etc/opnix-token";
 
     secrets = {
-      spotifyPlayer.reference = "op://Private/spotify-player/credential";
+      spotifyPlayer = {
+        reference = "op://opnix/spotify-player/credential";
+        path = ".config/spotify-player/clientid";
+      };
     };
   };
 }

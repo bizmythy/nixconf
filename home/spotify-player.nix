@@ -1,4 +1,5 @@
 {
+  config,
   vars,
   osConfig,
   ...
@@ -10,13 +11,8 @@
     settings = {
       # fetch the client ID using 1Password
       client_id_command = {
-        command = "op";
-        args = [
-          "--account"
-          "L23KMYOBNVHLPGSIPDX7BAQ5LA"
-          "read"
-          "op://smfpz5gfxgz5meqdqachl7lqw4/spotify-player/credential"
-        ];
+        command = "cat";
+        args = [ config.programs.onepassword-secrets.secretPaths.spotifyPlayer ];
       };
 
       device = {
