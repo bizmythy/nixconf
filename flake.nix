@@ -12,6 +12,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # secrets management through 1Password
+    opnix.url = "github:brizzbuzz/opnix";
+
     # catppuccin theming for all applications
     catppuccin.url = "github:catppuccin/nix";
 
@@ -84,6 +87,7 @@
           users."${vars.user}" = {
             nixpkgs = nixpkgsSettings;
             imports = [
+              inputs.opnix.homeManagerModules.default
               inputs.catppuccin.homeModules.catppuccin
               inputs.nixvim.homeModules.nixvim
               ./home
