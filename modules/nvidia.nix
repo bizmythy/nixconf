@@ -62,6 +62,9 @@
       };
     };
 
+    # enable nvidia hardware toolkit for docker integration
+    hardware.nvidia-container-toolkit.enable = true;
+
     nixpkgs = {
       config = {
         pulseaudio = true;
