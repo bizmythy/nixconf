@@ -17,6 +17,7 @@
     environment.systemPackages = with pkgs; [
       egl-wayland
       nvitop
+      nvidia-container-toolkit
     ];
 
     boot.kernelPackages = pkgs.linuxPackages_latest;
