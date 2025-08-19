@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   ...
 }:
 
@@ -18,6 +19,14 @@
   };
 
   hardware.graphics.extraPackages = with pkgs; [ rocmPackages.clr.icd ];
+
+  environment.systemPackages = with pkgs; [
+    amd-ctk
+    amd-container-runtime
+  ];
+  virtualisation.docker.daemon.settings.runtimes.amd = {
+    path = lib.getExe pkgs.amd-container-runtime;
+  };
 
   services.ollama = {
     enable = true;

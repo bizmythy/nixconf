@@ -7,6 +7,9 @@ self: super: {
 
   protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
 
+  amd-ctk = super.callPackage ./pkgs/amd-ctk.nix { };
+  amd-container-runtime = super.callPackage ./pkgs/amd-container-runtime.nix { };
+
   # nixpkgs version takes forever to build all the driver versions
   nvtop-appimage =
     let
