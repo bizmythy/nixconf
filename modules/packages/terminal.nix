@@ -43,6 +43,7 @@
     dig
     jq
     yq
+    cowsay
     tetris
     # curl replacement, http requests
     xh
