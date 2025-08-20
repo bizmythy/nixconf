@@ -83,17 +83,17 @@ in
         };
         shellAliases = myShellAliases;
         plugins = with pkgs.nushellPlugins; [
-          dbus # interact with dbus
+          # dbus # interact with dbus, broken
           formats # additional file formats
           gstat # git status for repo
-          hcl # load hashicorp config lang files
+          # hcl # load hashicorp config lang files, incompatible version
           highlight # highlight source code
-          net # list network interfaces
+          # net # list network interfaces, broken
           polars # dataframe operations
           query # query sql, json, etc
           semver # work with semantic versions
           skim # integrates `sk` fuzzy finder
-          units # easily convert between common units
+          # units # easily convert between common units, incompatible version
         ];
         extraConfig =
           formatCompletions [
