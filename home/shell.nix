@@ -82,6 +82,19 @@ in
           AWS_PROFILE = "dev";
         };
         shellAliases = myShellAliases;
+        plugins = with pkgs.nushellPlugins; [
+          dbus # interact with dbus
+          formats # additional file formats
+          gstat # git status for repo
+          hcl # load hashicorp config lang files
+          highlight # highlight source code
+          net # list network interfaces
+          polars # dataframe operations
+          query # query sql, json, etc
+          semver # work with semantic versions
+          skim # integrates `sk` fuzzy finder
+          units # easily convert between common units
+        ];
         extraConfig =
           formatCompletions [
             "curl"
