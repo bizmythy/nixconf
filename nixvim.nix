@@ -17,7 +17,7 @@
   opts = {
     number = true; # show line numbers
     relativenumber = true; # show relative line numbers
-    wrap = false; # do not wrap lines
+    wrap = true; # wrap lines
     sidescroll = 1; # allow horizontal scrolling
 
     shiftwidth = 2; # tab width 2
