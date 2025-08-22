@@ -118,7 +118,7 @@
     # silly fish swimming around
     asciiquarium-transparent
     # ai coding agent
-    crush
+    nur.repos.charmbracelet.crush
 
     # document tools
     # latex-killer, create documents in expressive language
