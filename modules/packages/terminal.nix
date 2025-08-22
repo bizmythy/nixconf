@@ -156,6 +156,9 @@
     nil
     nixd
     cachix
+
+    awscli2
+    ssm-session-manager-plugin
   ];
 
   # https://github.com/viperML/nh
