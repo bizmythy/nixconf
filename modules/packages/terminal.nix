@@ -177,9 +177,9 @@
       setSocketVariable = true;
     };
 
-    # daemon.settings = {
-    #   "bridge" = "none";
-    # };
+    daemon.settings = {
+      insecure-registries = [ "192.168.1.244:5000" ];
+    };
   };
 
   programs._1password.enable = true;
