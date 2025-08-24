@@ -151,6 +151,12 @@
       package = pkgs.mullvad-vpn;
     };
 
+    # web ui for ollama and similar
+    open-webui = {
+      enable = true;
+      port = 31743;
+    };
+
     desktopManager.plasma6.enableQt5Integration = true;
   };
 
