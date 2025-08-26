@@ -153,7 +153,7 @@
 
     # web ui for ollama and similar
     open-webui = {
-      enable = true;
+      enable = false;
       port = 31743;
     };
 

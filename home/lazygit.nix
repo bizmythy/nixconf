@@ -51,5 +51,5 @@
 
   catppuccin.lazygit.enable = true;
 
-  programs.gitui.enable = true;
+  programs.gitui.enable = false;
 }
