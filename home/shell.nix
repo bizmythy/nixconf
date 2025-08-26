@@ -78,10 +78,6 @@ in
       in
       {
         enable = true;
-        environmentVariables = mySessionVariables // {
-          AWS_PROFILE = "dev";
-        };
-        shellAliases = myShellAliases;
         plugins = with pkgs.nushellPlugins; [
           # dbus # interact with dbus, broken
           formats # additional file formats
@@ -95,6 +91,16 @@ in
           skim # integrates `sk` fuzzy finder
           # units # easily convert between common units, incompatible version
         ];
+        shellAliases = myShellAliases;
+        environmentVariables = mySessionVariables // {
+          PROMPT_INDICATOR_VI_INSERT = "";
+          AWS_PROFILE = "dev";
+        };
+        settings = {
+          show_banner = false; # don't show startup help text
+          buffer_editor = vars.defaults.termEditor;
+          edit_mode = "vi"; # vi line edit mode
+        };
         extraConfig =
           formatCompletions [
             "curl"
@@ -108,9 +114,6 @@ in
 
             source ${./utils.nu};
             use ${nuscripts}/modules/jc/
-
-            $env.config.show_banner = false
-            $env.config.buffer_editor = "${vars.defaults.termEditor}"
 
             nerdfetch
           '';
