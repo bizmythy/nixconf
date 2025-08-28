@@ -117,8 +117,10 @@
     asciinema
     # silly fish swimming around
     asciiquarium-transparent
-    # ai coding agent
+
+    # ai coding agents
     nur.repos.charmbracelet.crush
+    codex
 
     # document tools
     # latex-killer, create documents in expressive language
