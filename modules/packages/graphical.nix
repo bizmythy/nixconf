@@ -91,7 +91,7 @@
             # discord
             vesktop
 
-            jellyfin-media-player
+            jellyfin-mpv-shim
 
             signal-desktop
             element-desktop
