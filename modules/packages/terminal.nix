@@ -1,5 +1,6 @@
 {
   pkgs,
+  inputs,
   vars,
   ...
 }:
@@ -147,7 +148,7 @@
     shellcheck
     protobuf-language-server
     buf
-    zig
+    zig_0_15
 
     # nix tools
     nix-output-monitor
