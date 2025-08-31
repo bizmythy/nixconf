@@ -45,9 +45,14 @@
       mode = "n";
       key = "<leader><leader>";
       action = ":b#<CR>";
-      options = {
-        desc = "Switch to previous buffer";
-      };
+      options.desc = "Switch to previous buffer";
+    }
+
+    {
+      mode = "n";
+      key = "<leader>q";
+      action = ":wq<CR>";
+      options.desc = "Write file and quit";
     }
   ];
 
