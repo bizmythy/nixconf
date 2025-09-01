@@ -145,6 +145,7 @@
       users = [ vars.user ];
     };
   };
+
   services = {
     mullvad-vpn = lib.mkIf (vars.isPersonal config) {
       enable = true;
@@ -158,6 +159,18 @@
     };
 
     desktopManager.plasma6.enableQt5Integration = true;
+  };
+
+  # autostart steam in background
+  systemd.user.services.steam = lib.mkIf (vars.isPersonal config) {
+    enable = true;
+    description = "Open Steam in the background at boot";
+    serviceConfig = {
+      ExecStart = "${lib.getExe pkgs.steam} -nochatui -nofriendsui -silent %U";
+      wantedBy = [ "graphical-session.target" ];
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
   };
 
   # Set up virt manager
