@@ -53,14 +53,7 @@
       nvidiaSettings = true;
 
       # Optionally, you may need to select the appropriate driver version for your specific GPU.
-      package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-        version = "575.64.05";
-        sha256_64bit = "sha256-hfK1D5EiYcGRegss9+H5dDr/0Aj9wPIJ9NVWP3dNUC0=";
-        sha256_aarch64 = lib.fakeHash;
-        openSha256 = lib.fakeHash;
-        settingsSha256 = "sha256-o2zUnYFUQjHOcCrB0w/4L6xI1hVUXLAWgG2Y26BowBE=";
-        persistencedSha256 = lib.fakeHash;
-      };
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
     };
 
     # enable nvidia hardware toolkit for docker integration
