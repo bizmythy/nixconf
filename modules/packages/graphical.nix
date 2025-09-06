@@ -96,6 +96,7 @@
             signal-desktop
             element-desktop
 
+            apotris
             (retroarch.withCores (
               # specify retroarch cores to include
               cores: with cores; [
