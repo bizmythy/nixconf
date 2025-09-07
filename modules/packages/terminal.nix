@@ -173,15 +173,21 @@
   };
 
   # Set up docker
-  virtualisation.docker = {
-    enable = true;
-    rootless = {
+  virtualisation = {
+    docker = {
       enable = true;
-      setSocketVariable = true;
-    };
+      rootless = {
+        enable = true;
+        setSocketVariable = true;
+      };
 
-    daemon.settings = {
-      insecure-registries = [ "192.168.1.244:5000" ];
+      daemon.settings = {
+        insecure-registries = [ "192.168.1.244:5000" ];
+      };
+    };
+    podman = {
+      enable = true;
+      autoPrune.enable = true;
     };
   };
 
