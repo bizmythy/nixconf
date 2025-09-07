@@ -88,8 +88,6 @@
         if (vars.isPersonal config) then
           [
             qbittorrent
-            # discord
-            vesktop
 
             # jellyfin-mpv-shim
 

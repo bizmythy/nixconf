@@ -26,6 +26,7 @@ in
     ./spotify-player.nix
     ./ssh-git.nix
     ./tty/tty.nix
+    ./vesktop.nix
     ./wm
     ./xdg-mime.nix
     # keep-sorted end
@@ -131,8 +132,6 @@ in
     #   apply = true;
     # };
     mako.enable = false;
-    # enable vesktop theming
-    vesktop.enable = (vars.isPersonal osConfig);
   };
 
   home.pointerCursor = cursor;
