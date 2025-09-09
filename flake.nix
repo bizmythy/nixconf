@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-old.url = "github:nixos/nixpkgs/nixos-25.05";
 
     # determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
@@ -84,12 +83,6 @@
         overlays = [
           (import ./overlays.nix)
           inputs.nur.overlays.default
-          (final: prev: {
-            old = import inputs.nixpkgs-old {
-              system = "x86_64-linux";
-              config.allowUnfree = true;
-            };
-          })
         ];
       };
 

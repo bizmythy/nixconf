@@ -124,8 +124,6 @@
   programs = {
     _1password-gui = {
       enable = true;
-      # temp: need to use xwayland old version because they broke cli integration
-      package = pkgs.old._1password-gui;
       # Certain features, including CLI integration and system authentication support,
       # require enabling PolKit integration on some desktop environments (e.g. Plasma).
       polkitPolicyOwners = [ vars.user ];
