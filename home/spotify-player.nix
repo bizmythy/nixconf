@@ -72,11 +72,19 @@
         key_sequence = "C-c";
       }
       {
-        command = "SeekForward";
+        command = {
+          SeekForward = {
+            duration = 5;
+          };
+        };
         key_sequence = "L";
       }
       {
-        command = "SeekBackward";
+        command = {
+          SeekBackward = {
+            duration = 5;
+          };
+        };
         key_sequence = "H";
       }
       {
