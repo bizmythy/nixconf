@@ -15,7 +15,7 @@
           "--account"
           "L23KMYOBNVHLPGSIPDX7BAQ5LA"
           "read"
-          "op://smfpz5gfxgz5meqdqachl7lqw4/spotify-player/credential"
+          "op://opnix/spotify-player/credential"
         ];
       };
 
