@@ -12,8 +12,8 @@ let
       hyprlaunch \
         ${vars.defaults.tty}:1 \
         slack:8 \
-        ${vars.defaults.browser}:3 \
-        ${vars.defaults.editor}:2
+        ${vars.defaults.editor}:2 \
+        ${vars.defaults.browser}:3
     '';
   };
 in
