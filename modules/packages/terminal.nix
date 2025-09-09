@@ -91,7 +91,7 @@
     # container process inspection
     sysdig
     # performance inspection
-    linuxPackages_latest.perf
+    perf
     # wifi monitoring
     wavemon
     # gpu monitoring
