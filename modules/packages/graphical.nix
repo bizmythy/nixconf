@@ -179,6 +179,11 @@
     spiceUSBRedirection.enable = true;
   };
 
+  # waydroid - android emulation
+  virtualisation.waydroid = lib.mkIf (vars.isPersonal config) {
+    enable = true;
+  };
+
   environment.etc = {
     "1password/custom_allowed_browsers" = {
       text = ''
