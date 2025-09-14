@@ -98,6 +98,8 @@
 
             # emulation
             mame
+            mame-tools
+            dolphin-emu
             (retroarch.withCores (
               # specify retroarch cores to include
               cores: with cores; [
