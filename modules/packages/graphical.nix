@@ -95,6 +95,9 @@
             element-desktop
 
             apotris
+
+            # emulation
+            mame
             (retroarch.withCores (
               # specify retroarch cores to include
               cores: with cores; [
