@@ -120,6 +120,8 @@
     asciiquarium-transparent
     # download files fast and in parallel
     aria2
+    # dowload internet video
+    yt-dlp
 
     # ai coding agents
     nur.repos.charmbracelet.crush
