@@ -91,5 +91,29 @@
         hash = "sha256-NTcbTBzK9otf73dutdWpYwyphXhKVoa6sr5vTg56tLk=";
       };
     })
+
+    # plugin that colorizes ANSI escape sequences
+    (pkgs.vimUtils.buildVimPlugin {
+      name = "baleia";
+      src = pkgs.fetchFromGitHub {
+        owner = "m00qek";
+        repo = "baleia.nvim";
+        rev = "1b25eac3ac03659c3d3af75c7455e179e5f197f7";
+        hash = "sha256-qA1x5kplP2I8bURO0I4R0gt/zeznu9hQQ+XHptLGuwc=";
+      };
+    })
   ];
+
+  extraConfigLua = ''
+    -- Baleia Setup
+    vim.g.baleia = require("baleia").setup({ })
+
+    -- Command to colorize the current buffer
+    vim.api.nvim_create_user_command("BaleiaColorize", function()
+      vim.g.baleia.once(vim.api.nvim_get_current_buf())
+    end, { bang = true })
+
+    -- Command to show logs 
+    vim.api.nvim_create_user_command("BaleiaLogs", vim.g.baleia.logger.show, { bang = true })
+  '';
 }
