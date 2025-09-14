@@ -118,6 +118,8 @@
     asciinema
     # silly fish swimming around
     asciiquarium-transparent
+    # download files fast and in parallel
+    aria2
 
     # ai coding agents
     nur.repos.charmbracelet.crush
