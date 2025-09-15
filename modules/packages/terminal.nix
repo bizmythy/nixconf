@@ -122,6 +122,8 @@
     aria2
     # dowload internet video
     yt-dlp
+    # hex/binary viewing
+    xxd
 
     # ai coding agents
     nur.repos.charmbracelet.crush
