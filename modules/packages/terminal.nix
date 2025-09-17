@@ -124,6 +124,8 @@
     yt-dlp
     # hex/binary viewing
     xxd
+    # mounting tar archives
+    archivemount
 
     # ai coding agents
     nur.repos.charmbracelet.crush
