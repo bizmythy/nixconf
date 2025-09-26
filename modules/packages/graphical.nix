@@ -9,6 +9,7 @@
 
 {
   imports = [
+    ./1password-gui.nix
     ./flatpak.nix
     ./fonts.nix
     ./kwallet.nix
@@ -127,13 +128,6 @@
     builtins.readFile "${pkgs.kdePackages.plasma-workspace}/etc/xdg/menus/plasma-applications.menu";
 
   programs = {
-    _1password-gui = {
-      enable = true;
-      # Certain features, including CLI integration and system authentication support,
-      # require enabling PolKit integration on some desktop environments (e.g. Plasma).
-      polkitPolicyOwners = [ vars.user ];
-    };
-
     steam = lib.mkIf (vars.isPersonal config) {
       enable = true;
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
@@ -187,15 +181,6 @@
   # waydroid - android emulation
   virtualisation.waydroid = lib.mkIf (vars.isPersonal config) {
     enable = true;
-  };
-
-  environment.etc = {
-    "1password/custom_allowed_browsers" = {
-      text = ''
-        zen
-      '';
-      mode = "0755";
-    };
   };
 
   catppuccin.enable = true;
