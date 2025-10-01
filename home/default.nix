@@ -102,22 +102,22 @@ in
   xdg.configFile."lazydocker/config.yml".source = (pkgs.formats.yaml { }).generate "config.yml" {
     gui = {
       returnImmediately = true;
-      theme = {
-        activeBorderColor = [
-          "#cba6f7"
-          "bold"
-        ];
-        inactiveBorderColor = [
-          "#a6adc8"
-          "bold"
-        ];
-        selectedLineBgColor = [
-          "default"
-        ];
-        optionsTextColor = [
-          "#89b4fa"
-        ];
-      };
+      # theme = {
+      #   activeBorderColor = [
+      #     "#cba6f7"
+      #     "bold"
+      #   ];
+      #   inactiveBorderColor = [
+      #     "#a6adc8"
+      #     "bold"
+      #   ];
+      #   selectedLineBgColor = [
+      #     "default"
+      #   ];
+      #   optionsTextColor = [
+      #     "#89b4fa"
+      #   ];
+      # };
     };
   };
 
