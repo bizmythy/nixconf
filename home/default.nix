@@ -89,6 +89,30 @@ in
       enable = true;
     };
 
+    lazydocker = {
+      enable = true;
+      settings.gui = {
+        returnImmediately = true;
+        # catppuccin theme for lazydocker
+        # theme = {
+        #   activeBorderColor = [
+        #     "#cba6f7"
+        #     "bold"
+        #   ];
+        #   inactiveBorderColor = [
+        #     "#a6adc8"
+        #     "bold"
+        #   ];
+        #   selectedLineBgColor = [
+        #     "default"
+        #   ];
+        #   optionsTextColor = [
+        #     "#89b4fa"
+        #   ];
+        # };
+      };
+    };
+
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
   };
@@ -97,29 +121,6 @@ in
   # services.espanso = {
   #   enable = true;
   # };
-
-  # catppuccin theme for lazydocker
-  xdg.configFile."lazydocker/config.yml".source = (pkgs.formats.yaml { }).generate "config.yml" {
-    gui = {
-      returnImmediately = true;
-      # theme = {
-      #   activeBorderColor = [
-      #     "#cba6f7"
-      #     "bold"
-      #   ];
-      #   inactiveBorderColor = [
-      #     "#a6adc8"
-      #     "bold"
-      #   ];
-      #   selectedLineBgColor = [
-      #     "default"
-      #   ];
-      #   optionsTextColor = [
-      #     "#89b4fa"
-      #   ];
-      # };
-    };
-  };
 
   fonts.fontconfig.enable = true;
 
