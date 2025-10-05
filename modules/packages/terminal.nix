@@ -126,6 +126,8 @@
     xxd
     # mounting tar archives
     archivemount
+    # spell check text files
+    (aspellWithDicts (ps: with ps; [ en ]))
 
     # ai coding agents
     nur.repos.charmbracelet.crush
