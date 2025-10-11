@@ -15,11 +15,6 @@
     # secrets management through 1Password
     opnix.url = "github:brizzbuzz/opnix";
 
-    nur = {
-      url = "github:nix-community/NUR";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # catppuccin theming for all applications
     catppuccin.url = "github:catppuccin/nix";
 
@@ -31,6 +26,9 @@
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # precompiled AI tools
+    nix-ai-tools.url = "github:numtide/nix-ai-tools";
 
     # neovim configured in nix
     nixvim = {
@@ -82,7 +80,6 @@
         config.allowUnfree = true;
         overlays = [
           (import ./overlays.nix)
-          inputs.nur.overlays.default
         ];
       };
 

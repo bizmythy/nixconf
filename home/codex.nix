@@ -1,13 +1,15 @@
 {
   pkgs,
+  inputs,
   ...
 }:
 
 {
-  home.file.".codex/config.toml".text = builtins.readFile (
-    (pkgs.formats.toml { }).generate "config.toml" {
-      # hahaha i'm sure nothing will go wrong
+  programs.codex = {
+    enable = true;
+    package = inputs.nix-ai-tools.packages.${pkgs.system}.codex;
+    settings = {
       sandbox_mode = "danger-full-access";
-    }
-  );
+    };
+  };
 }

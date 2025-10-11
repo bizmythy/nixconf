@@ -36,12 +36,12 @@
 
     # cachix for hyprland flake and dirac
     substituters = [
+      "https://numtide.cachix.org"
       "https://hyprland.cachix.org"
-      "https://diracq-buildos-web.cachix.org"
     ];
     trusted-public-keys = [
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      "diracq-buildos-web.cachix.org-1:Vqzlhl1XcwdYF+A8zzS3fVeKjdz3rz6tWVf59Xt5TZQ="
+      "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
     ];
   };
 

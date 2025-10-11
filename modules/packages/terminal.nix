@@ -129,10 +129,6 @@
     # spell check text files
     (aspellWithDicts (ps: with ps; [ en ]))
 
-    # ai coding agents
-    nur.repos.charmbracelet.crush
-    codex
-
     # document tools
     # latex-killer, create documents in expressive language
     typst

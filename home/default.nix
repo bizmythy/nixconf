@@ -16,6 +16,7 @@ in
 {
   imports = [
     # keep-sorted start
+    ./codex.nix
     ./firefox.nix
     ./gh.nix
     ./lazygit.nix
