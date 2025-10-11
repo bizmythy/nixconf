@@ -138,16 +138,16 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1760156159,
-        "narHash": "sha256-3wvHcT2NFF3Rp1gGxp+n66cCcNpK28NAKg0aC+eRvQM=",
-        "ref": "main",
-        "rev": "afbd8265d5242eb6806dc9a061ab39776503d664",
-        "revCount": 2021,
+        "lastModified": 1760215425,
+        "narHash": "sha256-ewT7nhvDXKvhUUVo6yQsOrb27ZJX4tNGogAsG36gOhQ=",
+        "ref": "temp-no-awscli2",
+        "rev": "19613fe22f87e59b395d948aeee4b64dabd8ebbc",
+        "revCount": 2022,
         "type": "git",
         "url": "ssh://git@dirac-github/diracq/buildos-web.git"
       },
       "original": {
-        "ref": "main",
+        "ref": "temp-no-awscli2",
         "type": "git",
         "url": "ssh://git@dirac-github/diracq/buildos-web.git"
       }

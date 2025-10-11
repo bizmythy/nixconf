@@ -42,7 +42,7 @@
     dirac = {
       type = "git";
       url = "ssh://git@dirac-github/diracq/buildos-web.git";
-      ref = "main";
+      ref = "temp-no-awscli2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

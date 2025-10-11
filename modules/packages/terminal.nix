@@ -170,7 +170,6 @@
     nixd
     cachix
 
-    awscli2
     ssm-session-manager-plugin
   ];
 
