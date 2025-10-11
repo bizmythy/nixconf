@@ -112,8 +112,6 @@
                 mesen
                 # psx
                 beetle-psx-hw
-                # wii gamecube
-                dolphin
               ]
             ))
           ]
@@ -138,7 +136,7 @@
     virt-manager.enable = true;
 
     weylus = {
-      enable = true;
+      enable = false;
       openFirewall = true;
       users = [ vars.user ];
     };

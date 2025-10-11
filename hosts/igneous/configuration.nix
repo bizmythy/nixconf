@@ -29,7 +29,7 @@
   };
 
   services.ollama = {
-    enable = true;
+    enable = false;
     acceleration = "rocm";
     openFirewall = true;
     environmentVariables = {
