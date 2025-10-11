@@ -60,10 +60,14 @@
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
-  networking.networkmanager.enable = true;
-  # networking.hosts = {
-  #   "172.18.0.1" = [ "host.docker.internal" ];
-  # };
+  networking = {
+    networkmanager.enable = true;
+    # set DNS servers
+    nameservers = [
+      "1.1.1.1"
+      "8.8.8.8"
+    ];
+  };
 
   # Set your time zone.
   time.timeZone = "America/New_York";
