@@ -131,6 +131,8 @@
         # spell check text files
         (aspellWithDicts (ps: with ps; [ en ]))
 
+        graphite-cli
+
         # document tools
         # latex-killer, create documents in expressive language
         typst
@@ -174,7 +176,6 @@
       aiTools = with inputs.nix-ai-tools.packages.${pkgs.system}; [
         claude-code
         codex
-        opencode
       ];
     in
     (nixSourcced ++ aiTools);
