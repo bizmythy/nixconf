@@ -83,7 +83,7 @@ in
           formats # additional file formats
           gstat # git status for repo
           # hcl # load hashicorp config lang files, incompatible version
-          highlight # highlight source code
+          # highlight # highlight source code
           # net # list network interfaces, broken
           polars # dataframe operations
           query # query sql, json, etc
