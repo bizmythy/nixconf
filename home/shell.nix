@@ -30,6 +30,7 @@ let
 
     msr = "zsh -c 'mask services reset && lazydocker'";
     msu = "zsh -c 'mask services build && mask services up && lazydocker'";
+    mtix = "mask start-ticket";
     msb = "mask services build";
     gen = "mask generate";
     savelogs = "mask services savelogs";
