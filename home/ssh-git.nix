@@ -57,49 +57,62 @@ in
     )
     + "\n"; # needs to end with newline or we get strange undefined behavior
 
-  # -------GIT CONFIGURATION-------
-  programs.git = {
+  # delta for git diff viewer
+  programs.delta = {
     enable = true;
-    lfs.enable = true;
-    userEmail = "andrew.p.council@gmail.com";
-    userName = "bizmythy";
-    delta = {
-      enable = true;
-      options = {
-        side-by-side = false;
-      };
+    options = {
+      side-by-side = false;
     };
-    extraConfig = {
-      # preferences
-      init.defaultBranch = "main";
-      push.autoSetupRemote = true;
-      core.hooksPath = ".githooks";
-      core.editor = vars.defaults.termEditor;
-
-      # 1password ssh commit signing
-      user.signingkey = publicKeys.personalGitHub;
-      gpg.format = "ssh";
-      core.sshCommand = "ssh -i ${publicKeyFiles.personalGitHub}";
-      # should be declared deterministically, but can't get same pkg as in nixos config
-      "gpg \"ssh\"".program = "/run/current-system/sw/bin/op-ssh-sign";
-      commit.gpgsign = true;
-    };
-
-    includes = [
-      # dirac-specific git setup
-      # need to `git init` in ~/dirac for this to work properly
-      {
-        condition = "gitdir:${vars.home}/dirac/";
-        contentSuffix = ".dirac.gitconfig";
-        contents = {
-          user = {
-            name = "drew-dirac";
-            email = "drew@diracinc.com";
-            signingkey = publicKeys.diracGitHub;
-          };
-          core.sshCommand = "ssh -i ${publicKeyFiles.diracGitHub}";
-        };
-      }
-    ];
+    enableGitIntegration = true;
   };
+
+  # git configuration
+  programs.git =
+    let
+      # configuration for each git account
+      personalConfig = {
+        user = {
+          name = "bizmythy";
+          email = "andrew.p.council@gmail.com";
+          signingkey = publicKeys.personalGitHub;
+        };
+        core.sshCommand = "ssh -i ${publicKeyFiles.personalGitHub}";
+      };
+      diracConfig = {
+        user = {
+          name = "drew-dirac";
+          email = "drew@diracinc.com";
+          signingkey = publicKeys.diracGitHub;
+        };
+        core.sshCommand = "ssh -i ${publicKeyFiles.diracGitHub}";
+      };
+    in
+    {
+      enable = true;
+      lfs.enable = true;
+      settings = {
+        # preferences
+        init.defaultBranch = "main";
+        push.autoSetupRemote = true;
+        core.hooksPath = ".githooks";
+        core.editor = vars.defaults.termEditor;
+
+        # 1password ssh commit signing
+        gpg.format = "ssh";
+        # should be declared deterministically, but can't get same pkg as in nixos config
+        "gpg \"ssh\"".program = "/run/current-system/sw/bin/op-ssh-sign";
+        commit.gpgsign = true;
+      }
+      // personalConfig; # set default to personal
+
+      includes = [
+        # dirac-specific git setup
+        # need to `git init` in ~/dirac for this to work properly
+        {
+          condition = "gitdir:${vars.home}/dirac/";
+          contentSuffix = ".dirac.gitconfig";
+          contents = diracConfig; # apply dirac in this condition
+        }
+      ];
+    };
 }
