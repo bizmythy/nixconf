@@ -268,6 +268,7 @@ in
           # Screenshots
           ", PRINT, exec, hyprshot -z -m region"
           "${modKey} SHIFT, S, exec, hyprshot -z -m region"
+          "${modKey} CTRL, S, exec, hyprshot -z -m output"
           "${modKey}, PRINT, exec, hyprshot -z -m output"
           "${modKey} SHIFT, PRINT, exec, hyprshot -z -m window"
         ]);
