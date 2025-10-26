@@ -22,7 +22,6 @@
   environment.systemPackages = with pkgs; [
     hyprpicker
     hyprshot
-    hyprsysteminfo
     hyprpaper
 
     playerctl
