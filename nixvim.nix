@@ -64,6 +64,7 @@
     scrollview.enable = true;
     telescope.enable = true;
     web-devicons.enable = true;
+    octo.enable = true;
     # keep-sorted end
 
     # treesitter configuration
