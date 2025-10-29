@@ -149,6 +149,7 @@ in
     };
 
     keybindings = {
+      "ctrl+shift+t" = "new_tab_with_cwd";
       "ctrl+shift+space" = "send_text all lazygit\\r";
       "ctrl+shift+b" = "send_text all zig build\\r";
     };
