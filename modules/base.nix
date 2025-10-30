@@ -100,14 +100,21 @@
     };
   };
 
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
   # Detect network printers
   services.avahi = {
     enable = true;
     nssmdns4 = true;
     openFirewall = true;
+  };
+
+  # Enable CUPS to print documents.
+  services.printing = {
+    enable = true;
+    # network drivers
+    drivers = with pkgs; [
+      cups-filters
+      cups-browsed
+    ];
   };
 
   services.clamav = {
