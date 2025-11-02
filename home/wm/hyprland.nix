@@ -146,6 +146,10 @@ in
             mode = "3840x2160@120";
             position = "auto-right";
             scale = scaleHiDPI;
+            
+            # hdr settings
+            bitdepth = 10;
+            cm = "hdr";
           }
 
           {
