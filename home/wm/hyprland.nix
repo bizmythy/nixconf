@@ -49,14 +49,13 @@ in
         };
         drewdirac = {
           main = "desc:Samsung Electric Company U32J59x HCJXA01635";
-          razer = "desc:Sharp Corporation LQ156T1JW03";
           right = "desc:LG Electronics LG SDQHD 409NTTQ8K433";
           top = "desc:Acer Technologies KA272 TJ0AA00785SJ";
         };
         theseus = {
           laptop = "desc:BOE 0x095F";
         };
-        scaleHiDPI = "1.5";
+        scaleHiDPI = 1.5;
         wsByHost = {
           drewdiracpc = [
             "1, monitor:${drewdirac.right}, default:true"
@@ -129,20 +128,51 @@ in
           rounding = 14;
         };
 
-        monitor = [
-          " , preferred, auto, auto"
+        monitorv2 = [
+          {
+            output = igneous.main;
+            mode = "3840x2160@160";
+            position = "0x0";
+            scale = scaleHiDPI;
+          }
+          {
+            output = igneous.top;
+            mode = "1920x1080@60";
+            position = "575x-1080";
+            scale = 1.0;
+          }
+          {
+            output = igneous.tv;
+            mode = "3840x2160@120";
+            position = "auto-right";
+            scale = scaleHiDPI;
+          }
 
-          "${igneous.main}, 3840x2160@160, 0x0, ${scaleHiDPI}"
-          "${igneous.top}, 1920x1080@60, 575x-1080, 1.0"
-          "${igneous.tv}, 3840x2160@120, auto-right, ${scaleHiDPI}, cm, hdr"
+          {
+            output = drewdirac.main;
+            mode = "3840x2160";
+            position = "0x0";
+            scale = scaleHiDPI;
+          }
+          {
+            output = drewdirac.right;
+            mode = "2560x2880@60";
+            position = "auto-right";
+            scale = 1.333333;
+          }
+          {
+            output = drewdirac.top;
+            mode = "1920x1080@60";
+            position = "575x-1080";
+            scale = 1.0;
+          }
 
-          "${drewdirac.razer}, highres, auto, 1.333333"
-
-          "${drewdirac.main}, 3840x2160, 0x0, ${scaleHiDPI}"
-          "${drewdirac.right}, 2560x2880@60, auto-right, 1.333333"
-          "${drewdirac.top}, 1920x1080@60, 575x-1080, 1.0"
-
-          "${theseus.laptop}, preferred, auto, 1.566667"
+          {
+            output = theseus.laptop;
+            mode = "preferred";
+            position = "auto";
+            scale = 1.566667;
+          }
         ];
 
         experimental.xx_color_management_v4 = (osConfig.networking.hostName == "igneous");
