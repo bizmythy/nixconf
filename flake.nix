@@ -37,12 +37,12 @@
     };
 
     # work configuration modules
-    dirac = {
-      type = "git";
-      url = "ssh://git@dirac-github/diracq/buildos-web.git";
-      ref = "main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # dirac = {
+    #   type = "git";
+    #   url = "ssh://git@dirac-github/diracq/buildos-web.git";
+    #   ref = "main";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     systems.url = "github:nix-systems/default";
     # formatter
@@ -118,8 +118,8 @@
             inputs.nix-flatpak.nixosModules.nix-flatpak
 
             # import module from dirac flake and override some settings
-            inputs.dirac.nixosModules.linux
-            ./dirac.nix
+            # inputs.dirac.nixosModules.linux
+            # ./dirac.nix
 
             # my nixos configuration
             ./modules/base.nix
@@ -151,6 +151,7 @@
             "theseus"
             "drewdirac"
             "drewdiracpc"
+            "drewdiracpc2"
           ]
       );
 
