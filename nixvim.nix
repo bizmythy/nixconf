@@ -38,6 +38,7 @@
   };
 
   globals.mapleader = " "; # sets the leader key to space
+  globals.maplocalleader = "\\"; # sets the local leader key to \
 
   keymaps = [
     # use double leader to switch between buffers
