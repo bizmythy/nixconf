@@ -17,6 +17,8 @@
     # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
     system.stateVersion = "25.05";
     
+    boot.kernelPackages = pkgs.linuxPackages_latest;
+
     hardware = {
       graphics = {
         extraPackages = with pkgs; [
