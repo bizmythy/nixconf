@@ -1,4 +1,5 @@
 {
+  pkgs,
   ...
 }:
 
@@ -15,5 +16,15 @@
     # Before changing this value read the documentation for this option
     # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
     system.stateVersion = "25.05";
+    
+    hardware = {
+      graphics = {
+        extraPackages = with pkgs; [
+          intel-compute-runtime
+          intel-media-driver
+        ];
+      };
+      enableRedistributableFirmware = true;
+    };
   };
 }
