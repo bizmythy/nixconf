@@ -55,6 +55,12 @@
       action = ":wq<CR>";
       options.desc = "Write file and quit";
     }
+    
+    {
+      mode = "n";
+      key = "<localleader>n";
+      action = "<cmd>normal <localleader><Space>]u<CR>";
+    }
   ];
 
   plugins = {
