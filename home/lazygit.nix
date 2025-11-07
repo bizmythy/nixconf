@@ -31,10 +31,12 @@
       git = {
         # allow rewording of signed commits, I use op as ssh signing agent
         overrideGpg = true;
-        paging = {
-          colorArg = "always";
-          pager = "delta --dark --paging=never";
-        };
+        pagers = [
+          {
+            colorArg = "always";
+            pager = "delta --dark --paging=never";
+          }
+        ];
         # parseEmoji = true;
       };
 
