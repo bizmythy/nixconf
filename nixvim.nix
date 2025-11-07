@@ -55,7 +55,7 @@
       action = ":wq<CR>";
       options.desc = "Write file and quit";
     }
-    
+
     {
       mode = "n";
       key = "<localleader>n";
@@ -67,11 +67,11 @@
     # keep-sorted start
     direnv.enable = true;
     lualine.enable = true;
+    octo.enable = true;
     oil.enable = true;
     scrollview.enable = true;
     telescope.enable = true;
     web-devicons.enable = true;
-    octo.enable = true;
     # keep-sorted end
 
     # treesitter configuration

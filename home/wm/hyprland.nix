@@ -134,7 +134,7 @@ in
             mode = "3840x2160@160";
             position = "0x0";
             scale = scaleHiDPI;
-            
+
             # set vrr
             vrr = 1;
           }
@@ -149,7 +149,7 @@ in
             mode = "3840x2160@120";
             position = "auto-right";
             scale = scaleHiDPI;
-            
+
             # hdr settings
             bitdepth = 10;
             cm = "hdr";
