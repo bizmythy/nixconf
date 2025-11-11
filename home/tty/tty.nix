@@ -136,6 +136,8 @@ in
       focus_follows_mouse = true;
 
       confirm_os_window_close = 0;
+      
+      allow_remote_control = true;
 
       # configure using neovim as scrollback pager
       scrollback_pager =
