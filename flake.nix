@@ -64,7 +64,7 @@
         defaults = {
           tty = "kitty";
           fileManager = "dolphin";
-          browser = "zen";
+          browser = "zen-beta";
           calculator = "qalculate-qt";
           editor = "zeditor";
           termEditor = "nvim";
