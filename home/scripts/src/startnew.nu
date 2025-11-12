@@ -8,7 +8,7 @@ def main [issue] {
     cd $tmp
 
     # TEMPORARY
-    git checkout bweb-3265-script-for-agentic-ticket-work
+    try { git checkout bweb-3265-script-for-agentic-ticket-work }
 
     nom develop --command issue $issue start
     let branch_name = (git branch --show-current)
