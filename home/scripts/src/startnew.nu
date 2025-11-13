@@ -7,9 +7,6 @@ def main [issue] {
     gh repo clone diracq/buildos-web -- $tmp
     cd $tmp
 
-    # TEMPORARY
-    try { git checkout bweb-3265-script-for-agentic-ticket-work }
-
     direnv exec . issue $issue start
     let branch_name = (git branch --show-current)
     cd ..
