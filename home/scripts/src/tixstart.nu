@@ -15,10 +15,14 @@ def main [issue] {
     direnv exec . issue $issue start
 
     # rename folder to branch name
-    let dir_name = $"buildos-web_(git branch --show-current)"
+    let branch = git branch --show-current
+    let dir_name = $"buildos-web_($branch)"
     cd ..
     mv $tmp $dir_name
     cd $dir_name
+
+    # rename tab title to the ticket id
+    try { kitty @ set-tab-title ($branch | str substring 0..8) }
 
     # start agent workflow
     direnv exec . issue $issue agent
