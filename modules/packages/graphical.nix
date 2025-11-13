@@ -93,7 +93,8 @@
             # jellyfin-mpv-shim
 
             signal-desktop
-            element-desktop
+            # element-desktop currently pulls in the insecure jitsi-meet-1.0.8792 package causing nix evaluation failures.
+            # element-desktop
 
             apotris
 
