@@ -3,14 +3,23 @@
 def main [issue] {
     cd ~/dirac
 
+    let pristine = "./buildos-web-pristine"
+    if (not ($pristine | path exists)) {
+        gh repo clone diracq/buildos-web -- $pristine
+    }
+
     let tmp = "buildos-web-tmp"
-    gh repo clone diracq/buildos-web -- $tmp
+    rsync -avh --info=progress2 $pristine $tmp
     cd $tmp
 
     direnv exec . issue $issue start
-    let branch_name = (git branch --show-current)
+
+    # rename folder to branch name
+    let dir_name = $"buildos-web_(git branch --show-current)"
     cd ..
-    mv $tmp $branch_name
-    cd $branch_name
+    mv $tmp $dir_name
+    cd $dir_name
+
+    # start agent workflow
     direnv exec . issue $issue agent
 }
