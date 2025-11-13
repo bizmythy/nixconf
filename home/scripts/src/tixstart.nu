@@ -9,7 +9,7 @@ def main [issue] {
     }
 
     let tmp = "buildos-web-tmp"
-    rsync -avh --info=progress2 $pristine $tmp
+    rsync -avh --info=progress2 $"($pristine)/" $"($tmp)/"
     cd $tmp
 
     direnv exec . issue $issue start
