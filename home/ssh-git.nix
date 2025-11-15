@@ -15,6 +15,7 @@ let
     personalGitHub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOjbUnES0AUVvsqNzMdCix3Qp+XRpKiS7tm6PR6u7WTY";
     diracGitHub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPIrRXpZt/U8OkMsWoft9+2JiITBsUyGVxuhZJhl+Xpm";
     diraclocalserver = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEoZXGhcmj8ZUFPWWGw3fZAd0FOCZKXnKelZKaGD9Tq4";
+    hetzner = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGogIJ4uaReEMnM8eRedZh0OVq/4AAs4H8xdiWjvf6YF";
   };
   publicKeyFiles = builtins.mapAttrs genKeyFile publicKeys;
 
@@ -37,6 +38,11 @@ in
         HostName 192.168.1.244
         User diraclocalserver
         IdentityFile ${publicKeyFiles.diraclocalserver}
+        IdentityAgent ${onePassPath}
+
+    Host hetzner
+        HostName 178.156.186.220
+        IdentityFile ${publicKeyFiles.hetzner}
         IdentityAgent ${onePassPath}
 
     Host *
