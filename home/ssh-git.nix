@@ -58,6 +58,7 @@ in
           "wtjniyvaszfbfdt567snocygqq" # dirac github
           "tf64ipw7poybpzazfzz3geyefu" # personal github
           "te6zz2ycolprvsfedj4iqd3jja" # diraclocalserver
+          "av5h4r2kyfwueck7e7jq7gw5cu" # hetzner
         ];
       }
     )
