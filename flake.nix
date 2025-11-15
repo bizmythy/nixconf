@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
     # set up config files and user settings
     home-manager = {
@@ -52,6 +52,14 @@
   outputs =
     { nixpkgs, self, ... }@inputs:
     let
+      lib = nixpkgs.lib;
+
+      # Small tool to iterate over each systems
+      eachSystem = f: lib.genAttrs (import inputs.systems) (system: f nixpkgs.legacyPackages.${system});
+
+      # Eval the treefmt modules from ./treefmt.nix
+      treefmtEval = eachSystem (pkgs: inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
+
       vars = rec {
         user = "drew";
         home = "/home/${user}";
@@ -72,7 +80,7 @@
         };
 
         # function that will give whether the config refers to a personal machine
-        isPersonal = config: !(nixpkgs.lib.strings.hasInfix "dirac" config.networking.hostName);
+        isPersonal = config: !(lib.strings.hasInfix "dirac" config.networking.hostName);
       };
 
       nixpkgsSettings = {
@@ -100,9 +108,9 @@
         };
       };
 
-      hostConfig =
+      getPcConfig =
         hostname:
-        nixpkgs.lib.nixosSystem {
+        lib.nixosSystem {
           specialArgs = { inherit inputs vars; };
           modules = [
             {
@@ -131,28 +139,41 @@
           ];
         };
 
-      # Small tool to iterate over each systems
-      eachSystem =
-        f: nixpkgs.lib.genAttrs (import inputs.systems) (system: f nixpkgs.legacyPackages.${system});
+      pcConfigs = lib.genAttrs [
+        "xps"
+        "igneous"
+        "theseus"
+        "drewdirac"
+        "drewdiracpc"
+      ] getPcConfig;
 
-      # Eval the treefmt modules from ./treefmt.nix
-      treefmtEval = eachSystem (pkgs: inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
+      getServerConfig =
+        hostname:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs vars; };
+          modules = [
+            {
+              nixpkgs = nixpkgsSettings // {
+                hostPlatform = "x86_64-linux";
+              };
+              networking.hostName = hostname;
+            }
+
+            inputs.determinate.nixosModules.default
+
+            ./modules/server.nix
+            ./hosts/${hostname}/configuration.nix
+          ];
+        };
+
+      serverConfigs = lib.genAttrs [
+        "nixos-0"
+      ] getServerConfig;
+
+      configs = pcConfigs // serverConfigs;
     in
     {
-      nixosConfigurations = builtins.listToAttrs (
-        map
-          (hostname: {
-            name = hostname;
-            value = hostConfig hostname;
-          })
-          [
-            "xps"
-            "igneous"
-            "theseus"
-            "drewdirac"
-            "drewdiracpc"
-          ]
-      );
+      nixosConfigurations = configs;
 
       packages = eachSystem (pkgs: {
         nvim = inputs.nixvim.legacyPackages.${pkgs.system}.makeNixvim (

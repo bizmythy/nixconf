@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   lib,
   pkgs,
   vars,
@@ -9,7 +8,6 @@
 
 {
   imports = [
-    inputs.home-manager.nixosModules.default
     ./nvidia.nix
     ./packages/terminal.nix
   ];
