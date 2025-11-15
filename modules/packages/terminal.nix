@@ -13,6 +13,7 @@
   environment.systemPackages =
     let
       nixSourcced = with pkgs; [
+        nushell
         # coreutils rust rewrite, testing it out
         uutils-coreutils-noprefix
         # terminal tools
