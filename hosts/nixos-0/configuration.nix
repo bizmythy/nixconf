@@ -15,10 +15,7 @@
 
   services.openssh = {
     enable = true;
-    ports = [
-      22
-      52681 # random port, unlikely to be random scanned
-    ];
+    ports = [ 52681 ]; # random port, unlikely to be random scanned
   };
 
   # set ssh authorized keys
