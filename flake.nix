@@ -4,8 +4,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
-
     # set up config files and user settings
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -120,8 +118,6 @@
               networking.hostName = hostname;
             }
 
-            # dirac config already sets this
-            # determinate.nixosModules.default
             inputs.catppuccin.nixosModules.catppuccin
             inputs.nix-flatpak.nixosModules.nix-flatpak
 
@@ -158,8 +154,6 @@
               };
               networking.hostName = hostname;
             }
-
-            inputs.determinate.nixosModules.default
 
             ./modules/server.nix
             ./hosts/${hostname}/configuration.nix
