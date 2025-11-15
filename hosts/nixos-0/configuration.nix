@@ -12,12 +12,27 @@
   zramSwap.enable = true;
   networking.hostName = "nixos-0";
   networking.domain = "";
-  services.openssh.enable = true;
-  users.users.root.openssh.authorizedKeys.keys = [
-    ''ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGogIJ4uaReEMnM8eRedZh0OVq/4AAs4H8xdiWjvf6YF''
-  ];
-  users.users."${vars.user}".openssh.authorizedKeys.keys = [
-    ''ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGogIJ4uaReEMnM8eRedZh0OVq/4AAs4H8xdiWjvf6YF''
-  ];
+
+  services.openssh = {
+    enable = true;
+    ports = [
+      22
+      52681 # random port, unlikely to be random scanned
+    ];
+  };
+
+  # set ssh authorized keys
+  users.users =
+    let
+      authorizedKeys = {
+        openssh.authorizedKeys.keys = [
+          ''ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGogIJ4uaReEMnM8eRedZh0OVq/4AAs4H8xdiWjvf6YF''
+        ];
+      };
+    in
+    {
+      root = authorizedKeys;
+      "${vars.user}" = authorizedKeys;
+    };
   system.stateVersion = "23.11";
 }
