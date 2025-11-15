@@ -1,4 +1,7 @@
-{ ... }:
+{
+  vars,
+  ...
+}:
 {
   imports = [
     ./hardware-configuration.nix
@@ -11,6 +14,9 @@
   networking.domain = "";
   services.openssh.enable = true;
   users.users.root.openssh.authorizedKeys.keys = [
+    ''ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGogIJ4uaReEMnM8eRedZh0OVq/4AAs4H8xdiWjvf6YF''
+  ];
+  users.users."${vars.user}".openssh.authorizedKeys.keys = [
     ''ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGogIJ4uaReEMnM8eRedZh0OVq/4AAs4H8xdiWjvf6YF''
   ];
   system.stateVersion = "23.11";
