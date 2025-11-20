@@ -155,11 +155,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1763565586,
-        "narHash": "sha256-lbwbnSFv7qs6DDDiIjZJDE0Gzh0dfWXIG17wEiNKo/M=",
+        "lastModified": 1763603514,
+        "narHash": "sha256-OQb0F0G80+27Fv9WwJrE8DsWzd9NBBPL6mx1gtO2mcY=",
         "ref": "main",
-        "rev": "40bfcfaf07e2b88e32ff1d717a43bc4732784b6b",
-        "revCount": 2270,
+        "rev": "d14ac011f9a50889ac66ce425ccffb59e22f74b5",
+        "revCount": 2290,
         "type": "git",
         "url": "ssh://git@dirac-github/diracq/buildos-web.git"
       },
@@ -706,11 +706,11 @@
         "systems": "systems_4"
       },
       "locked": {
-        "lastModified": 1763565747,
-        "narHash": "sha256-FgCL7pEFgZjaYoiDbY+f9fAwHqgVNSZEkcLUvTnhwHw=",
+        "lastModified": 1763638001,
+        "narHash": "sha256-Y1SPkwcPaUjrqPff49J4f1t7npRUDuYazccUsNF9XSQ=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "82bc02466cccb7594aef296aea128b9b59621efe",
+        "rev": "f4b9a7122425c56d65466fcafb99053730b2646a",
         "type": "github"
       },
       "original": {
@@ -952,11 +952,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1763521945,
-        "narHash": "sha256-Zcrafbe4niRJMbzaVOwg7+iedJhwBFttre2DpyCC6qA=",
+        "lastModified": 1763616019,
+        "narHash": "sha256-yCNgkYovgIpOZankp38BxKFISmdc2b34vtEuVuxhTuk=",
         "owner": "0xc000022070",
         "repo": "zen-browser-flake",
-        "rev": "24d7381b9231c23daceec5d372cc28e877f7785d",
+        "rev": "a0a29968bccb2f118b33360697d5cc5fdae30cfa",
         "type": "github"
       },
       "original": {
