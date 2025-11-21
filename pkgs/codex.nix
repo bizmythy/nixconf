@@ -18,12 +18,12 @@ rustPlatform.buildRustPackage (finalAttrs: {
     owner = "openai";
     repo = "codex";
     tag = "rust-v${finalAttrs.version}";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-1DmnrRgwWNTkjG9DODUfLbz4ZYydhTapnv4yv9qOEmU=";
   };
 
   sourceRoot = "${finalAttrs.src.name}/codex-rs";
 
-  cargoHash = "sha256-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=";
+  cargoHash = "sha256-9zZZG00TzovQBwhidWt2p84dkj8jU35+lSmNIPmDOZY=";
 
   nativeBuildInputs = [
     installShellFiles
