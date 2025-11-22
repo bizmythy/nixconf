@@ -17,8 +17,8 @@
           environment = {
             EULA = "TRUE";
             TYPE = "FTBA";
-            FTB_MODPACK_ID = 129;
-            FTB_MODPACK_VERSION_ID = 100154;
+            FTB_MODPACK_ID = "129";
+            FTB_MODPACK_VERSION_ID = "100154";
           };
 
           volumes = map volumeDef [
