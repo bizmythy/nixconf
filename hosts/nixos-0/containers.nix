@@ -1,5 +1,4 @@
 {
-  vars,
   ...
 }:
 {
@@ -17,6 +16,8 @@
           environment = {
             EULA = "TRUE";
             TYPE = "FTBA";
+            MEMORY = "12288M";
+
             FTB_MODPACK_ID = "129";
             FTB_MODPACK_VERSION_ID = "100154";
           };
