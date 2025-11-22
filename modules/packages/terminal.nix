@@ -172,12 +172,11 @@
         cachix
 
         ssm-session-manager-plugin
-        # codex
       ];
 
       aiTools = with inputs.nix-ai-tools.packages.${pkgs.system}; [
         claude-code
-        codex
+        # codex
         gemini-cli
       ];
     in
