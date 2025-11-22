@@ -7,6 +7,7 @@
     let
       minecraftServerImg = "itzg/minecraft-server:java8-multiarch";
       portDef = { host, container }: "${builtins.toString host}:${builtins.toString container}";
+      volumeDef = { host, container }: "${host}:${container}";
     in
     {
       backend = "podman";
@@ -20,7 +21,12 @@
             FTB_MODPACK_VERSION_ID = 100154;
           };
 
-          volumes = [ "/home/drew/minecraft/ftbskies:/data" ];
+          volumes = map volumeDef [
+            {
+              host = "/home/drew/minecraft/ftbskies";
+              container = "/data";
+            }
+          ];
 
           user = vars.user;
           autoStart = true;
