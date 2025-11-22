@@ -28,7 +28,6 @@
             }
           ];
 
-          user = vars.user;
           autoStart = true;
           ports = map portDef [
             {
