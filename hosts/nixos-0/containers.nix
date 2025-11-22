@@ -32,7 +32,7 @@
           autoStart = true;
           ports = map portDef [
             {
-              host = 25565;
+              host = 45294;
               container = 25565;
             }
           ];
