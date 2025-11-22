@@ -97,6 +97,7 @@
             # element-desktop
 
             apotris
+            prismlauncher
 
             # emulation
             mame
