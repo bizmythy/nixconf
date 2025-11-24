@@ -70,6 +70,7 @@
 
         code-cursor
         zed-editor
+        vscode
 
         # failing to build, never use anyways
         # warp-terminal
