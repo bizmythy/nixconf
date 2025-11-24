@@ -85,7 +85,7 @@
         kdePackages.plasma-workspace
         kdePackages.kconfig
 
-        codex
+        # codex
       ]
       ++ (
         if (vars.isPersonal config) then
