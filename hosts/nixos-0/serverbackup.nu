@@ -13,7 +13,7 @@ cd $workdir
 let output = (
     do {
         tar --zstd -cvf $filename $dirpath
-        rclone copy $filename "pcloud-personal:minecraft_backups"
+        rclone --config /home/drew/.config/rclone/rclone.conf copy $filename "pcloud-personal:minecraft_backups"
     } | complete
 )
 
