@@ -38,13 +38,7 @@
 
   systemd.services.serverbackup =
     let
-      serverBackupScript = pkgs.writers.writeNuBin "serverbackup" {
-        runtimeInputs = with pkgs; [
-          rclone
-          gnutar
-          zstd
-        ];
-      } (builtins.readFile ./serverbackup.nu);
+      serverBackupScript = pkgs.writers.writeNuBin "serverbackup" (builtins.readFile ./serverbackup.nu);
     in
     {
       description = "Weekly Minecraft backup to pCloud";
