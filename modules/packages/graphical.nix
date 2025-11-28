@@ -14,6 +14,7 @@
     ./fonts.nix
     ./kwallet.nix
     ./pwa.nix
+    ./virtmanager.nix
   ];
 
   # Enable OpenGL
@@ -138,8 +139,6 @@
       localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
     };
 
-    virt-manager.enable = true;
-
     weylus = {
       enable = false;
       openFirewall = true;
@@ -172,13 +171,6 @@
       Restart = "on-failure";
       RestartSec = "5s";
     };
-  };
-
-  # Set up virt manager
-  users.groups.libvirtd.members = [ vars.user ];
-  virtualisation = {
-    libvirtd.enable = true;
-    spiceUSBRedirection.enable = true;
   };
 
   # waydroid - android emulation
