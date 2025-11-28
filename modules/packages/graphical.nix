@@ -22,6 +22,9 @@
     enable32Bit = true;
   };
 
+  # enable 3D mouse drivers?
+  hardware.spacenavd.enable = true;
+
   environment.systemPackages =
     with pkgs;
     (
