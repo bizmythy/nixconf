@@ -136,7 +136,7 @@ in
             scale = scaleHiDPI;
 
             # set vrr
-            vrr = 1;
+            vrr = 0;
           }
           {
             output = igneous.top;
