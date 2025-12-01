@@ -2,6 +2,10 @@
 {
   programs.lazygit = {
     enable = true;
+    # I do my own integration, don't want this
+    enableBashIntegration = false;
+    enableZshIntegration = false;
+    enableNushellIntegration = false;
     settings = {
       nerdFontsVersion = "3";
       showFileIcons = true;
