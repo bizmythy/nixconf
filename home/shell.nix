@@ -19,7 +19,6 @@ let
     e = "${vars.defaults.editor} .";
     code = "zsh -c '(&>/dev/null cursor . &)'";
 
-    lg = "lazygit";
     ld = "lazydocker";
     hmclean = "fd '${vars.hmBackupFileExtension}' ~ -u -x rm";
     dcd = "docker compose down";
