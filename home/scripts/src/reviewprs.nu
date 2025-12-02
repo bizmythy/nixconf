@@ -11,7 +11,7 @@ def main [count: int = 30] {
         --review=required
         --state=open
         --base=main
-        --json=number,title,url
+        --json=number,title,url,author
         --
         -reviewed-by:@me -is:draft
     )
@@ -19,7 +19,14 @@ def main [count: int = 30] {
     (
         $search_results |
         from json |
-        input list --multi --display "title" |
+        # format for input display
+        upsert "display" {|pr|
+            $"@($pr.author.login | fill --alignment left --width 20)($pr.title)"
+        } |
+        # get user selection ("a" for all)
+        input list --multi --display "display" |
+        # open each in a new kitty tab in reverse order so that first element is on top
+        reverse |
         each {|pr|
             kitty @ launch --type=tab --title $pr.title nvim -c $"Octo ($pr.url)"
         }
