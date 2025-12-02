@@ -1,19 +1,27 @@
 #!/usr/bin/env nu
 
-cd ~/dirac/buildos-web
+def main [count: int = 30] {
+    cd ~/dirac/buildos-web
 
-let tempfile = (mktemp --suffix .txt)
-nvim $tempfile
-let urls = (open $tempfile | lines)
-rm $tempfile
-
-let prs = $urls | par-each {|url| {
-    url: $url,
-    title: (
-        gh pr view $url --json title |
-        from json |
-        get title
+    let search_results = (
+        gh search prs
+        --repo=diracq/buildos-web
+        --limit=30
+        --sort=updated
+        --review=required
+        --state=open
+        --base=main
+        --json=number,title,url
+        --
+        -reviewed-by:@me -is:draft
     )
-}}
 
-$prs | each {|pr| kitty @ launch --type=tab --title $pr.title nvim -c $"Octo ($pr.url)"}
+    (
+        $search_results |
+        from json |
+        input list --multi --display "title" |
+        each {|pr|
+            kitty @ launch --type=tab --title $pr.title nvim -c $"Octo ($pr.url)"
+        }
+    )
+}
