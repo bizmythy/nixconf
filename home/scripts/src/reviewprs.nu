@@ -13,7 +13,7 @@ def main [count: int = 30] {
         --base=main
         --json=number,title,url,author
         --
-        -reviewed-by:@me -is:draft
+        -reviewed-by:@me -author:@me -is:draft
     )
 
     (
