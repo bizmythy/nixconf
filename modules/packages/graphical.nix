@@ -14,6 +14,7 @@
     ./fonts.nix
     ./kwallet.nix
     ./pwa.nix
+    ./spacemouse.nix
     ./virtmanager.nix
   ];
 
