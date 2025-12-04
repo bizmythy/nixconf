@@ -13,5 +13,6 @@ if ($dir == "/home/drew/dirac") {
     exit 1
 }
 
-cd .. # exit out of any weird problematic direnv stuff
+# problematic library path causing issues
+hide-env LD_LIBRARY_PATH
 lazygit -p $dir
