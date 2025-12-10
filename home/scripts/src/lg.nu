@@ -13,6 +13,12 @@ if ($dir == "/home/drew/dirac") {
     exit 1
 }
 
-# problematic library path causing issues
-hide-env LD_LIBRARY_PATH
+(
+    # problematic environment variables should be hidden
+    [ "LD_LIBRARY_PATH" ] |
+    each { |env_var|
+        if ($env_var in $env) { hide-env $env_var }
+    }
+)
+
 lazygit -p $dir
