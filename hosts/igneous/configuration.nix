@@ -30,7 +30,6 @@
 
   services.ollama = {
     enable = false;
-    acceleration = "rocm";
     openFirewall = true;
     environmentVariables = {
       OLLAMA_MODELS = "/mnt/storage/ollama";
