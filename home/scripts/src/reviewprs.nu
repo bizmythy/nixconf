@@ -18,9 +18,7 @@ def main [count: int = 30] {
         --repo=diracq/buildos-web
         --limit=30
         --sort=updated
-        --review=required
         --state=open
-        --base=main
         $json_flag
         --
         -reviewed-by:@me -author:@me -is:draft
