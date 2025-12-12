@@ -6,7 +6,7 @@
 let
   mySessionVariables = {
     EDITOR = vars.defaults.termEditor;
-    VISUAL = vars.defaults.editor;
+    # VISUAL = vars.defaults.editor;
     BROWSER = vars.defaults.browser;
     NH_NO_CHECKS = 1;
     NIXPKGS_ALLOW_UNFREE = 1;
