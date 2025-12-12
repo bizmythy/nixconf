@@ -36,7 +36,6 @@
 
     # cachix for hyprland flake and dirac
     substituters = [
-      "http://192.168.1.244:8501"
       "https://numtide.cachix.org"
       "https://hyprland.cachix.org"
       "https://cache.nixos.org"
