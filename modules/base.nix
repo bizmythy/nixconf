@@ -127,10 +127,12 @@
     ];
   };
 
-  services.clamav = {
-    daemon.enable = false;
-    scanner.enable = false;
-    updater.enable = false;
+  services.clamav = let
+    enabled = !(vars.isPersonal config);
+  in {
+    daemon.enable = enabled;
+    scanner.enable = enabled;
+    updater.enable = enabled;
   };
 
   hardware.bluetooth = {
