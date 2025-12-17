@@ -2,7 +2,7 @@
 
 let repo = "diracq/buildos-web"
 
-def main [pr: int] {
+def main [pr: int, --dry-run] {
     let me = (
         gh api user |
         from json |
@@ -68,6 +68,7 @@ def main [pr: int] {
         where { $in.author.login != $me }
     )
 
+    # get user selected comments to address
     let chosen_comments = (
         $comments |
         upsert display {|c|
@@ -85,12 +86,22 @@ def main [pr: int] {
         input list --multi --display "display"
     )
     
+    # construct printout for each comment
     let comment_prompts = $chosen_comments | each {|c|
-        # let line_range = if ($c.start_line | is-empty) {
-        #     $"line ($c.line)"
-        # } else {
-        #     $"lines ($c.start_line)-($c.line)"
-        # }
+        def get-lines [line_field: string, start_line_field: string] {
+            let bottom_line = ($c | get $line_field)
+            let top_line = ($c | get $start_line_field -o | default ($bottom_line - 5))
+            return ($bottom_line - $top_line)
+        }
+        let diff_size = (get-lines "line" "startLine") + (get-lines "originalLine" "originalStartLine")
+        let diff = (
+            $c |
+            get diffHunk |
+            lines |
+            last $diff_size |
+            str join "\n"
+        )
+
         let body = (
             $c |
             get body |
@@ -101,12 +112,13 @@ def main [pr: int] {
 $'
 Feedback on ($c.path)
 ```diff
-($c.diffHunk)
+($diff)
 ```
 ($body)
 '
     }
     
+    # concat to full prompt
     let prompt = [
         "**I have received the following code review feedback:**"
         "---"
@@ -115,5 +127,9 @@ Feedback on ($c.path)
         "Address this feedback. Follow existing patterns in the codebase."
     ] | str join "\n"
     
-    codex $prompt
+    if ($dry_run) {
+        print $prompt
+    } else {
+        codex $prompt
+    }
 }
