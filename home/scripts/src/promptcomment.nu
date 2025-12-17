@@ -88,10 +88,15 @@ def main [pr: int, --dry-run] {
     
     # construct printout for each comment
     let comment_prompts = $chosen_comments | each {|c|
+        print $c.body
         def get-lines [line_field: string, start_line_field: string] {
+            let default_size = 5
             let bottom_line = ($c | get $line_field)
-            let top_line = ($c | get $start_line_field -o | default ($bottom_line - 5))
-            return ($bottom_line - $top_line)
+            if ($bottom_line | is-empty) {
+                return 0
+            }
+            let top_line = ($c | get $start_line_field -o | default ($bottom_line - $default_size))
+            return ($bottom_line - $top_line + 1)
         }
         let diff_size = (get-lines "line" "startLine") + (get-lines "originalLine" "originalStartLine")
         let diff = (
