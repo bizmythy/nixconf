@@ -3,12 +3,70 @@
 let repo = "diracq/buildos-web"
 
 def main [pr: int] {
-    let comments = (
-        gh api
-        --paginate
-        -H "Accept: application/vnd.github+json"
-        $"repos/($repo)/pulls/($pr)/comments?per_page=100"
+    let me = (
+        gh api user |
+        from json |
+        get login
+    )
+
+    let query = '
+        query($owner:String!, $name:String!, $pr:Int!) {
+            repository(owner:$owner, name:$name) {
+            pullRequest(number:$pr) {
+                reviewThreads(first:100) {
+                nodes {
+                    isResolved
+                    comments(first:100) {
+                    nodes {
+                        author { login }
+                        path
+                        line
+                        startLine
+                        originalLine
+                        originalStartLine
+                        createdAt
+                        updatedAt
+                        body
+                        diffHunk
+                        url
+                    }
+                    }
+                }
+                }
+            }
+            }
+        }'
+    # execute graphql query using `gh`
+    let response = (
+        gh api graphql
+        -f $"query=($query)"
+        -F owner=diracq
+        -F name=buildos-web
+        -F $"pr=($pr)"
     ) | from json
+
+    # check for errors in response
+    let err_key = "errors"
+    if ($err_key in $response) {
+        print "Error:"
+        $response | get $err_key | print
+        exit 1
+    }
+
+    # parse response into comments, filter out resolved
+    let comments = (
+        $response |
+        get data |
+        get repository |
+        get pullRequest |
+        get reviewThreads |
+        get nodes |
+        where { not $in.isResolved } |
+        get comments |
+        flatten |
+        get nodes |
+        where { $in.author.login != $me }
+    )
 
     let chosen_comments = (
         $comments |
@@ -22,7 +80,7 @@ def main [pr: int] {
                 first |
                 str trim
             )
-            $"[($c.user.login)] ($body)" | str substring 0..$width
+            $"[($c.author.login)] ($body)" | str substring 0..$width
         } |
         input list --multi --display "display"
     )
@@ -43,7 +101,7 @@ def main [pr: int] {
 $'
 Feedback on ($c.path)
 ```diff
-($c.diff_hunk)
+($c.diffHunk)
 ```
 ($body)
 '
