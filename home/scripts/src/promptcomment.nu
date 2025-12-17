@@ -109,8 +109,14 @@ def main [pr: int, --dry-run] {
             each { $"> ($in)" } |
             str join "\n"
         )
+
+        let lines_text = if ($c.startLine | is-empty) {
+            $"line ($c.line)"
+        } else {
+            $"lines ($c.startLine)-($c.line)"
+        }
 $'
-Feedback on ($c.path)
+Feedback on ($c.path) ($lines_text)
 ```diff
 ($diff)
 ```
