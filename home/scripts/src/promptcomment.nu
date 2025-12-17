@@ -16,12 +16,13 @@ def main [pr: int] {
             let width = ((term size).columns * 2 // 3)
             let body = (
                 $c.body |
-                str replace --all "\n" " " |
-                str trim -c " " |
-                str substring 0..$width |
+                str trim |
+                lines |
+                where { ($in | str length) > 3 } |
+                first |
                 str trim
             )
-            $"[($c.user.login)]($body)" | str substring 0..$width
+            $"[($c.user.login)] ($body)" | str substring 0..$width
         } |
         input list --multi --display "display"
     )
