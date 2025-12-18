@@ -141,6 +141,6 @@ Feedback on ($c.path) ($lines_text)
     if ($dry_run) {
         print $prompt
     } else {
-        codex $prompt
+        exec codex $prompt
     }
 }
