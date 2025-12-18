@@ -129,6 +129,8 @@
         xxd
         # mounting tar archives
         archivemount
+        # terminal presentations
+        presenterm
         # spell check text files
         (aspellWithDicts (ps: with ps; [ en ]))
 
