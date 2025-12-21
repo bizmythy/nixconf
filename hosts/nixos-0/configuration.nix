@@ -1,7 +1,5 @@
 {
   vars,
-  pkgs,
-  lib,
   ...
 }:
 
