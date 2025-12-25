@@ -9,7 +9,7 @@
     # low-latency desktop/game streaming
     services.sunshine = {
       enable = true;
-      autoStart = true;
+      autoStart = false;
       openFirewall = true;
     };
   };
