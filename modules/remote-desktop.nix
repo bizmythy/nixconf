@@ -12,12 +12,5 @@
       autoStart = true;
       openFirewall = true;
     };
-
-    # # vnc server
-    # services.wayvnc = {
-    #   enable = false;
-    #   autoStart = false;
-    #   openFirewall = true;
-    # };
   };
 }
