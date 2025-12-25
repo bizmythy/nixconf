@@ -1,16 +1,20 @@
 #!/usr/bin/env nu
 
+def log [] {
+    print $"(ansi cyan)($in)(ansi reset)"
+}
+
 let name = "HEADLESS-TABLET"
 let resolution = {
     width: 2560
     height: 1600
 }
 
-print "Creating headless output..."
+"Creating headless output..." | log
 
 hyprctl output create headless $name
 
-print "Configuring new monitor..."
+"Configuring new monitor..." | log
 hyprctl keyword monitor $"($name),($resolution.width)x($resolution.height),auto-left,1"
 
 let headless_monitor = (
@@ -31,5 +35,5 @@ let sunshine_opts = (
 
 try { sunshine ...$sunshine_opts }
 
-print "Removing headless monitor..."
+"Removing headless monitor..." | log
 hyprctl output remove $name
