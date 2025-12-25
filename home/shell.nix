@@ -90,6 +90,8 @@ in
           semver # work with semantic versions
           skim # integrates `sk` fuzzy finder
           # units # easily convert between common units, incompatible version
+
+          pkgs.nu-plugin-toon # custom plugin for TOON support
         ];
         shellAliases = myShellAliases;
         environmentVariables = mySessionVariables // {
