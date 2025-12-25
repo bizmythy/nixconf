@@ -10,8 +10,9 @@
 {
   imports = [
     inputs.home-manager.nixosModules.default
-    ./nvidia.nix
     ./displaymanager.nix
+    ./nvidia.nix
+    ./remote-desktop.nix
     ./windowmanager.nix
     ./packages/terminal.nix
     ./packages/graphical.nix

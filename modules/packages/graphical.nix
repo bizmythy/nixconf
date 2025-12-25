@@ -52,7 +52,6 @@
         localsend
         wireshark
 
-        wayvnc
         libnotify
         gparted
 
