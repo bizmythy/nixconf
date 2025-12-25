@@ -131,6 +131,8 @@
         archivemount
         # terminal presentations
         presenterm
+        # run commands in background
+        screen
         # spell check text files
         (aspellWithDicts (ps: with ps; [ en ]))
 
