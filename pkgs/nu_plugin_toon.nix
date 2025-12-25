@@ -18,7 +18,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     hash = "sha256-40mICAr615g3El0p+/8OPxplvjBKv9kGpu2HAo4WzFQ=";
   };
 
-  cargoHash = "sha256-2b/0B9W01gGuGc482DYQSbRR2LLZXQxUG2fYB5TklPQ=";
+  cargoHash = "sha256-poCrn89D/w1xGOGj1tONzp0vzIJAg377prr33ecSskQ=";
 
   # nativeBuildInputs = [ pkg-config ] ++ lib.optionals stdenv.cc.isClang [ rustPlatform.bindgenHook ];
 
