@@ -9,6 +9,8 @@ self: super: {
 
   codex = super.callPackage ./pkgs/codex.nix { };
 
+  nu-plugin-toon = super.callPackage ./pkgs/nu_plugin-toon.nix { };
+
   amd-ctk = super.callPackage ./pkgs/amd-ctk.nix { };
   amd-container-runtime = super.callPackage ./pkgs/amd-container-runtime.nix { };
 
