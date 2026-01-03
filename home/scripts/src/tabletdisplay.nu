@@ -5,12 +5,16 @@ def log [] {
 }
 
 def configure-monitor [settings] {
-    let resolution = $"($settings.width)x($settings.height)"
+    let resolution = (
+        [$settings.width, $settings.height] |
+        each { $in / $settings.downsample } |
+        str join "x"
+    )
     let config = [
         $settings.name
         $resolution
         $settings.position
-        $settings.scale
+        ($settings | get scale -o | default 1)
     ] | str join ","
 
     hyprctl keyword monitor $config
@@ -28,6 +32,7 @@ def get-script [] {
         name: $name
         width: 2560
         height: 1600
+        downsample: 2
         position: "auto-left"
         scale: 1
     }
@@ -86,7 +91,7 @@ def get-script [] {
 
 def main [] {
     let script = (get-script)
-    bash -c $script
+    exec bash -c $script
 }
 
 def "main background" [] {
