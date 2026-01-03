@@ -43,8 +43,14 @@
     {
       enable = true;
       settings = {
-        preload = wallpaper.outPath;
-        wallpaper = " , ${wallpaper.outPath}";
+        splash = false;
+        wallpaper = [
+          {
+            monitor = "";
+            path = wallpaper.outPath;
+            fit_mode = "cover";
+          }
+        ];
       };
     };
 }
