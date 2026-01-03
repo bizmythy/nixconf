@@ -87,11 +87,11 @@ in
           # net # list network interfaces, broken
           polars # dataframe operations
           query # query sql, json, etc
-          semver # work with semantic versions
-          skim # integrates `sk` fuzzy finder
+          # semver # work with semantic versions
+          # skim # integrates `sk` fuzzy finder
           # units # easily convert between common units, incompatible version
 
-          pkgs.nu-plugin-toon # custom plugin for TOON support
+          # pkgs.nu-plugin-toon # custom plugin for TOON support
         ];
         shellAliases = myShellAliases;
         environmentVariables = mySessionVariables // {
