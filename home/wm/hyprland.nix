@@ -90,7 +90,6 @@ in
         xwayland.force_zero_scaling = true;
         exec-once = [
           "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
-          "hyprpaper"
           "waybar"
           "systemctl --user start hyprpolkitagent"
           "swaync"
@@ -182,7 +181,7 @@ in
           }
         ];
 
-        experimental.xx_color_management_v4 = (osConfig.networking.hostName == "igneous");
+        # experimental.xx_color_management_v4 = (osConfig.networking.hostName == "igneous");
 
         workspace = wsByHost.${osConfig.networking.hostName} or [ ];
 
