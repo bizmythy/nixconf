@@ -10,6 +10,9 @@
   };
 
   config = lib.mkIf config.laptop.enable {
-    powerManagement.enable = true;
+    powerManagement = {
+      enable = true;
+      powertop.enable = true;
+    };
   };
 }
