@@ -88,6 +88,7 @@
         kdePackages.kconfig
 
         # codex
+        libva-utils # utilites to check vaapi stuff
       ]
       ++ (
         if (vars.isPersonal config) then

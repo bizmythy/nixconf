@@ -1,4 +1,5 @@
 {
+  pkgs,
   ...
 }:
 
@@ -8,6 +9,10 @@
   ];
 
   services.fwupd.enable = true;
+
+  hardware.graphics.extraPackages = with pkgs; [
+    intel-media-driver # For Broadwell (2014) or newer processors. LIBVA_DRIVER_NAME=iHD
+  ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
