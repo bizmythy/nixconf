@@ -11,6 +11,7 @@
   imports = [
     inputs.home-manager.nixosModules.default
     ./displaymanager.nix
+    ./laptop.nix
     ./nvidia.nix
     ./remote-desktop.nix
     ./windowmanager.nix
