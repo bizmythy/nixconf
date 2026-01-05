@@ -9,8 +9,14 @@
 {
   imports = [
     # keep-sorted start
+    ./bat.nix
+    ./btop.nix
+    ./chromium.nix
+    ./feh.nix
     ./firefox.nix
     ./gh.nix
+    ./helix.nix
+    ./lazydocker.nix
     ./lazygit.nix
     ./nvim.nix
     ./op.nix
@@ -43,73 +49,8 @@
   # home.packages = with pkgs; [
   # ];
 
-  # NOTE: if any of these start to get large, break into separate module.
-  programs = {
-    btop = {
-      enable = true;
-      settings = {
-        vim_keys = true;
-        theme_background = false;
-      };
-    };
-
-    bat = {
-      enable = true;
-      config = {
-        style = "header-filename,rule,snip";
-        color = "always";
-      };
-      syntaxes = {
-        nushell.src = pkgs.fetchurl {
-          url = "https://gist.githubusercontent.com/melMass/294c21a113d0bd329ae935a79879fe04/raw/nushell.sublime-syntax";
-          hash = "sha256-QSjnGrv3o9qZ74b6Hk6pXJ6fx2Dq8U0cu9fyd51zokw=";
-        };
-      };
-    };
-
-    chromium = {
-      enable = true;
-      commandLineArgs = lib.mkIf osConfig.nvidiaEnable [
-        "--ozone-platform-hint=x11"
-      ];
-    };
-
-    helix = {
-      enable = true;
-    };
-
-    # simple image viewer
-    feh = {
-      enable = true;
-    };
-
-    lazydocker = {
-      enable = true;
-      settings.gui = {
-        returnImmediately = true;
-        # catppuccin theme for lazydocker
-        # theme = {
-        #   activeBorderColor = [
-        #     "#cba6f7"
-        #     "bold"
-        #   ];
-        #   inactiveBorderColor = [
-        #     "#a6adc8"
-        #     "bold"
-        #   ];
-        #   selectedLineBgColor = [
-        #     "default"
-        #   ];
-        #   optionsTextColor = [
-        #     "#89b4fa"
-        #   ];
-        # };
-      };
-    };
-
-    # Let Home Manager install and manage itself.
-    home-manager.enable = true;
-  };
+  # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true;
 
   # text expander
   # services.espanso = {
