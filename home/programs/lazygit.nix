@@ -1,4 +1,6 @@
-{ ... }:
+{
+  ...
+}:
 {
   programs.lazygit = {
     enable = true;

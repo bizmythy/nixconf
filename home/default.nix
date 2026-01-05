@@ -9,24 +9,12 @@
 {
   imports = [
     # keep-sorted start
-    ./bat.nix
-    ./btop.nix
-    ./chromium.nix
-    ./feh.nix
-    ./firefox.nix
-    ./gh.nix
-    ./helix.nix
-    ./lazydocker.nix
-    ./lazygit.nix
-    ./nvim.nix
-    ./op.nix
+    ./programs
     ./scripts
     ./shell.nix
-    ./spotify-player.nix
     ./ssh-git.nix
     ./theme.nix
     ./tty/tty.nix
-    ./vesktop.nix
     ./wm
     ./xdg-mime.nix
     # keep-sorted end
