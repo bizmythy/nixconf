@@ -38,7 +38,7 @@
         kdePackages.okular
         system-config-printer
 
-        inputs.zen-browser.packages.${pkgs.system}.default
+        inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
         # firefox in home manager
 
         qalculate-qt

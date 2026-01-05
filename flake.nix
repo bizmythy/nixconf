@@ -170,15 +170,15 @@
       nixosConfigurations = configs;
 
       packages = eachSystem (pkgs: {
-        nvim = inputs.nixvim.legacyPackages.${pkgs.system}.makeNixvim (
+        nvim = inputs.nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim (
           import ./nixvim.nix { inherit pkgs; }
         );
       });
 
-      formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+      formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
 
       checks = eachSystem (pkgs: {
-        formatting = treefmtEval.${pkgs.system}.config.build.check self;
+        formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
       });
     };
 }
