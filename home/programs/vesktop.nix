@@ -6,6 +6,6 @@
 }:
 {
   programs.vesktop = lib.mkIf (vars.isPersonal osConfig) {
-    enable = true;
+    enable = false;
   };
 }
