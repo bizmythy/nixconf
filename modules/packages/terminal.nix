@@ -181,7 +181,7 @@
       aiTools = with inputs.nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system}; [
         claude-code
         codex
-        gemini-cli
+        # gemini-cli
       ];
     in
     (nixSourcced ++ aiTools);
