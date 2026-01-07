@@ -1,5 +1,4 @@
 {
-  pkgs,
   vars,
   ...
 }:
@@ -10,6 +9,7 @@
     ./hyprland.nix
     ./hyprlock.nix
     ./hyprlaunch
+    ./hyprpaper.nix
   ];
 
   programs.fuzzel = {
@@ -32,25 +32,4 @@
   home.sessionVariables = {
     HYPRSHOT_DIR = "${vars.home}/Pictures/screenshots";
   };
-
-  services.hyprpaper =
-    let
-      wallpaper = pkgs.fetchurl {
-        url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/purple_crystals.jpg";
-        sha256 = "0fyrzlbx6ii9nzpn2vpl45vdq9hh87af18d3sjpvv66cbsc9vwga";
-      };
-    in
-    {
-      enable = true;
-      settings = {
-        splash = false;
-        wallpaper = [
-          {
-            monitor = "";
-            path = wallpaper.outPath;
-            fit_mode = "cover";
-          }
-        ];
-      };
-    };
 }
