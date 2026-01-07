@@ -7,18 +7,27 @@ let ports_info = ($pw_ports | get info | reject params change-mask)
 
 # crazy parse of wpctl status to extract the audio sink devices
 def get_sinks [] {
-    wpctl status |
-    split row "Sinks:" | get 1 |
-    split row "Sources" | get 0 |
-    lines |
-    drop 2 |
-    split column "[" |
-    skip 1 |
-    get column1 |
-    str trim |
-    split column --number 2 ". " id name |
-    upsert selected {|row| $row.id | str contains "*"} | 
-    upsert id {|row| $row.id | str substring 7.. | str trim | into int}
+    let relevant_text = (
+        wpctl status |
+        split row "Sinks:" | get 1 |
+        split row "Sources" | get 0 |
+        lines |
+        where {($in | str length) > 10 }
+    )
+
+    let trimmed = (
+        $relevant_text |
+        split column "[" |
+        get column0 |
+        str substring 6.. |
+        str trim
+    )
+
+    $trimmed |
+    split column ". " |
+    rename id_str name |
+    upsert selected {|row| $row | get id_str | str contains "*"} |
+    upsert id {|row| $row | get id_str | str replace "* " "" | into int}
 }
 
 let sinks = get_sinks
