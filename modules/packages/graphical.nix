@@ -89,6 +89,7 @@
 
         # codex
         libva-utils # utilites to check vaapi stuff
+        vulkan-tools # tools for testing vulkan
       ]
       ++ (
         if (vars.isPersonal config) then
