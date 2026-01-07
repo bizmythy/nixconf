@@ -13,14 +13,14 @@ in
   services.hyprpaper = {
     enable = true;
     settings = {
-      splash = false;
       wallpaper = [
         {
-          # monitor = "";
+          monitor = "";
           path = wallpaper.outPath;
-          fit_mode = "cover";
+          # fit_mode = "cover";
         }
       ];
+      splash = false;
     };
   };
 }
