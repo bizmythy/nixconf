@@ -48,7 +48,6 @@
       action = ":b#<CR>";
       options.desc = "Switch to previous buffer";
     }
-
     {
       mode = "n";
       key = "<leader>q";
@@ -56,10 +55,36 @@
       options.desc = "Write file and quit";
     }
 
+    # Octo keybinds
     {
       mode = "n";
       key = "<localleader>n";
       action = "<cmd>normal <localleader><Space>]u<CR>";
+      options.desc = "Octo: mark file as viewed and move to next file";
+    }
+    {
+      mode = "n";
+      key = "<leader>os";
+      action = ":Octo review start<CR>";
+      options.desc = "Octo: review start";
+    }
+    {
+      mode = "n";
+      key = "<leader>oS";
+      action = ":Octo review submit<CR>";
+      options.desc = "Octo: review submit";
+    }
+    {
+      mode = "n";
+      key = "<leader>oc";
+      action = ":Octo review close<CR>";
+      options.desc = "Octo: review close";
+    }
+    {
+      mode = "n";
+      key = "<leader>or";
+      action = ":Octo review resume<CR>";
+      options.desc = "Octo: review resume";
     }
   ];
 
@@ -121,7 +146,7 @@
       vim.g.baleia.once(vim.api.nvim_get_current_buf())
     end, { bang = true })
 
-    -- Command to show logs 
+    -- Command to show logs
     vim.api.nvim_create_user_command("BaleiaLogs", vim.g.baleia.logger.show, { bang = true })
   '';
 }
