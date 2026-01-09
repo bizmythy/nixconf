@@ -87,7 +87,7 @@ in
           bindFunc: lib.lists.unique (lib.lists.flatten (map bindFunc modKeys));
       in
       {
-        xwayland.force_zero_scaling = false;
+        xwayland.force_zero_scaling = true;
         exec-once = [
           "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
           "waybar"
