@@ -176,7 +176,7 @@ in
           {
             output = theseus.laptop;
             mode = "preferred";
-            position = "auto";
+            position = "auto-down";
             scale = 1.566667;
           }
         ];
