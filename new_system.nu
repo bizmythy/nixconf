@@ -11,6 +11,10 @@ use std/assert
 ╚═══════════════════════════════════════════════════╝
 " | ansi gradient --fgstart '0x40c9ff' --fgend '0x90ee90' | print
 
+def say [msg: string] {
+    print $"(ansi cyan_bold)($msg)(ansi reset)"
+}
+
 def "main install" [] {
     let hostname = (input "new system's hostname: ")
 
@@ -69,9 +73,34 @@ def "main install" [] {
         git config --global --unset $key
     }
 
-    print "finished setup, reboot and set up git properly for ~/nixconf"
+    say "finished setup, reboot and set up git properly for ~/nixconf"
 }
 
-def "main 2" [] {
+def "main configure" [] {
+    say "configuration stage"
     input "make sure 1password is fully configured."
+    def read [ref: string, work: bool = false] {
+        let account = if $work {
+            "PLU4HO2JCJF23NNQK2ERWIYIZI"
+        } else {
+            "L23KMYOBNVHLPGSIPDX7BAQ5LA"
+        }
+        ^op --account $account read $ref
+    }
+
+    say "setting up atuin"
+    do {
+        let username = (read "op://Private/atuin sync/username")
+        let password = (read "op://Private/atuin sync/password")
+        let key = (read "op://Private/atuin sync/key")
+        atuin login --username $username --password $password --key $key
+    }
+
+    say "setting up zed"
+    cd ~/.config
+    git clone git@github.com:bizmythy/zed.git
+
+    say "setting up codex"
+    cd ~
+    git clone git@github.com:bizmythy/codex-config.git ./.codex
 }
