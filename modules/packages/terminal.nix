@@ -167,7 +167,7 @@
 
         # nix tools
         nix-output-monitor
-        nixfmt-rfc-style
+        nixfmt
         nurl
         manix
         nix-search-cli
