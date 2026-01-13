@@ -108,3 +108,7 @@ def "main configure" [] {
     git init
     git clone git@github.com:diracq/buildos-web.git
 }
+
+def main [] {
+    say "choose a subcommand"
+}
