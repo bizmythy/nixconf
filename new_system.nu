@@ -41,4 +41,16 @@ let host_dir = [
 ] | path join
 try { mkdir $host_dir }
 
-nixos-rebuild boot --sudo --flake 
+let base_config_file = ($conf | path join "hosts/xps/configuration.nix")
+cp $base_config_file $host_dir
+
+cp /etc/nixos/hardware-configuration.nix $host_dir
+
+# start new branch for this host temporarily
+git checkout -b $hostname
+git add -A
+git commit -m $"adding host ($hostname)"
+
+nixos-rebuild boot --sudo --flake $".#($hostname)"
+
+print "finished setup, reboot and set up git properly for ~/nixconf"
