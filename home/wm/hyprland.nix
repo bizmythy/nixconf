@@ -150,8 +150,8 @@ in
             scale = scaleHiDPI;
 
             # hdr settings
-            bitdepth = 10;
-            cm = "hdr";
+            # bitdepth = 10;
+            # cm = "hdr";
           }
 
           {
