@@ -63,8 +63,7 @@
         home = "/home/${user}";
         flakePath = "${home}/nixconf";
         hmBackupFileExtension = "hmbackup";
-        # set to false when bootstrapping a new system without SSH keys for the dirac flake
-        enableDirac = true;
+        buildFlags = builtins.fromJSON (builtins.readFile ./build_flags.json);
         lockScreenPic = builtins.fetchurl {
           url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/lockscreen.png";
           sha256 = "1w3biszx1iy9qavr2cvl4gxrlf3lbrjpp50bp8wbi3rdpzjgv4kl";
@@ -124,7 +123,7 @@
             inputs.nix-flatpak.nixosModules.nix-flatpak
           ]
           # conditionally include dirac module (set vars.enableDirac = false when bootstrapping)
-          ++ lib.optionals vars.enableDirac [
+          ++ lib.optionals vars.buildFlags.enableDirac [
             inputs.dirac.nixosModules.linux
             ./dirac.nix
           ]
