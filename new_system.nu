@@ -79,6 +79,11 @@ def "main install" [] {
 def "main configure" [] {
     say "configuration stage"
     input "make sure 1password is fully configured."
+
+    say "switching nixconf to use ssh"
+    cd ~/nixconf
+    git remote set-url origin git@github.com:bizmythy/nixconf.git
+
     def read [ref: string, work: bool = false] {
         let account = if $work {
             "PLU4HO2JCJF23NNQK2ERWIYIZI"
