@@ -16,8 +16,15 @@ let hostname = (input "new system's hostname: ")
 cd ~
 $env.NIX_CONFIG = "experimental-features = nix-command flakes"
 
-git config --global user.email "andrew.p.council@gmail.com"
-git config --global user.name "bizmythy"
+let git_user = {
+    "user.email": "andrew.p.council@gmail.com"
+    "user.name": "bizmythy"
+}
+
+# set git user conf settings (temp, will come from home manager later)
+$git_user | items { |key, val|
+    git config --global $key $val
+}
 
 # clone with https (will switch to proper ssh later)
 let conf = $env.HOME | path join "nixconf"
@@ -55,5 +62,10 @@ git add -A
 git commit -m $"adding host ($hostname)"
 
 nixos-rebuild boot --sudo --flake $".#($hostname)"
+
+# unset temp git config settings
+$git_user | items { |key, val|
+    git config --global --unset $key
+}
 
 print "finished setup, reboot and set up git properly for ~/nixconf"
