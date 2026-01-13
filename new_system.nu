@@ -11,61 +11,67 @@ use std/assert
 ╚═══════════════════════════════════════════════════╝
 " | ansi gradient --fgstart '0x40c9ff' --fgend '0x90ee90' | print
 
-let hostname = (input "new system's hostname: ")
+def "main install" [] {
+    let hostname = (input "new system's hostname: ")
 
-cd ~
-$env.NIX_CONFIG = "experimental-features = nix-command flakes"
+    cd ~
+    $env.NIX_CONFIG = "experimental-features = nix-command flakes"
 
-let git_user = {
-    "user.email": "andrew.p.council@gmail.com"
-    "user.name": "bizmythy"
+    let git_user = {
+        "user.email": "andrew.p.council@gmail.com"
+        "user.name": "bizmythy"
+    }
+
+    # set git user conf settings (temp, will come from home manager later)
+    $git_user | items { |key, val|
+        git config --global $key $val
+    }
+
+    # clone with https (will switch to proper ssh later)
+    let conf = $env.HOME | path join "nixconf"
+    if ($conf | path exists | not $in) {
+        git clone https://github.com/bizmythy/nixconf.git
+    }
+    cd $conf
+
+    # disable private flake pull, add hostname
+    let config_file = ($conf | path join "build_config.json")
+    let old_config = (open $config_file)
+    (
+        $old_config |
+        update flags.enableDirac false |
+        update hosts ($old_config | get hosts | append $hostname) |
+        save --force $config_file
+    )
+
+    # create subdir for host
+    let host_dir = [
+        $conf
+        "hosts"
+        $hostname
+    ] | path join
+    try { mkdir $host_dir }
+
+    let base_config_file = ($conf | path join "hosts/xps/configuration.nix")
+    cp $base_config_file $host_dir
+
+    cp /etc/nixos/hardware-configuration.nix $host_dir
+
+    # start new branch for this host temporarily
+    git checkout -b $hostname
+    git add -A
+    git commit -m $"adding host ($hostname)"
+
+    nixos-rebuild boot --sudo --flake $".#($hostname)"
+
+    # unset temp git config settings
+    $git_user | items { |key, val|
+        git config --global --unset $key
+    }
+
+    print "finished setup, reboot and set up git properly for ~/nixconf"
 }
 
-# set git user conf settings (temp, will come from home manager later)
-$git_user | items { |key, val|
-    git config --global $key $val
+def "main 2" [] {
+    input "make sure 1password is fully configured."
 }
-
-# clone with https (will switch to proper ssh later)
-let conf = $env.HOME | path join "nixconf"
-if ($conf | path exists | not $in) {
-    git clone https://github.com/bizmythy/nixconf.git
-}
-cd $conf
-
-# disable private flake pull, add hostname
-let config_file = ($conf | path join "build_config.json")
-let old_config = (open $config_file)
-(
-    $old_config |
-    update flags.enableDirac false |
-    update hosts ($old_config | get hosts | append $hostname) |
-    save --force $config_file
-)
-
-# create subdir for host
-let host_dir = [
-    $conf
-    "hosts"
-    $hostname
-] | path join
-try { mkdir $host_dir }
-
-let base_config_file = ($conf | path join "hosts/xps/configuration.nix")
-cp $base_config_file $host_dir
-
-cp /etc/nixos/hardware-configuration.nix $host_dir
-
-# start new branch for this host temporarily
-git checkout -b $hostname
-git add -A
-git commit -m $"adding host ($hostname)"
-
-nixos-rebuild boot --sudo --flake $".#($hostname)"
-
-# unset temp git config settings
-$git_user | items { |key, val|
-    git config --global --unset $key
-}
-
-print "finished setup, reboot and set up git properly for ~/nixconf"
