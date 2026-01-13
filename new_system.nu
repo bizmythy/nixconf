@@ -16,6 +16,9 @@ let hostname = (input "new system's hostname: ")
 cd ~
 $env.NIX_CONFIG = "experimental-features = nix-command flakes"
 
+git config --global user.email "andrew.p.council@gmail.com"
+git config --global user.name "bizmythy"
+
 # clone with https (will switch to proper ssh later)
 let conf = $env.HOME | path join "nixconf"
 if ($conf | path exists | not $in) {
