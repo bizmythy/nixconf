@@ -124,7 +124,7 @@
             inputs.nix-flatpak.nixosModules.nix-flatpak
           ]
           # conditionally include dirac module (set vars.enableDirac = false when bootstrapping)
-          ++ lib.optionals vars.buildConfig.flags.enableDirac [
+          ++ lib.optionals buildConfig.flags.enableDirac [
             inputs.dirac.nixosModules.linux
             ./dirac.nix
           ]
