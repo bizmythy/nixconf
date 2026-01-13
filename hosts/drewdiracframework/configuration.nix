@@ -1,4 +1,6 @@
 {
+  pkgs,
+  lib,
   ...
 }:
 
@@ -14,4 +16,22 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
+  
+  hardware.graphics.extraPackages = with pkgs; [ rocmPackages.clr.icd ];
+
+  environment.systemPackages = with pkgs; [
+    amd-ctk
+    amd-container-runtime
+  ];
+  virtualisation.docker.daemon.settings.runtimes.amd = {
+    path = lib.getExe pkgs.amd-container-runtime;
+  };
+
+  services.ollama = {
+    enable = false;
+    openFirewall = true;
+    # environmentVariables = {
+    #   OLLAMA_MODELS = "/mnt/storage/ollama";
+    # };
+  };
 }
