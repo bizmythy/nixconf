@@ -58,12 +58,13 @@
       # Eval the treefmt modules from ./treefmt.nix
       treefmtEval = eachSystem (pkgs: inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
 
+      buildConfig = builtins.fromJSON (builtins.readFile ./build_configuration.json);
+
       vars = rec {
         user = "drew";
         home = "/home/${user}";
         flakePath = "${home}/nixconf";
         hmBackupFileExtension = "hmbackup";
-        buildFlags = builtins.fromJSON (builtins.readFile ./build_flags.json);
         lockScreenPic = builtins.fetchurl {
           url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/lockscreen.png";
           sha256 = "1w3biszx1iy9qavr2cvl4gxrlf3lbrjpp50bp8wbi3rdpzjgv4kl";
@@ -123,7 +124,7 @@
             inputs.nix-flatpak.nixosModules.nix-flatpak
           ]
           # conditionally include dirac module (set vars.enableDirac = false when bootstrapping)
-          ++ lib.optionals vars.buildFlags.enableDirac [
+          ++ lib.optionals vars.buildConfig.flags.enableDirac [
             inputs.dirac.nixosModules.linux
             ./dirac.nix
           ]
@@ -138,13 +139,7 @@
           ];
         };
 
-      pcConfigs = lib.genAttrs [
-        "xps"
-        "igneous"
-        "theseus"
-        "drewdirac"
-        "drewdiracpc"
-      ] getPcConfig;
+      pcConfigs = lib.genAttrs buildConfig.hosts getPcConfig;
 
       getServerConfig =
         hostname:
