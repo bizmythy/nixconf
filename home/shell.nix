@@ -11,6 +11,7 @@ let
     NH_NO_CHECKS = 1;
     NIXPKGS_ALLOW_UNFREE = 1;
     PAGER = "nvimpager";
+    OP_ACCOUNT = "PLU4HO2JCJF23NNQK2ERWIYIZI"; # default to work account
   };
   myShellAliases = {
     cdn = "cd ${vars.flakePath}";
