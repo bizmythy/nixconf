@@ -58,7 +58,7 @@
       # Eval the treefmt modules from ./treefmt.nix
       treefmtEval = eachSystem (pkgs: inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
 
-      buildConfig = builtins.fromJSON (builtins.readFile ./build_configuration.json);
+      buildConfig = builtins.fromJSON (builtins.readFile ./build_config.json);
 
       vars = rec {
         user = "drew";
