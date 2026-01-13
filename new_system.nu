@@ -102,5 +102,12 @@ def "main configure" [] {
 
     say "setting up codex"
     cd ~
-    git clone git@github.com:bizmythy/codex-config.git ./.codex
+    git clone git@github.com:bizmythy/codex-config.git .codex
+
+    say "setting up dirac"
+    cd ~
+    mkdir dirac
+    cd dirac
+    git init
+    git clone git@github.com:diracq/buildos-web.git
 }
