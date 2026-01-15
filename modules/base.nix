@@ -45,7 +45,7 @@
         "flakes"
       ];
 
-      trustedUsers = [
+      trusted-users = [
         "root"
         "@wheel"
       ];
