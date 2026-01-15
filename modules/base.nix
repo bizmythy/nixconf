@@ -45,6 +45,11 @@
         "flakes"
       ];
 
+      trustedUsers = [
+        "root"
+        "@wheel"
+      ];
+
       inherit substituters;
       trusted-substituters = substituters ++ [
         "http://192.168.1.244:8501"
