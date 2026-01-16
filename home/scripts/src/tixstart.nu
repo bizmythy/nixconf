@@ -1,5 +1,11 @@
 #!/usr/bin/env nu
 
+# fast dir copy using tar archive
+def dir-cp [src, dst] {
+    try { mkdir $dst }
+    tar -C $src -cf - . | tar -C $dst -xf -
+}
+
 def main [issue] {
     cd ~/dirac
 
@@ -13,7 +19,7 @@ def main [issue] {
     }
 
     let tmp = "buildos-web-tmp"
-    rsync -avh --info=progress2 $"($pristine)/" $"($tmp)/"
+    dir-cp $pristine $tmp
     cd $tmp
 
     direnv exec . issue $issue start
