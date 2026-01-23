@@ -65,14 +65,8 @@
     {
       mode = "n";
       key = "<leader>os";
-      action = ":Octo review start<CR>";
-      options.desc = "Octo: review start";
-    }
-    {
-      mode = "n";
-      key = "<leader>oS";
-      action = ":Octo review submit<CR>";
-      options.desc = "Octo: review submit";
+      action = "<cmd>lua require('octo_helpers').toggle_review()<CR>";
+      options.desc = "Octo: start or submit review";
     }
     {
       mode = "n";
@@ -138,6 +132,17 @@
   ];
 
   extraConfigLua = ''
+    -- Octo helpers module
+    _G.octo_helpers = {}
+    function _G.octo_helpers.toggle_review()
+      local current_review = require("octo.reviews").get_current_review()
+      if current_review then
+        vim.cmd("Octo review submit")
+      else
+        vim.cmd("Octo review start")
+      end
+    end
+
     -- Baleia Setup
     vim.g.baleia = require("baleia").setup({ })
 
