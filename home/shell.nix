@@ -23,7 +23,7 @@ let
     ld = "lazydocker";
     hmclean = "fd '${vars.hmBackupFileExtension}' ~ -u -x rm";
     dcd = "docker compose down";
-    "??" = "gh copilot suggest -t shell";
+    # "??" = "gh copilot suggest -t shell"; # don't use copilot anymore
 
     # dirac
     cdb = "cd ${vars.home}/dirac/buildos-web";
