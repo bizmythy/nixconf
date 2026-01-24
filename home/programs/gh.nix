@@ -9,7 +9,6 @@
       gh-s
       gh-i
       gh-f
-      gh-copilot
       gh-markdown-preview
     ];
     settings = {
