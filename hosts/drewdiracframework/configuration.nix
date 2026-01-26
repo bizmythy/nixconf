@@ -19,7 +19,6 @@
 
   hardware.graphics.extraPackages = with pkgs; [
     rocmPackages.clr.icd
-    rocmPackages.clr
   ];
 
   environment.systemPackages = with pkgs; [
