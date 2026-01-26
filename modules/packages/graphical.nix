@@ -60,14 +60,12 @@
         inkscape
         feh
         xournalpp
-        kdePackages.kdenlive
 
         vlc
         mpv
         spotify
         calibre
         pdfarranger
-        handbrake
 
         code-cursor
         zed-editor
@@ -97,6 +95,7 @@
             qbittorrent
 
             # jellyfin-mpv-shim
+            kdePackages.kdenlive
 
             signal-desktop
             # element-desktop currently pulls in the insecure jitsi-meet-1.0.8792 package causing nix evaluation failures.
