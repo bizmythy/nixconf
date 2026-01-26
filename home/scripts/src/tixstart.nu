@@ -9,17 +9,8 @@ def dir-cp [src, dst] {
 def main [issue] {
     cd ~/dirac
 
-    let pristine = "./buildos-web-pristine"
-    if (not ($pristine | path exists)) {
-        gh repo clone diracq/buildos-web -- $pristine
-        cd $pristine
-        direnv exec mask test files download
-        direnv exec mask install-web-dependencies
-        cd ~/dirac
-    }
-
     let tmp = "buildos-web-tmp"
-    dir-cp $pristine $tmp
+    new-buildos $tmp
     cd $tmp
 
     direnv exec . issue $issue start
