@@ -52,9 +52,12 @@
 
       inherit substituters;
       trusted-substituters = substituters ++ [
+        # "http://192.168.1.244:3926"
+        "http://192.168.1.244:3926/buildos-web"
         "http://192.168.1.244:8501"
       ];
       trusted-public-keys = [
+        "buildos-web:br3Fxm43hseV0czV1voottug4KzqC3O6AXj8q4e0Vq4="
         "192.168.1.244:h8wg9T+8ykiw1D7ZT6toe/cYEf2Ue76pXQ+6C1GTvFo="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
