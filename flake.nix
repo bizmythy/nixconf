@@ -88,7 +88,7 @@
         # Allow unfree packages
         config.allowUnfree = true;
         overlays = [
-          (import ./overlays.nix)
+          (import ./overlays.nix { inherit inputs; })
         ];
       };
 

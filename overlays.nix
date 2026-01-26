@@ -1,4 +1,9 @@
+{ inputs }:
+
 self: super: {
+  # Use rocmPackages from nixpkgs-stable to avoid crashes with unstable
+  rocmPackages =
+    inputs.nixpkgs-stable.legacyPackages.${super.stdenv.hostPlatform.system}.rocmPackages;
   python3Packages = super.python3Packages.overrideScope (
     python-self: python-super: {
       hyprpy = super.callPackage ./pkgs/hyprpy.nix { };
