@@ -17,7 +17,10 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
 
-  hardware.graphics.extraPackages = with pkgs; [ rocmPackages.clr.icd ];
+  hardware.graphics.extraPackages = with pkgs; [
+    rocmPackages.clr.icd
+    rocmPackages.clr
+  ];
 
   environment.systemPackages = with pkgs; [
     amd-ctk
