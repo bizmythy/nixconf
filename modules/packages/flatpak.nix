@@ -34,7 +34,7 @@
       "com.obsproject.Studio"
       "com.github.tchx84.Flatseal"
       "com.makemkv.MakeMKV"
-      "us.zoom.Zoom"
+      # "us.zoom.Zoom"
     ];
   };
 }

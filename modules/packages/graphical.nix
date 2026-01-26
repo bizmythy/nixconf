@@ -146,6 +146,8 @@
       openFirewall = true;
       users = [ vars.user ];
     };
+
+    zoom-us.enable = true;
   };
 
   services = {
