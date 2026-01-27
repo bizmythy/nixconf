@@ -10,7 +10,7 @@ def main [issue] {
     cd ~/dirac
 
     let tmp = "buildos-web-tmp"
-    new-buildos $tmp
+    new-buildos "tmp"
     cd $tmp
 
     direnv exec . issue $issue start
