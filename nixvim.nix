@@ -65,7 +65,7 @@
     {
       mode = "n";
       key = "<leader>os";
-      action = "<cmd>lua require('octo_helpers').toggle_review()<CR>";
+      action = "<cmd>lua _G.octo_helpers.toggle_review()<CR>";
       options.desc = "Octo: start or submit review";
     }
     {
