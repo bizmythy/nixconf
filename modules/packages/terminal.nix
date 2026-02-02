@@ -175,7 +175,7 @@
         nixd
         cachix
 
-        ssm-session-manager-plugin
+        # ssm-session-manager-plugin
       ];
 
       aiTools = with inputs.nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system}; [
