@@ -95,7 +95,7 @@
             qbittorrent
 
             # jellyfin-mpv-shim
-            kdePackages.kdenlive
+            # kdePackages.kdenlive
 
             signal-desktop
             # element-desktop currently pulls in the insecure jitsi-meet-1.0.8792 package causing nix evaluation failures.
