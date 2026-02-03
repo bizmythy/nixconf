@@ -314,20 +314,21 @@ in
           "${modKey}, mouse:273, resizewindow"
         ]);
 
-        windowrulev2 =
-          let
-            floatingWindowRules = class: {
-              name = "float-${class}";
-              "match:initial_class" = class;
-              float = true;
-              center = true;
-              size = "60% 60%";
-            };
-          in
-          lib.lists.flatten [
-            # (floatingWindowRules "1Password")
-            (floatingWindowRules "io.github.Qalculate.qalculate-qt")
-          ];
+        # not working, should figure out
+        # windowrulev2 =
+        #   let
+        #     floatingWindowRules = class: {
+        #       name = "float-${class}";
+        #       "match:initial_class" = class;
+        #       float = true;
+        #       center = true;
+        #       size = "60% 60%";
+        #     };
+        #   in
+        #   lib.lists.flatten [
+        #     # (floatingWindowRules "1Password")
+        #     (floatingWindowRules "io.github.Qalculate.qalculate-qt")
+        #   ];
 
         animations = {
           enabled = true;
