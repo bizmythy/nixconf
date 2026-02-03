@@ -34,6 +34,7 @@
 
         thunderbird # email
         libreoffice-qt6-fresh # office suite
+        marktext # markdown wysiwyg editor
         kdePackages.okular # pdf viewer
         system-config-printer
 
