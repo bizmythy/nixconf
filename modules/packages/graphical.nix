@@ -28,47 +28,46 @@
     with pkgs;
     (
       [
-        mesa-demos
-
+        # file managers
         kdePackages.dolphin
         lxqt.pcmanfm-qt
 
-        thunderbird
-        libreoffice-qt6-fresh
-        kdePackages.okular
+        thunderbird # email
+        libreoffice-qt6-fresh # office suite
+        kdePackages.okular # pdf viewer
         system-config-printer
 
+        # browsers
         inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
         # firefox in home manager
 
-        qalculate-qt
+        qalculate-qt # calculator
 
         slack
-        github-desktop
         postman
         # zoom-us
 
-        pcloud
-        localsend
-        wireshark
+        pcloud # cloud storage
+        localsend # local file sharing between devices
+        wireshark # packet monitoring
 
-        libnotify
-        gparted
+        libnotify # notification library setup
+        gparted # partition editor
 
-        audacity
-        gimp
-        inkscape
-        feh
-        xournalpp
+        audacity # audio editor
+        gimp # raster editor
+        inkscape # vector editor
+        feh # image viewer
 
         vlc
-        mpv
+        mpv # preferred media playback
         spotify
         calibre
         pdfarranger
 
+        # code editors
         code-cursor
-        zed-editor
+        zed-editor # preferred code editor
         vscode
 
         # failing to build, never use anyways
@@ -88,6 +87,7 @@
         # codex
         libva-utils # utilites to check vaapi stuff
         vulkan-tools # tools for testing vulkan
+        mesa-demos # grahphics demos for testing GPU
       ]
       ++ (
         if (vars.isPersonal config) then
