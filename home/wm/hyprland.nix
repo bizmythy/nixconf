@@ -316,11 +316,13 @@ in
 
         windowrulev2 =
           let
-            floatingWindowRules = class: [
-              "float, initialClass:${class}"
-              "center, initialClass:${class}"
-              "size 60% 60%, initialClass:${class}"
-            ];
+            floatingWindowRules = class: {
+              name = "float-${class}";
+              "match:initial_class" = class;
+              float = true;
+              center = true;
+              size = "60% 60%";
+            };
           in
           lib.lists.flatten [
             # (floatingWindowRules "1Password")
