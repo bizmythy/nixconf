@@ -8,11 +8,17 @@ def main [name: string] {
         gh repo clone diracq/buildos-web -- $pristine
         cd $pristine
         direnv exec mask test files download
-        direnv exec mask install-web-dependencies
-        cd ~/dirac
+    } else {
+        cd $pristine
+        git checkout main
+        git pull
     }
+    cd $pristine
+    direnv exec mask install-web-dependencies
 
+    cd ~/dirac
     let new_dir = $"./buildos-web-($name)"
     safe dir-cp $pristine $new_dir
+
     cd $new_dir
 }
