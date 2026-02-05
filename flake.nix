@@ -41,6 +41,7 @@
       url = "ssh://git@dirac-github/diracq/buildos-web.git";
       ref = "main";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.llm-agents.follows = "llm-agents";
     };
 
     systems.url = "github:nix-systems/default";
