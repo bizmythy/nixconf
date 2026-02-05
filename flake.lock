@@ -70,7 +70,7 @@
     "blueprint_2": {
       "inputs": {
         "nixpkgs": [
-          "nix-ai-tools",
+          "llm-agents",
           "nixpkgs"
         ],
         "systems": "systems_4"
@@ -220,11 +220,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1770324930,
-        "narHash": "sha256-SiXDUayq3TiPJ6eFTgsbGTpdl+B7Qr5l4tA+2lN/UeA=",
+        "lastModified": 1770329589,
+        "narHash": "sha256-Cr8C4p4li6xCxCkqkklGpxcKgZ/lOigfzaXOF+o5kYI=",
         "ref": "main",
-        "rev": "84653fc54c576efe08ec4ed25fb3934d860088bd",
-        "revCount": 2793,
+        "rev": "23b97552a338235ab936fea54fe68cb964730b6e",
+        "revCount": 2794,
         "type": "git",
         "url": "ssh://git@dirac-github/diracq/buildos-web.git"
       },
@@ -545,6 +545,26 @@
         "type": "github"
       }
     },
+    "llm-agents_2": {
+      "inputs": {
+        "blueprint": "blueprint_2",
+        "nixpkgs": "nixpkgs_10",
+        "treefmt-nix": "treefmt-nix_3"
+      },
+      "locked": {
+        "lastModified": 1770325891,
+        "narHash": "sha256-7ipAUiPb798BRdV56+3bxa71fdleMxlS/XvIGUYO1qI=",
+        "owner": "numtide",
+        "repo": "llm-agents.nix",
+        "rev": "54aeaa16a2f836142fba98a455e0373e3f464ac5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "llm-agents.nix",
+        "type": "github"
+      }
+    },
     "masklint": {
       "inputs": {
         "fenix": "fenix_2",
@@ -608,26 +628,6 @@
       "original": {
         "type": "tarball",
         "url": "https://flakehub.com/f/DeterminateSystems/nix-src/%2A"
-      }
-    },
-    "nix-ai-tools": {
-      "inputs": {
-        "blueprint": "blueprint_2",
-        "nixpkgs": "nixpkgs_10",
-        "treefmt-nix": "treefmt-nix_3"
-      },
-      "locked": {
-        "lastModified": 1770325891,
-        "narHash": "sha256-7ipAUiPb798BRdV56+3bxa71fdleMxlS/XvIGUYO1qI=",
-        "owner": "numtide",
-        "repo": "nix-ai-tools",
-        "rev": "54aeaa16a2f836142fba98a455e0373e3f464ac5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "nix-ai-tools",
-        "type": "github"
       }
     },
     "nix-flatpak": {
@@ -1033,7 +1033,7 @@
         "catppuccin": "catppuccin",
         "dirac": "dirac",
         "home-manager": "home-manager_2",
-        "nix-ai-tools": "nix-ai-tools",
+        "llm-agents": "llm-agents_2",
         "nix-flatpak": "nix-flatpak",
         "nixpkgs": "nixpkgs_11",
         "nixpkgs-stable": "nixpkgs-stable_2",
@@ -1264,7 +1264,7 @@
     "treefmt-nix_3": {
       "inputs": {
         "nixpkgs": [
-          "nix-ai-tools",
+          "llm-agents",
           "nixpkgs"
         ]
       },
