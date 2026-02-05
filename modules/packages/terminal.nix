@@ -178,7 +178,7 @@
         # ssm-session-manager-plugin
       ];
 
-      aiTools = with inputs.nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system}; [
+      aiTools = with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
         claude-code
         codex
         # gemini-cli
