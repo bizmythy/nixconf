@@ -85,7 +85,6 @@
         kdePackages.plasma-workspace
         kdePackages.kconfig
 
-        # codex
         libva-utils # utilites to check vaapi stuff
         vulkan-tools # tools for testing vulkan
         mesa-demos # grahphics demos for testing GPU

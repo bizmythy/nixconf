@@ -12,8 +12,6 @@ self: super: {
 
   protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
 
-  codex = super.callPackage ./pkgs/codex.nix { };
-
   nu-plugin-toon = super.callPackage ./pkgs/nu_plugin_toon.nix { };
 
   amd-ctk = super.callPackage ./pkgs/amd-ctk.nix { };
