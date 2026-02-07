@@ -203,19 +203,22 @@ def parse_device_from_hosts_schema(
         monitor_raw = monitors_raw[monitor_key]
         if not isinstance(monitor_raw, dict):
             raise click.ClickException(
-                f"monitor {monitor_key!r} on host {device_name!r} must be a mapping"
+                f"monitor {monitor_key!r} on host "
+                f"{device_name!r} must be a mapping"
             )
 
         settings_raw = monitor_raw.get("settings")
         if not isinstance(settings_raw, dict):
             raise click.ClickException(
-                f"monitor {monitor_key!r} on host {device_name!r} must define settings"
+                f"monitor {monitor_key!r} on host "
+                f"{device_name!r} must define settings"
             )
 
         desc_raw = monitor_raw.get("desc")
         if desc_raw is None:
             raise click.ClickException(
-                f"monitor {monitor_key!r} on host {device_name!r} is missing desc"
+                f"monitor {monitor_key!r} on host "
+                f"{device_name!r} is missing desc"
             )
         output = output_from_desc(str(desc_raw))
 
@@ -229,7 +232,8 @@ def parse_device_from_hosts_schema(
                 workspace_number = int(workspace)
             except (TypeError, ValueError) as error:
                 raise click.ClickException(
-                    f"workspace for monitor {monitor_key!r} on host {device_name!r} must be an integer"
+                    f"workspace for monitor {monitor_key!r} "
+                    f"on host {device_name!r} must be an integer"
                 ) from error
             workspace_entries.append((workspace_number, output))
 
@@ -250,13 +254,15 @@ def parse_device_from_hosts_schema(
         profile_raw = profiles_raw[profile_key]
         if not isinstance(profile_raw, dict):
             raise click.ClickException(
-                f"profile {profile_key!r} on host {device_name!r} must be a mapping"
+                f"profile {profile_key!r} on host "
+                f"{device_name!r} must be a mapping"
             )
 
         enabled_outputs_raw = profile_raw.get("enabledOutputs")
         if not isinstance(enabled_outputs_raw, list):
             raise click.ClickException(
-                f"profile {profile_key!r} on host {device_name!r} must define enabledOutputs"
+                f"profile {profile_key!r} on host "
+                f"{device_name!r} must define enabledOutputs"
             )
 
         enabled_outputs = tuple(
@@ -267,16 +273,19 @@ def parse_device_from_hosts_schema(
         monitor_overrides_raw = profile_raw.get("monitorOverrides", {})
         if not isinstance(monitor_overrides_raw, dict):
             raise click.ClickException(
-                f"monitorOverrides for profile {profile_key!r} must be a mapping"
+                f"monitorOverrides for profile "
+                f"{profile_key!r} must be a mapping"
             )
 
         monitor_overrides: dict[str, dict[str, Any]] = {}
         for output_ref, override in monitor_overrides_raw.items():
             if not isinstance(override, dict):
                 raise click.ClickException(
-                    f"monitor override {output_ref!r} for profile {profile_key!r} must be a mapping"
+                    f"monitor override {output_ref!r} for "
+                    f"profile {profile_key!r} must be a mapping"
                 )
-            monitor_overrides[resolve_output_ref(monitors_raw, output_ref)] = {
+            resolved_output = resolve_output_ref(monitors_raw, output_ref)
+            monitor_overrides[resolved_output] = {
                 str(key): value for key, value in override.items()
             }
 
@@ -351,21 +360,13 @@ def load_config(config_path: Path) -> ProgramConfig:
     raw: dict[str, Any] = json.loads(config_path.read_text(encoding="utf-8"))
 
     hosts_raw = raw.get("hosts")
-    if isinstance(hosts_raw, dict):
-        devices = {
-            str(name): parse_device_from_hosts_schema(str(name), device_raw)
-            for name, device_raw in hosts_raw.items()
-        }
-    else:
-        devices_raw = raw.get("devices")
-        if not isinstance(devices_raw, dict):
-            raise click.ClickException(
-                "config must define either a hosts mapping or devices mapping"
-            )
-        devices = {
-            str(name): DeviceConfig.from_raw(device_raw)
-            for name, device_raw in devices_raw.items()
-        }
+    if not isinstance(hosts_raw, dict):
+        raise click.ClickException("config must define a hosts mapping")
+
+    devices = {
+        str(name): parse_device_from_hosts_schema(str(name), device_raw)
+        for name, device_raw in hosts_raw.items()
+    }
 
     output_path_raw = raw.get("outputPath")
     if output_path_raw is None:
