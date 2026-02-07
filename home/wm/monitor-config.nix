@@ -130,7 +130,12 @@ let
   };
 in
 {
-  inherit defaultLayoutsByHost hyprmonitorProfilesByHost monitors tabletHeadless;
+  inherit
+    defaultLayoutsByHost
+    hyprmonitorProfilesByHost
+    monitors
+    tabletHeadless
+    ;
 
   monitorv2 = builtins.concatLists (
     map (host: defaultLayoutsByHost.${host}.monitorv2) (builtins.attrNames defaultLayoutsByHost)

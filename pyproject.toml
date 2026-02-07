@@ -9,8 +9,8 @@ dependencies = [
   "hyprpy>=0.2.0"
 ]
 
-[tool.ty.environment]
-python = ".venv"
-
 [tool.ruff]
 line-length = 79
+
+[tool.ty.environment]
+python = ".venv"
