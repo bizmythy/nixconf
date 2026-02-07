@@ -185,8 +185,9 @@ def set_monitor(setting: MonitorSetting) -> None:
     hyprctl("keyword", "monitor", setting.to_hyprctl())
 
 
-def disable_monitor(output: str) -> None:
-    hyprctl("keyword", "monitor", f"{output},disable")
+def set_dpms(output: str, *, enabled: bool) -> None:
+    dpms_state = "on" if enabled else "off"
+    hyprctl("dispatch", "dpms", dpms_state, output)
 
 
 def remove_headless(headless_name: str) -> None:
@@ -335,8 +336,9 @@ def apply_outputs(
     for setting in settings:
         if setting.output in enabled_outputs:
             set_monitor(setting)
+            set_dpms(setting.output, enabled=True)
         else:
-            disable_monitor(setting.output)
+            set_dpms(setting.output, enabled=False)
 
 
 def apply_configuration(
