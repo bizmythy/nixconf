@@ -290,10 +290,18 @@ def stop_owned_sunshine(pid: int | None) -> None:
 
 def configure_headless(instance: Hyprland, settings: HeadlessConfig) -> int:
     hyprctl("output", "create", "headless", settings.name, check=False)
+    monitor_spec = ",".join(
+        [
+            settings.name,
+            settings.mode,
+            settings.position,
+            f"{settings.scale:g}",
+        ]
+    )
     hyprctl(
         "keyword",
         "monitor",
-        f"{settings.name},{settings.mode},{settings.position},{settings.scale:g}",
+        monitor_spec,
     )
 
     for _ in range(30):
