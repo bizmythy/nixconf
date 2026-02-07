@@ -337,11 +337,9 @@ def stop_owned_sunshine(pid: int | None) -> None:
 
 
 def start_sunshine(output_name: int) -> int:
-    env = os.environ.copy()
-    env["output_name"] = str(output_name)
     process = subprocess.Popen(
-        ["sunshine"],
-        env=env,
+        ["sunshine", f"output_name={output_name}"],
+        env=os.environ.copy(),
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         start_new_session=True,
