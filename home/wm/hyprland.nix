@@ -6,7 +6,6 @@
   ...
 }:
 let
-  monitorConfig = import ./monitor-config.nix;
   launchwork = pkgs.writeShellApplication {
     name = "launchwork";
     text = ''
@@ -43,8 +42,6 @@ in
     };
     settings =
       let
-        wsByHost = monitorConfig.workspaceByHost;
-
         # for each mod key, call the function. take the lists of binds,
         # flatten them, and ensure they are unique.
         forAllModKeys =
@@ -66,6 +63,7 @@ in
         xwayland.force_zero_scaling = true;
         exec-once = [
           "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
+          "hyprmonitor --apply-default"
           "waybar"
           "systemctl --user start hyprpolkitagent"
           "swaync"
@@ -103,11 +101,7 @@ in
           rounding = 14;
         };
 
-        monitorv2 = monitorConfig.monitorv2;
-
-        # experimental.xx_color_management_v4 = (osConfig.networking.hostName == "igneous");
-
-        workspace = wsByHost.${osConfig.networking.hostName} or [ ];
+        source = "~/.config/hypr/hyprmonitor.conf";
 
         input = {
           kb_layout = "us";
