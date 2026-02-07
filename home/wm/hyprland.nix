@@ -154,10 +154,9 @@ in
           "${modKey}, SPACE, exec, playerctl play-pause"
 
           "${modKey}, W, killactive,"
-          # "${modKey}, M, exit,"
           "${modKey}, F, togglefloating,"
-          "${modKey}, M, fullscreen,"
-          "${modKey} SHIFT, M, exec, ${lib.getExe hyprmonitor.package}"
+          "${modKey} SHIFT, M, fullscreen,"
+          "${modKey}, M, exec, ${lib.getExe hyprmonitor.package}"
           # "${modKey}, P, pseudo," # dwindle
           # "${modKey}, J, togglesplit," # dwindle
 
