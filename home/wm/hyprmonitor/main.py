@@ -450,9 +450,6 @@ def apply_selection(
         enabled_outputs = set(profile.enabled_outputs)
         use_tablet = profile.use_tablet
 
-    if use_tablet:
-        create_headless_output(program_config.tablet_headless.name)
-
     runtime_config = build_runtime_monitor_config(
         device_config=device_config,
         enabled_outputs=enabled_outputs,
@@ -464,6 +461,7 @@ def apply_selection(
 
     sunshine_pid: int | None = None
     if use_tablet:
+        create_headless_output(program_config.tablet_headless.name)
         headless_id = wait_for_monitor_id(program_config.tablet_headless.name)
         sunshine_pid = start_sunshine(headless_id)
 
