@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   osConfig,
@@ -6,6 +7,7 @@
   ...
 }:
 let
+  hyprmonitor = config.wm.hyprmonitor;
   launchwork = pkgs.writeShellApplication {
     name = "launchwork";
     text = ''
@@ -63,7 +65,7 @@ in
         xwayland.force_zero_scaling = true;
         exec-once = [
           "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
-          "hyprmonitor --apply-default"
+          "${lib.getExe hyprmonitor.package} --apply-default" # apply default monitor config
           "waybar"
           "systemctl --user start hyprpolkitagent"
           "swaync"
@@ -101,7 +103,9 @@ in
           rounding = 14;
         };
 
-        source = lib.mkAfter [ "~/.config/hypr/hyprmonitor.conf" ];
+        source = lib.mkAfter [
+          hyprmonitor.configPath # managed by `hyprmonitor` script
+        ];
 
         input = {
           kb_layout = "us";
@@ -153,6 +157,7 @@ in
           # "${modKey}, M, exit,"
           "${modKey}, F, togglefloating,"
           "${modKey}, M, fullscreen,"
+          "${modKey} SHIFT, M, exec, ${lib.getExe hyprmonitor.package}"
           # "${modKey}, P, pseudo," # dwindle
           # "${modKey}, J, togglesplit," # dwindle
 
