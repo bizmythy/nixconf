@@ -14,7 +14,7 @@ let
       hyprlaunch \
         ${vars.defaults.tty}:1 \
         slack:8 \
-        ${vars.defaults.editor}:2 \
+        ${vars.defaults.editor} ${vars.home}/dirac/buildos-web:2 \
         ${vars.defaults.browser}:3
     '';
   };
