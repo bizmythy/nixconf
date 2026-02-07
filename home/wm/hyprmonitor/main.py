@@ -123,9 +123,11 @@ class HeadlessConfig:
         )
 
 
+DEFAULT_LABEL = "default"
+
+
 @dataclass(frozen=True)
 class ProgramConfig:
-    default_label: str
     output_path: Path
     tablet_headless: HeadlessConfig
     devices: dict[str, DeviceConfig]
@@ -373,7 +375,6 @@ def load_config(config_path: Path) -> ProgramConfig:
         output_path_raw = "~/.config/hypr/hyprmonitor.conf"
 
     return ProgramConfig(
-        default_label=str(raw.get("defaultLabel", "default")),
         output_path=Path(str(output_path_raw)).expanduser(),
         tablet_headless=HeadlessConfig.from_raw(raw["tabletHeadless"]),
         devices=devices,
@@ -613,7 +614,7 @@ def apply_selection(
     remove_headless(program_config.tablet_headless.name)
 
     if profile is None:
-        active_profile = program_config.default_label
+        active_profile = DEFAULT_LABEL
         enabled_outputs = {
             setting.output for setting in device_config.default_settings
         }
@@ -677,12 +678,12 @@ def main(device: str | None, apply_default: bool) -> None:
     if apply_default:
         selected_profile = None
     else:
-        labels = [config.default_label]
+        labels = [DEFAULT_LABEL]
         labels.extend(profile.label for profile in device_config.profiles)
         selected_label: str | None
 
         if len(labels) == 1:
-            selected_label = config.default_label
+            selected_label = DEFAULT_LABEL
         else:
             selected_label = pick_profile(labels)
             if selected_label is None:
@@ -696,7 +697,7 @@ def main(device: str | None, apply_default: bool) -> None:
             ),
             None,
         )
-        if selected_label != config.default_label and selected_profile is None:
+        if selected_label != DEFAULT_LABEL and selected_profile is None:
             raise click.ClickException("invalid profile selected")
 
     apply_selection(

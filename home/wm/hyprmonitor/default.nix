@@ -9,7 +9,6 @@ let
   monitorConfig = import ./monitor-config.nix;
   configFile = pkgs.writeText "hyprmonitor-config.json" (
     builtins.toJSON {
-      defaultLabel = "Default";
       outputPath = cfg.configPath;
       tabletHeadless = monitorConfig.tabletHeadless;
       hosts = monitorConfig.hosts;
