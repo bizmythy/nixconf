@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.wm.hyprmonitor;
-  monitorConfig = import ../monitor-config.nix;
+  monitorConfig = import ./monitor-config.nix;
   devices = builtins.attrNames monitorConfig.defaultLayoutsByHost;
   configFile = pkgs.writeText "hyprmonitor-config.json" (
     builtins.toJSON {
