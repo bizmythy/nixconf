@@ -101,7 +101,7 @@ in
           rounding = 14;
         };
 
-        source = "~/.config/hypr/hyprmonitor.conf";
+        source = lib.mkAfter [ "~/.config/hypr/hyprmonitor.conf" ];
 
         input = {
           kb_layout = "us";
