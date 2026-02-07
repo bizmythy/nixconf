@@ -11,3 +11,6 @@ dependencies = [
 
 [tool.ty.environment]
 python = ".venv"
+
+[tool.ruff]
+line-length = 79

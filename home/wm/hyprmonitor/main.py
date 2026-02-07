@@ -42,7 +42,9 @@ class MonitorProfile:
 
     @classmethod
     def from_raw(cls, raw: dict[str, Any]) -> "MonitorProfile":
-        enabled_outputs = tuple(str(output) for output in raw["enabledOutputs"])
+        enabled_outputs = tuple(
+            str(output) for output in raw["enabledOutputs"]
+        )
         return cls(
             key=str(raw["key"]),
             label=str(raw["label"]),
@@ -59,7 +61,8 @@ class DeviceConfig:
     @classmethod
     def from_raw(cls, raw: dict[str, Any]) -> "DeviceConfig":
         default_settings = tuple(
-            MonitorSetting.from_raw(setting) for setting in raw["defaultSettings"]
+            MonitorSetting.from_raw(setting)
+            for setting in raw["defaultSettings"]
         )
         profiles = tuple(
             MonitorProfile.from_raw(profile) for profile in raw["profiles"]
@@ -89,7 +92,9 @@ class HeadlessConfig:
 
     @property
     def mode(self) -> str:
-        return f"{self.width // self.downsample}x{self.height // self.downsample}"
+        return (
+            f"{self.width // self.downsample}x{self.height // self.downsample}"
+        )
 
 
 @dataclass(frozen=True)
@@ -159,14 +164,20 @@ def save_state(path: Path, state: ProgramState) -> None:
 def run_command(
     command: list[str], *, check: bool = True
 ) -> subprocess.CompletedProcess[str]:
-    result = subprocess.run(command, text=True, capture_output=True, check=False)
+    result = subprocess.run(
+        command, text=True, capture_output=True, check=False
+    )
     if check and result.returncode != 0:
-        message = result.stderr.strip() or result.stdout.strip() or "command failed"
+        message = (
+            result.stderr.strip() or result.stdout.strip() or "command failed"
+        )
         raise click.ClickException(message)
     return result
 
 
-def hyprctl(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
+def hyprctl(
+    *args: str, check: bool = True
+) -> subprocess.CompletedProcess[str]:
     return run_command(["hyprctl", *args], check=check)
 
 
@@ -203,11 +214,16 @@ def should_offer_default(
     headless_name: str,
     default_label: str,
 ) -> bool:
-    if state.device == device and state.active_profile not in (None, default_label):
+    if state.device == device and state.active_profile not in (
+        None,
+        default_label,
+    ):
         return True
     if has_monitor(instance, headless_name):
         return True
-    default_outputs = {setting.output for setting in device_config.default_settings}
+    default_outputs = {
+        setting.output for setting in device_config.default_settings
+    }
     current_outputs = get_current_outputs(instance, headless_name)
     return bool(current_outputs) and current_outputs != default_outputs
 
@@ -230,7 +246,9 @@ def pick_profile(choices: list[str]) -> str | None:
     try:
         index = int(selected)
     except ValueError as error:
-        raise click.ClickException("fuzzel returned a non-numeric selection") from error
+        raise click.ClickException(
+            "fuzzel returned a non-numeric selection"
+        ) from error
     if index < 0 or index >= len(choices):
         raise click.ClickException("fuzzel returned an invalid selection")
     return choices[index]
@@ -284,7 +302,9 @@ def configure_headless(instance: Hyprland, settings: HeadlessConfig) -> int:
             return monitor.id
         time.sleep(0.1)
 
-    raise click.ClickException("unable to locate the configured headless monitor")
+    raise click.ClickException(
+        "unable to locate the configured headless monitor"
+    )
 
 
 def start_sunshine(output_name: int) -> int:
@@ -325,7 +345,9 @@ def apply_configuration(
     remove_headless(headless.name)
 
     if profile is None:
-        enabled_outputs = {setting.output for setting in device_config.default_settings}
+        enabled_outputs = {
+            setting.output for setting in device_config.default_settings
+        }
         active_profile = default_label
         use_tablet = False
     else:
@@ -386,7 +408,11 @@ def main(device: str | None) -> None:
         return
 
     selected_profile = next(
-        (profile for profile in device_config.profiles if profile.label == selection),
+        (
+            profile
+            for profile in device_config.profiles
+            if profile.label == selection
+        ),
         None,
     )
     if selection != config.default_label and selected_profile is None:
