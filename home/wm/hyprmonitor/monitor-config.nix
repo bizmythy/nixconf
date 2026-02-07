@@ -112,6 +112,18 @@ let
     ];
     theseus = [
       {
+        key = "1080p";
+        label = "1080p";
+        enabledOutputs = [ monitors.theseus.laptop ];
+        useTablet = false;
+        monitorOverrides = {
+          ${monitors.theseus.laptop} = {
+            mode = "1920x1080";
+            scale = scaleHiDPI;
+          };
+        };
+      }
+      {
         key = "tablet";
         label = "Tablet";
         enabledOutputs = [ monitors.theseus.laptop ];

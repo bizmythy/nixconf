@@ -43,17 +43,31 @@ class MonitorProfile:
     label: str
     enabled_outputs: tuple[str, ...]
     use_tablet: bool
+    monitor_overrides: dict[str, dict[str, Any]]
 
     @classmethod
     def from_raw(cls, raw: dict[str, Any]) -> "MonitorProfile":
         enabled_outputs = tuple(
             str(output) for output in raw["enabledOutputs"]
         )
+        monitor_overrides_raw = raw.get("monitorOverrides", {})
+        if not isinstance(monitor_overrides_raw, dict):
+            raise ValueError("monitorOverrides must be a mapping")
+
+        monitor_overrides: dict[str, dict[str, Any]] = {}
+        for output, override in monitor_overrides_raw.items():
+            if not isinstance(override, dict):
+                raise ValueError("each monitor override must be a mapping")
+            monitor_overrides[str(output)] = {
+                str(key): value for key, value in override.items()
+            }
+
         return cls(
             key=str(raw["key"]),
             label=str(raw["label"]),
             enabled_outputs=enabled_outputs,
             use_tablet=bool(raw["useTablet"]),
+            monitor_overrides=monitor_overrides,
         )
 
 
@@ -350,19 +364,39 @@ def build_runtime_monitor_config(
     enabled_outputs: set[str],
     headless: HeadlessConfig,
     use_tablet: bool,
+    monitor_overrides: dict[str, dict[str, Any]] | None = None,
 ) -> HyprMonitorConfig:
     monitor_directives: list[MonitorDirective] = []
+    monitor_overrides = monitor_overrides or {}
 
     for setting in device_config.default_settings:
         if setting.output in enabled_outputs:
+            raw_override = monitor_overrides.get(setting.output, {})
+            mode = setting.mode
+            position = setting.position
+            scale = setting.scale
+            extra = dict(setting.extra)
+
+            if "mode" in raw_override:
+                mode = str(raw_override["mode"])
+            if "position" in raw_override:
+                position = str(raw_override["position"])
+            if "scale" in raw_override:
+                scale = float(raw_override["scale"])
+
+            for key, value in raw_override.items():
+                if key in {"mode", "position", "scale"}:
+                    continue
+                extra[key] = value
+
             monitor_directives.append(
                 MonitorDirective(
                     output=setting.output,
                     disabled=False,
-                    mode=setting.mode,
-                    position=setting.position,
-                    scale=setting.scale,
-                    extra=setting.extra,
+                    mode=mode,
+                    position=position,
+                    scale=scale,
+                    extra=extra,
                 )
             )
         else:
@@ -453,6 +487,9 @@ def apply_selection(
         enabled_outputs=enabled_outputs,
         headless=program_config.tablet_headless,
         use_tablet=use_tablet,
+        monitor_overrides=(
+            profile.monitor_overrides if profile is not None else None
+        ),
     )
     write_runtime_config(program_config.output_path, runtime_config)
     reload_hyprland()
