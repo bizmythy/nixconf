@@ -7,7 +7,7 @@
 let
   cfg = config.wm.hyprmonitor;
   monitorConfig = import ./monitor-config.nix;
-  devices = builtins.attrNames monitorConfig.defaultLayoutsByHost;
+  devices = builtins.attrNames monitorConfig.hosts;
   configFile = pkgs.writeText "hyprmonitor-config.json" (
     builtins.toJSON {
       defaultLabel = "Default";
