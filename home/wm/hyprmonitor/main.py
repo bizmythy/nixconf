@@ -275,21 +275,19 @@ def list_monitors() -> list[dict[str, Any]]:
     return [item for item in parsed if isinstance(item, dict)]
 
 
-def find_monitor_id(name: str) -> int | None:
-    for monitor in list_monitors():
+def find_monitor_index(name: str) -> int | None:
+    for index, monitor in enumerate(list_monitors()):
         if monitor.get("name") == name:
-            monitor_id = monitor.get("id")
-            if isinstance(monitor_id, int):
-                return monitor_id
+            return index
     return None
 
 
-def wait_for_monitor_id(name: str, timeout_seconds: float = 3.0) -> int:
+def wait_for_monitor_index(name: str, timeout_seconds: float = 3.0) -> int:
     deadline = time.monotonic() + timeout_seconds
     while time.monotonic() < deadline:
-        monitor_id = find_monitor_id(name)
-        if monitor_id is not None:
-            return monitor_id
+        monitor_index = find_monitor_index(name)
+        if monitor_index is not None:
+            return monitor_index
         time.sleep(0.1)
     raise click.ClickException(f"unable to find monitor {name!r} after reload")
 
@@ -462,8 +460,10 @@ def apply_selection(
     sunshine_pid: int | None = None
     if use_tablet:
         create_headless_output(program_config.tablet_headless.name)
-        headless_id = wait_for_monitor_id(program_config.tablet_headless.name)
-        sunshine_pid = start_sunshine(headless_id)
+        headless_index = wait_for_monitor_index(
+            program_config.tablet_headless.name
+        )
+        sunshine_pid = start_sunshine(headless_index)
 
     state.device = device
     state.active_profile = active_profile
