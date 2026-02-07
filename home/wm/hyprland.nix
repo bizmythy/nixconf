@@ -6,6 +6,7 @@
   ...
 }:
 let
+  monitorConfig = import ./monitor-config.nix;
   launchwork = pkgs.writeShellApplication {
     name = "launchwork";
     text = ''
@@ -42,32 +43,7 @@ in
     };
     settings =
       let
-        igneous = {
-          main = "desc:Microstep MSI MAG322UPF";
-          top = "desc:ViewSonic Corporation VX2418-P FHD WFK231321682";
-          tv = "desc:LG Electronics LG TV SSCR2 0x01010101";
-        };
-        drewdirac = {
-          main = "desc:Samsung Electric Company U32J59x HCJXA01635";
-          right = "desc:LG Electronics LG SDQHD 409NTTQ8K433";
-          top = "desc:Acer Technologies KA272 TJ0AA00785SJ";
-        };
-        theseus = {
-          laptop = "desc:BOE 0x095F";
-        };
-        scaleHiDPI = 1.5;
-        wsByHost = {
-          drewdiracpc = [
-            "1, monitor:${drewdirac.right}, default:true"
-            "2, monitor:${drewdirac.main}, default:true"
-            "8, monitor:${drewdirac.top}, default:true"
-          ];
-          igneous = [
-            "1, monitor:${igneous.top}, default:true"
-            "2, monitor:${igneous.main}, default:true"
-            "10, monitor:${igneous.tv}, default:true"
-          ];
-        };
+        wsByHost = monitorConfig.workspaceByHost;
 
         # for each mod key, call the function. take the lists of binds,
         # flatten them, and ensure they are unique.
@@ -127,59 +103,7 @@ in
           rounding = 14;
         };
 
-        monitorv2 = [
-          {
-            output = igneous.main;
-            mode = "3840x2160@160";
-            position = "0x0";
-            scale = scaleHiDPI;
-
-            # set vrr
-            vrr = 0;
-          }
-          {
-            output = igneous.top;
-            mode = "1920x1080@60";
-            position = "575x-1080";
-            scale = 1.0;
-          }
-          {
-            output = igneous.tv;
-            mode = "3840x2160@120";
-            position = "auto-right";
-            scale = scaleHiDPI;
-
-            # hdr settings
-            # bitdepth = 10;
-            # cm = "hdr";
-          }
-
-          {
-            output = drewdirac.main;
-            mode = "3840x2160";
-            position = "0x0";
-            scale = scaleHiDPI;
-          }
-          {
-            output = drewdirac.right;
-            mode = "2560x2880@60";
-            position = "auto-right";
-            scale = 1.333333;
-          }
-          {
-            output = drewdirac.top;
-            mode = "1920x1080@60";
-            position = "575x-1080";
-            scale = 1.0;
-          }
-
-          {
-            output = theseus.laptop;
-            mode = "preferred";
-            position = "auto-down";
-            scale = 1.566667;
-          }
-        ];
+        monitorv2 = monitorConfig.monitorv2;
 
         # experimental.xx_color_management_v4 = (osConfig.networking.hostName == "igneous");
 

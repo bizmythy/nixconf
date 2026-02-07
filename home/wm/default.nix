@@ -9,6 +9,7 @@
     ./hyprland.nix
     ./hyprlock.nix
     ./hyprlaunch
+    ./hyprmonitor
     ./hyprpaper.nix
   ];
 
