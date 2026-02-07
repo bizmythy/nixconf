@@ -116,16 +116,17 @@ in
           kb_options = "caps:escape";
         };
 
-        # gestures = {
-        #   workspace_swipe = true;
-        #   workspace_swipe_fingers = 3;
-        # };
-
         cursor = {
           no_hardware_cursors = true;
           inactive_timeout = 5;
         };
 
+        # trackpad gestures
+        gesture = [
+          "3, horizontal, workspace"
+        ];
+
+        # keybinds
         bind = forAllModKeys (modKey: [
           "${modKey}, RETURN, exec, ${vars.defaults.tty}"
           # "${modKey} SHIFT, RETURN, exec, ${vars.defaults.tty}"
