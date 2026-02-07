@@ -174,9 +174,7 @@ def output_from_desc(desc: str) -> str:
     return desc if desc.startswith("desc:") else f"desc:{desc}"
 
 
-def resolve_output_ref(
-    monitors: dict[str, Any], output_ref: Any
-) -> str:
+def resolve_output_ref(monitors: dict[str, Any], output_ref: Any) -> str:
     ref = str(output_ref)
     monitor = monitors.get(ref)
     if isinstance(monitor, dict) and "desc" in monitor:
@@ -190,9 +188,7 @@ def parse_device_from_hosts_schema(
     device_name: str, host_raw: dict[str, Any]
 ) -> DeviceConfig:
     if not isinstance(host_raw, dict):
-        raise click.ClickException(
-            f"host {device_name!r} must be a mapping"
-        )
+        raise click.ClickException(f"host {device_name!r} must be a mapping")
 
     monitors_raw = host_raw.get("monitors")
     if not isinstance(monitors_raw, dict):
@@ -280,9 +276,9 @@ def parse_device_from_hosts_schema(
                 raise click.ClickException(
                     f"monitor override {output_ref!r} for profile {profile_key!r} must be a mapping"
                 )
-            monitor_overrides[
-                resolve_output_ref(monitors_raw, output_ref)
-            ] = {str(key): value for key, value in override.items()}
+            monitor_overrides[resolve_output_ref(monitors_raw, output_ref)] = {
+                str(key): value for key, value in override.items()
+            }
 
         profiles.append(
             MonitorProfile(
