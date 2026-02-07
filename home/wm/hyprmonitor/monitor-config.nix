@@ -1,7 +1,7 @@
 let
   scaleHiDPI = 1.5;
 
-  # Primary edit surface: define monitors/profile intent per host here.
+  # Primary edit surface: define monitor/profile intent per host here.
   hosts = {
     drewdiracpc = {
       monitors = {
@@ -117,101 +117,6 @@ let
     };
   };
 
-  outputFromDesc = desc: "desc:${desc}";
-  outputFromMonitor = monitor: outputFromDesc monitor.desc;
-
-  resolveOutput =
-    monitorDefs: outputRef:
-    let
-      ref = toString outputRef;
-    in
-    if builtins.hasAttr ref monitorDefs then
-      outputFromMonitor monitorDefs.${ref}
-    else if builtins.match "desc:.*" ref != null then
-      ref
-    else
-      outputFromDesc ref;
-
-  monitorSettingsForHost =
-    hostConfig:
-    map (monitor: monitor.settings // { output = outputFromMonitor monitor; }) (
-      builtins.attrValues hostConfig.monitors
-    );
-
-  workspaceRulesForHost =
-    hostConfig:
-    let
-      monitorsWithWorkspace = builtins.concatLists (
-        map (
-          monitorName:
-          let
-            monitor = hostConfig.monitors.${monitorName};
-          in
-          if monitor ? workspace && monitor.workspace != null then
-            [
-              {
-                workspace = monitor.workspace;
-                output = outputFromMonitor monitor;
-              }
-            ]
-          else
-            [ ]
-        ) (builtins.attrNames hostConfig.monitors)
-      );
-      sortedMonitors = builtins.sort (a: b: a.workspace < b.workspace) monitorsWithWorkspace;
-    in
-    map (
-      monitor: "${toString monitor.workspace}, monitor:${monitor.output}, default:true"
-    ) sortedMonitors;
-
-  monitorOverridesForProfile =
-    monitorDefs: monitorOverrides:
-    builtins.listToAttrs (
-      map (outputRef: {
-        name = resolveOutput monitorDefs outputRef;
-        value = monitorOverrides.${outputRef};
-      }) (builtins.attrNames monitorOverrides)
-    );
-
-  profilesForHost =
-    hostConfig:
-    let
-      profileDefs = hostConfig.profiles or { };
-    in
-    map (
-      profileKey:
-      let
-        profile = profileDefs.${profileKey};
-      in
-      {
-        key = profileKey;
-        label = profile.label or profileKey;
-        enabledOutputs = map (
-          outputRef: resolveOutput hostConfig.monitors outputRef
-        ) profile.enabledOutputs;
-        useTablet = profile.useTablet or false;
-      }
-      // (
-        if profile ? monitorOverrides then
-          {
-            monitorOverrides = monitorOverridesForProfile hostConfig.monitors profile.monitorOverrides;
-          }
-        else
-          { }
-      )
-    ) (builtins.attrNames profileDefs);
-
-  defaultLayoutsByHost = builtins.mapAttrs (_: hostConfig: {
-    monitorv2 = monitorSettingsForHost hostConfig;
-    workspaces = workspaceRulesForHost hostConfig;
-  }) hosts;
-
-  hyprmonitorProfilesByHost = builtins.mapAttrs (_: hostConfig: profilesForHost hostConfig) hosts;
-
-  monitors = builtins.mapAttrs (
-    _: hostConfig: builtins.mapAttrs (_: monitor: outputFromMonitor monitor) hostConfig.monitors
-  ) hosts;
-
   tabletHeadless = {
     name = "HEADLESS-TABLET";
     width = 2560;
@@ -223,16 +128,7 @@ let
 in
 {
   inherit
-    defaultLayoutsByHost
     hosts
-    hyprmonitorProfilesByHost
-    monitors
     tabletHeadless
     ;
-
-  monitorv2 = builtins.concatLists (
-    map (host: defaultLayoutsByHost.${host}.monitorv2) (builtins.attrNames defaultLayoutsByHost)
-  );
-
-  workspaceByHost = builtins.mapAttrs (_: value: value.workspaces) defaultLayoutsByHost;
 }

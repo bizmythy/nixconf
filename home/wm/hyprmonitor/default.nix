@@ -7,22 +7,12 @@
 let
   cfg = config.wm.hyprmonitor;
   monitorConfig = import ./monitor-config.nix;
-  devices = builtins.attrNames monitorConfig.hosts;
   configFile = pkgs.writeText "hyprmonitor-config.json" (
     builtins.toJSON {
       defaultLabel = "Default";
       outputPath = cfg.configPath;
       tabletHeadless = monitorConfig.tabletHeadless;
-      devices = builtins.listToAttrs (
-        map (device: {
-          name = device;
-          value = {
-            defaultSettings = monitorConfig.defaultLayoutsByHost.${device}.monitorv2;
-            workspaceRules = monitorConfig.workspaceByHost.${device} or [ ];
-            profiles = monitorConfig.hyprmonitorProfilesByHost.${device} or [ ];
-          };
-        }) devices
-      );
+      hosts = monitorConfig.hosts;
     }
   );
   rawScript = pkgs.writers.writePython3Bin "hyprmonitor" {

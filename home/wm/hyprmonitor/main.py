@@ -170,6 +170,137 @@ class HyprMonitorConfig:
     workspace_rules: tuple[str, ...]
 
 
+def output_from_desc(desc: str) -> str:
+    return desc if desc.startswith("desc:") else f"desc:{desc}"
+
+
+def resolve_output_ref(
+    monitors: dict[str, Any], output_ref: Any
+) -> str:
+    ref = str(output_ref)
+    monitor = monitors.get(ref)
+    if isinstance(monitor, dict) and "desc" in monitor:
+        return output_from_desc(str(monitor["desc"]))
+    if ref.startswith("desc:"):
+        return ref
+    return output_from_desc(ref)
+
+
+def parse_device_from_hosts_schema(
+    device_name: str, host_raw: dict[str, Any]
+) -> DeviceConfig:
+    if not isinstance(host_raw, dict):
+        raise click.ClickException(
+            f"host {device_name!r} must be a mapping"
+        )
+
+    monitors_raw = host_raw.get("monitors")
+    if not isinstance(monitors_raw, dict):
+        raise click.ClickException(
+            f"host {device_name!r} must define a monitors mapping"
+        )
+
+    default_settings: list[MonitorSetting] = []
+    workspace_entries: list[tuple[int, str]] = []
+
+    for monitor_key in sorted(monitors_raw):
+        monitor_raw = monitors_raw[monitor_key]
+        if not isinstance(monitor_raw, dict):
+            raise click.ClickException(
+                f"monitor {monitor_key!r} on host {device_name!r} must be a mapping"
+            )
+
+        settings_raw = monitor_raw.get("settings")
+        if not isinstance(settings_raw, dict):
+            raise click.ClickException(
+                f"monitor {monitor_key!r} on host {device_name!r} must define settings"
+            )
+
+        desc_raw = monitor_raw.get("desc")
+        if desc_raw is None:
+            raise click.ClickException(
+                f"monitor {monitor_key!r} on host {device_name!r} is missing desc"
+            )
+        output = output_from_desc(str(desc_raw))
+
+        raw_setting = dict(settings_raw)
+        raw_setting["output"] = output
+        default_settings.append(MonitorSetting.from_raw(raw_setting))
+
+        workspace = monitor_raw.get("workspace")
+        if workspace is not None:
+            try:
+                workspace_number = int(workspace)
+            except (TypeError, ValueError) as error:
+                raise click.ClickException(
+                    f"workspace for monitor {monitor_key!r} on host {device_name!r} must be an integer"
+                ) from error
+            workspace_entries.append((workspace_number, output))
+
+    workspace_entries.sort(key=lambda item: item[0])
+    workspace_rules = tuple(
+        f"{workspace}, monitor:{output}, default:true"
+        for workspace, output in workspace_entries
+    )
+
+    profiles_raw = host_raw.get("profiles", {})
+    if not isinstance(profiles_raw, dict):
+        raise click.ClickException(
+            f"profiles for host {device_name!r} must be a mapping"
+        )
+
+    profiles: list[MonitorProfile] = []
+    for profile_key in sorted(profiles_raw):
+        profile_raw = profiles_raw[profile_key]
+        if not isinstance(profile_raw, dict):
+            raise click.ClickException(
+                f"profile {profile_key!r} on host {device_name!r} must be a mapping"
+            )
+
+        enabled_outputs_raw = profile_raw.get("enabledOutputs")
+        if not isinstance(enabled_outputs_raw, list):
+            raise click.ClickException(
+                f"profile {profile_key!r} on host {device_name!r} must define enabledOutputs"
+            )
+
+        enabled_outputs = tuple(
+            resolve_output_ref(monitors_raw, output_ref)
+            for output_ref in enabled_outputs_raw
+        )
+
+        monitor_overrides_raw = profile_raw.get("monitorOverrides", {})
+        if not isinstance(monitor_overrides_raw, dict):
+            raise click.ClickException(
+                f"monitorOverrides for profile {profile_key!r} must be a mapping"
+            )
+
+        monitor_overrides: dict[str, dict[str, Any]] = {}
+        for output_ref, override in monitor_overrides_raw.items():
+            if not isinstance(override, dict):
+                raise click.ClickException(
+                    f"monitor override {output_ref!r} for profile {profile_key!r} must be a mapping"
+                )
+            monitor_overrides[
+                resolve_output_ref(monitors_raw, output_ref)
+            ] = {str(key): value for key, value in override.items()}
+
+        profiles.append(
+            MonitorProfile(
+                key=str(profile_key),
+                label=str(profile_raw.get("label", profile_key)),
+                enabled_outputs=enabled_outputs,
+                use_tablet=bool(profile_raw.get("useTablet", False)),
+                monitor_overrides=monitor_overrides,
+            )
+        )
+
+    return DeviceConfig(
+        default_settings=tuple(default_settings),
+        workspace_rules=workspace_rules,
+        profiles=tuple(profiles),
+    )
+
+
 def format_hypr_value(value: Any) -> str:
     if isinstance(value, bool):
         return "true" if value else "false"
@@ -222,17 +353,30 @@ def render_hyprmonitor_config(config: HyprMonitorConfig) -> str:
 
 def load_config(config_path: Path) -> ProgramConfig:
     raw: dict[str, Any] = json.loads(config_path.read_text(encoding="utf-8"))
-    devices = {
-        str(name): DeviceConfig.from_raw(device_raw)
-        for name, device_raw in raw["devices"].items()
-    }
+
+    hosts_raw = raw.get("hosts")
+    if isinstance(hosts_raw, dict):
+        devices = {
+            str(name): parse_device_from_hosts_schema(str(name), device_raw)
+            for name, device_raw in hosts_raw.items()
+        }
+    else:
+        devices_raw = raw.get("devices")
+        if not isinstance(devices_raw, dict):
+            raise click.ClickException(
+                "config must define either a hosts mapping or devices mapping"
+            )
+        devices = {
+            str(name): DeviceConfig.from_raw(device_raw)
+            for name, device_raw in devices_raw.items()
+        }
 
     output_path_raw = raw.get("outputPath")
     if output_path_raw is None:
         output_path_raw = "~/.config/hypr/hyprmonitor.conf"
 
     return ProgramConfig(
-        default_label=str(raw["defaultLabel"]),
+        default_label=str(raw.get("defaultLabel", "default")),
         output_path=Path(str(output_path_raw)).expanduser(),
         tablet_headless=HeadlessConfig.from_raw(raw["tabletHeadless"]),
         devices=devices,
