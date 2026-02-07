@@ -34,6 +34,7 @@ let
     name = "hyprmonitor";
     paths = [ rawScript ];
     nativeBuildInputs = [ pkgs.makeWrapper ];
+    meta.mainProgram = "hyprmonitor";
     postBuild = ''
       wrapProgram "$out/bin/hyprmonitor" \
         --set HYPRMONITOR_CONFIG_PATH ${configFile}
