@@ -3,7 +3,7 @@ let
 
   # Primary edit surface: define monitor/profile intent per host here.
   hosts = {
-    drewdiracpc = {
+    drewdiracframework = {
       monitors = {
         main = {
           desc = "Samsung Electric Company U32J59x HCJXA01635";
