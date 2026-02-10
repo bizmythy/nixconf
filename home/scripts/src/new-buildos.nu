@@ -3,7 +3,7 @@
 def main [name: string] {
     cd ~/dirac
 
-    let pristine = "./buildos-web-pristine"
+    let pristine = ("~/dirac/buildos-web-pristine" | path expand)
     if (not ($pristine | path exists)) {
         gh repo clone diracq/buildos-web -- $pristine
         cd $pristine
