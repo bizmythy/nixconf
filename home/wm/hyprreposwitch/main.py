@@ -16,7 +16,15 @@ from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
-from textual.widgets import Footer, Header, Input, ListItem, ListView, Log, Static
+from textual.widgets import (
+    Footer,
+    Header,
+    Input,
+    ListItem,
+    ListView,
+    Log,
+    Static,
+)
 
 
 def env(name: str, default: str) -> str:
@@ -170,8 +178,9 @@ def load_state(config: Config) -> State:
 
 def save_state(config: Config, state: State) -> None:
     config.state_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {"active_repo_name": state.active_repo_name}
     config.state_path.write_text(
-        json.dumps({"active_repo_name": state.active_repo_name}, indent=2) + "\n",
+        json.dumps(payload, indent=2) + "\n",
         encoding="utf-8",
     )
 
@@ -371,7 +380,10 @@ def switch_repo(
     old_name = state.active_repo_name
 
     if old_name:
-        old_repo = RepoChoice(name=old_name, path=repo_name_to_path(config, old_name))
+        old_repo = RepoChoice(
+            name=old_name,
+            path=repo_name_to_path(config, old_name),
+        )
         old_to_new_map = [
             (old_repo.terminal_workspace, target.terminal_workspace),
             (old_repo.editor_workspace, target.editor_workspace),
@@ -516,7 +528,10 @@ class RepoPickerApp(App[None]):
         list_view.clear()
         for repo in self.filtered_choices:
             list_view.append(
-                ListItem(Static(f"{repo.name}  ({repo.path})"), id=f"repo-{repo.name}")
+                ListItem(
+                    Static(f"{repo.name}  ({repo.path})"),
+                    id=f"repo-{repo.name}",
+                )
             )
         if self.filtered_choices:
             list_view.index = 0
@@ -576,7 +591,10 @@ def goto(target: str) -> None:
         name=active_name,
         path=repo_name_to_path(config, active_name),
     )
-    workspace = repo.terminal_workspace if target == "terminal" else repo.editor_workspace
+    if target == "terminal":
+        workspace = repo.terminal_workspace
+    else:
+        workspace = repo.editor_workspace
     focus_workspace(workspace)
 
 
@@ -591,7 +609,10 @@ def move(target: str) -> None:
         name=active_name,
         path=repo_name_to_path(config, active_name),
     )
-    workspace = repo.terminal_workspace if target == "terminal" else repo.editor_workspace
+    if target == "terminal":
+        workspace = repo.terminal_workspace
+    else:
+        workspace = repo.editor_workspace
     move_active_to_workspace(workspace)
 
 
