@@ -7,6 +7,18 @@
 }:
 let
   cfg = config.wm.hyprreposwitch;
+  configFile = pkgs.writeText "hyprreposwitch-config.json" (
+    builtins.toJSON {
+      repoRoot = cfg.repoRoot;
+      repoPrefix = cfg.repoPrefix;
+      remote = cfg.remote;
+      statePath = cfg.statePath;
+      terminalCommand = cfg.terminalCommand;
+      editorCommand = cfg.editorCommand;
+      terminalClasses = cfg.terminalClasses;
+      editorClasses = cfg.editorClasses;
+    }
+  );
 
   rawScript = pkgs.writers.writePython3Bin "hyprreposwitch" {
     libraries = with pkgs.python3Packages; [
@@ -24,14 +36,7 @@ let
     meta.mainProgram = "hyprreposwitch";
     postBuild = ''
       wrapProgram "$out/bin/hyprreposwitch" \
-        --set HYPRREPOSWITCH_REPO_ROOT ${cfg.repoRoot} \
-        --set HYPRREPOSWITCH_REPO_PREFIX ${cfg.repoPrefix} \
-        --set HYPRREPOSWITCH_REMOTE ${cfg.remote} \
-        --set HYPRREPOSWITCH_STATE_PATH ${cfg.statePath} \
-        --set HYPRREPOSWITCH_TERMINAL_CMD ${cfg.terminalCommand} \
-        --set HYPRREPOSWITCH_EDITOR_CMD ${cfg.editorCommand} \
-        --set HYPRREPOSWITCH_TERMINAL_CLASSES ${lib.concatStringsSep "," cfg.terminalClasses} \
-        --set HYPRREPOSWITCH_EDITOR_CLASSES ${lib.concatStringsSep "," cfg.editorClasses}
+        --set HYPRREPOSWITCH_CONFIG_PATH ${configFile}
     '';
   };
 in

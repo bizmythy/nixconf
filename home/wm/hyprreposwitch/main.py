@@ -101,36 +101,35 @@ class State:
 
 
 def build_config() -> Config:
-    repo_root = Path(env("HYPRREPOSWITCH_REPO_ROOT", "~/dirac")).expanduser()
-    repo_prefix = env("HYPRREPOSWITCH_REPO_PREFIX", "buildos-web")
-    remote = env(
-        "HYPRREPOSWITCH_REMOTE",
-        "git@github.com:diracq/buildos-web.git",
-    )
-    state_path = Path(
-        env(
-            "HYPRREPOSWITCH_STATE_PATH",
-            "~/.local/state/hyprreposwitch/state.json",
-        )
-    ).expanduser()
-    terminal_cmd = env("HYPRREPOSWITCH_TERMINAL_CMD", "kitty")
-    editor_cmd = env("HYPRREPOSWITCH_EDITOR_CMD", "zed")
+    config_path_raw = os.environ.get("HYPRREPOSWITCH_CONFIG_PATH")
+    if not config_path_raw:
+        raise click.ClickException("HYPRREPOSWITCH_CONFIG_PATH is not set")
 
-    terminal_classes = tuple(
-        x.strip()
-        for x in env(
-            "HYPRREPOSWITCH_TERMINAL_CLASSES",
-            "kitty,Alacritty,foot,Ghostty,org.wezfurlong.wezterm",
-        ).split(",")
-        if x.strip()
-    )
-    editor_classes = tuple(
-        x.strip()
-        for x in env("HYPRREPOSWITCH_EDITOR_CLASSES", "Zed,dev.zed.Zed").split(
-            ","
-        )
-        if x.strip()
-    )
+    config_path = Path(config_path_raw)
+    try:
+        payload = json.loads(config_path.read_text(encoding="utf-8"))
+    except FileNotFoundError as error:
+        raise click.ClickException(
+            f"config file not found: {config_path}"
+        ) from error
+    except json.JSONDecodeError as error:
+        raise click.ClickException(
+            f"invalid JSON in config file: {config_path}"
+        ) from error
+
+    try:
+        repo_root = Path(payload["repoRoot"]).expanduser()
+        repo_prefix = str(payload["repoPrefix"])
+        remote = str(payload["remote"])
+        state_path = Path(payload["statePath"]).expanduser()
+        terminal_cmd = str(payload["terminalCommand"])
+        editor_cmd = str(payload["editorCommand"])
+        terminal_classes = tuple(str(x) for x in payload["terminalClasses"])
+        editor_classes = tuple(str(x) for x in payload["editorClasses"])
+    except KeyError as error:
+        raise click.ClickException(
+            f"missing config key in {config_path}: {error}"
+        ) from error
 
     return Config(
         repo_root=repo_root,
