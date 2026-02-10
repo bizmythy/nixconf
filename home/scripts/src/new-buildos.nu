@@ -7,14 +7,14 @@ def main [name: string] {
     if (not ($pristine | path exists)) {
         gh repo clone diracq/buildos-web -- $pristine
         cd $pristine
-        direnv exec mask test files download
+        direnv exec . mask test files download
     } else {
         cd $pristine
         git checkout main
         git pull
     }
     cd $pristine
-    direnv exec mask install-web-dependencies
+    direnv exec . mask install-web-dependencies
 
     cd ~/dirac
     let new_dir = ($"./buildos-web-($name)" | path expand)
