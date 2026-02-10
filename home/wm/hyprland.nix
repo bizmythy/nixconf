@@ -8,6 +8,7 @@
 }:
 let
   hyprmonitor = config.wm.hyprmonitor;
+  hyprreposwitch = config.wm.hyprreposwitch;
   launchwork = pkgs.writeShellApplication {
     name = "launchwork";
     text = ''
@@ -44,6 +45,7 @@ in
     };
     settings =
       let
+        hyprreposwitchBin = lib.getExe hyprreposwitch.package;
         # for each mod key, call the function. take the lists of binds,
         # flatten them, and ensure they are unique.
         forAllModKeys =
@@ -143,6 +145,7 @@ in
           "${modKey}, Z, exec, ${vars.defaults.editor}"
           "${modKey}, D, exec, ${vars.defaults.editor} ${vars.home}/dirac/buildos-web"
           "${modKey} SHIFT, D, exec, ${lib.getExe launchwork}"
+          "${modKey} SHIFT, O, exec, [float;center;size 70% 70%] ${vars.defaults.tty} -e ${hyprreposwitchBin} picker"
           "${modKey}, N, exec, ${vars.defaults.editor} ${vars.home}/nixconf"
 
           "${modKey}, ${modKey}_L, exec, fuzzel"
@@ -174,8 +177,8 @@ in
           "${modKey}, Tab, bringactivetotop" # bring it to the top
 
           # Switch workspaces with mainMod + [0-9]
-          "${modKey}, 1, focusworkspaceoncurrentmonitor, 1"
-          "${modKey}, 2, focusworkspaceoncurrentmonitor, 2"
+          "${modKey}, 1, exec, ${hyprreposwitchBin} goto terminal"
+          "${modKey}, 2, exec, ${hyprreposwitchBin} goto editor"
           "${modKey}, 3, focusworkspaceoncurrentmonitor, 3"
           "${modKey}, 4, focusworkspaceoncurrentmonitor, 4"
           "${modKey}, 5, focusworkspaceoncurrentmonitor, 5"
@@ -191,8 +194,8 @@ in
           "${modKey} CONTROL, right, workspace, e+1"
 
           # Move active window to a workspace with mainMod + SHIFT + [0-9]
-          "${modKey} SHIFT, 1, movetoworkspace, 1"
-          "${modKey} SHIFT, 2, movetoworkspace, 2"
+          "${modKey} SHIFT, 1, exec, ${hyprreposwitchBin} move terminal"
+          "${modKey} SHIFT, 2, exec, ${hyprreposwitchBin} move editor"
           "${modKey} SHIFT, 3, movetoworkspace, 3"
           "${modKey} SHIFT, 4, movetoworkspace, 4"
           "${modKey} SHIFT, 5, movetoworkspace, 5"
