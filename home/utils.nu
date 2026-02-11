@@ -27,6 +27,10 @@ def safe-mv [src, dst] {
     mv $src $dst
 }
 
+def fzf-list [] {
+    str join "\n" | fzf
+}
+
 def new-buildos [name: string] {
     cd ~/dirac
 
@@ -48,6 +52,14 @@ def new-buildos [name: string] {
     safe-dir-cp $pristine $new_dir
 
     cd $new_dir
+}
+
+def open-buildos [] {
+    ls ~/dirac |
+    where name =~ "buildos-web" |
+    get name |
+    fzf-list |
+    cd $in
 }
 
 def tixstart [issue, --agent] {
