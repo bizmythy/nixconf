@@ -101,6 +101,6 @@ def clogs [] {
         error make {msg: $"($name) is not buildos-web repo"}
     }
     mask services savelogs
-    let log = (fd .log docker_compose_logs/ | fzf)
+    let log = (fd .log ./docker_compose_logs/ | fzf)
     nvim $log
 }
