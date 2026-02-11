@@ -76,7 +76,7 @@ def tixstart [issue, --agent] {
 
 def df-fancy [] {
     df -h -P |
-    detect columns --combine-columns -2.. |
+    detect columns --guess |
     where "Filesystem" != "tmpfs" |
     update "Size" { || into filesize } |
     update "Used" { || into filesize } |
