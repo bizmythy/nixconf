@@ -22,7 +22,9 @@ def safe-dir-cp [src, dst] {
 }
 
 def safe-mv [src, dst] {
+    use std/assert
     assert not ($dst | path exists) "output path already exists"
+
     print $"Moving ($src) -> ($dst)"
     mv $src $dst
 }
