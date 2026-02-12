@@ -15,6 +15,7 @@ def --env y [...args] {
 }
 
 def safe-dir-cp [src, dst] {
+    use std/assert
     assert not ($dst | path exists) "output path already exists"
     print $"Copying ($src) -> ($dst)"
     mkdir $dst
@@ -33,7 +34,7 @@ def fzf-list [] {
     str join "\n" | fzf
 }
 
-def new-buildos [name: string] {
+def --env new-buildos [name: string] {
     cd ~/dirac
 
     let pristine = ("~/dirac/buildos-web-pristine" | path expand)
@@ -56,7 +57,7 @@ def new-buildos [name: string] {
     cd $new_dir
 }
 
-def open-buildos [] {
+def --env open-buildos [] {
     ls ~/dirac |
     where name =~ "buildos-web" |
     get name |
