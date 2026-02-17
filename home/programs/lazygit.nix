@@ -46,14 +46,15 @@
         # parseEmoji = true;
       };
 
-      # customCommands = [
-      #   {
-      #     key = "C";
-      #     context = "files";
-      #     command = "git commit --no-verify";
-      #     subprocess = true;
-      #   }
-      # ];
+      customCommands = [
+        {
+          key = "<c-f>";
+          context = "global";
+          command = "nix fmt";
+          description = "Run nix fmt";
+          subprocess = true;
+        }
+      ];
     };
   };
 
