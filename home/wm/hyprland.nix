@@ -8,35 +8,29 @@
 }:
 let
   hyprmonitor = config.wm.hyprmonitor;
+  mkHyprlaunch = import ./hyprlaunch/mk-launcher.nix { inherit pkgs lib; };
 
-  launchwork =
-    let
-      config = builtins.toJSON [
-        {
-          command = vars.defaults.tty;
-          workspace = 1;
-        }
-        {
-          command = "slack";
-          workspace = 8;
-        }
-        {
-          command = "${vars.defaults.editor} ${vars.home}/dirac/buildos-web";
-          workspace = 2;
-        }
-        {
-          command = vars.defaults.browser;
-          workspace = 3;
-        }
-      ];
-      configFile = pkgs.writeText "launchwork-config.json" config;
-    in
-    pkgs.writeShellApplication {
-      name = "launchwork";
-      text = ''
-        hyprlaunch ${configFile}
-      '';
-    };
+  launchwork = mkHyprlaunch {
+    name = "launchwork";
+    directives = [
+      {
+        command = vars.defaults.tty;
+        workspace = 1;
+      }
+      {
+        command = "slack";
+        workspace = 8;
+      }
+      {
+        command = "${vars.defaults.editor} ${vars.home}/dirac/buildos-web";
+        workspace = 2;
+      }
+      {
+        command = vars.defaults.browser;
+        workspace = 3;
+      }
+    ];
+  };
 
 in
 {

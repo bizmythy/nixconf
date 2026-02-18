@@ -1,15 +1,9 @@
 {
   pkgs,
-  lib,
   ...
 }:
 let
-  script = pkgs.writers.writePython3Bin "hyprlaunch" {
-    libraries = with pkgs.python3Packages; [
-      hyprpy
-      click
-    ];
-  } (builtins.readFile ./main.py);
+  script = import ./package.nix { inherit pkgs; };
 in
 {
   home.packages = [ script ];
