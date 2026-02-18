@@ -3,17 +3,6 @@ export def pjp [] {
     $in | to json | bat -l json
 }
 
-# yazi "y" with current working directory provided function
-def --env y [...args] {
-    let tmp = (mktemp -t "yazi-cwd.XXXXXX")
-    yazi ...$args --cwd-file $tmp
-    let cwd = (open $tmp)
-    if $cwd != "" and $cwd != $env.PWD {
-        cd $cwd
-	}
-    rm -fp $tmp
-}
-
 def safe-dir-cp [src, dst] {
     use std/assert
     assert not ($dst | path exists) "output path already exists"
