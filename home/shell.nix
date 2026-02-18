@@ -168,6 +168,8 @@ in
       enableFishIntegration = true;
       enableNushellIntegration = true;
       enableBashIntegration = true;
+
+      shellWrapperName = "y";
     };
 
     fzf = {
