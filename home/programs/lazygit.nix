@@ -52,7 +52,7 @@
           context = "global";
           command = "nix fmt";
           description = "Run nix fmt";
-          subprocess = true;
+          output = "terminal";
         }
       ];
     };
