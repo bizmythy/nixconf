@@ -8,16 +8,36 @@
 }:
 let
   hyprmonitor = config.wm.hyprmonitor;
-  launchwork = pkgs.writeShellApplication {
-    name = "launchwork";
-    text = ''
-      hyprlaunch \
-        ${vars.defaults.tty}:1 \
-        slack:8 \
-        ${vars.defaults.editor} ${vars.home}/dirac/buildos-web:2 \
-        ${vars.defaults.browser}:3
-    '';
-  };
+
+  launchwork =
+    let
+      config = builtins.toJSON [
+        {
+          command = vars.defaults.tty;
+          workspace = 1;
+        }
+        {
+          command = "slack";
+          workspace = 8;
+        }
+        {
+          command = "${vars.defaults.editor} ${vars.home}/dirac/buildos-web";
+          workspace = 2;
+        }
+        {
+          command = vars.defaults.browser;
+          workspace = 3;
+        }
+      ];
+      configFile = pkgs.writeText "launchwork-config.json" config;
+    in
+    pkgs.writeShellApplication {
+      name = "launchwork";
+      text = ''
+        hyprlaunch ${configFile}
+      '';
+    };
+
 in
 {
   catppuccin.hyprland = {

@@ -1,12 +1,13 @@
-import click
-
-from time import sleep
-from hyprpy import Hyprland
+import json
 from collections import Counter
+from time import sleep
+
+import click
+from hyprpy import Hyprland
 
 
 @click.command()
-@click.argument("directives", nargs=-1)
+@click.argument("config", type=click.Path(exists=True))
 @click.option(
     "-r",
     "--restore",
@@ -14,7 +15,10 @@ from collections import Counter
     default=False,
     help="Restore the initial workspace after launching applications",
 )
-def main(directives: list[str], restore: bool):
+def main(config: str, restore: bool):
+    with open(config) as f:
+        directives = json.load(f)
+
     instance = Hyprland()
 
     initial_workspace = instance.get_active_workspace()
@@ -27,7 +31,8 @@ def main(directives: list[str], restore: bool):
         instance.dispatch(["workspace", str(ws)])
 
     for directive in directives:
-        command, workspace = directive.rsplit(":", maxsplit=1)
+        command = directive["command"]
+        workspace = directive["workspace"]
         switch_workspace(workspace)
         initial_window_classes = get_window_classes()
 
