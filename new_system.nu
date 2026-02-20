@@ -45,7 +45,23 @@ def "main install" [] {
     git add -A
     git commit -m $"adding host ($hostname)"
 
-    nixos-rebuild boot --sudo --flake $".#($hostname)"
+    let substituters_config = (open "substituters_config.json")
+    let extra_substituters = (
+        $substituters_config
+        | get "extra-substituters"
+        | str join " "
+    )
+    let extra_trusted_public_keys = (
+        $substituters_config
+        | get "extra-trusted-public-keys"
+        | str join " "
+    )
+
+    (
+        nixos-rebuild boot --sudo --flake $".#($hostname)"
+        --option extra-substituters $extra_substituters
+        --option extra-trusted-public-keys $extra_trusted_public_keys
+    )
 
     # unset temp git config settings
     $git_user | items { |key, val|
