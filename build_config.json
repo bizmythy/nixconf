@@ -1,6 +1,6 @@
 {
   "flags": {
-    "enableDirac": false
+    "enableDirac": true
   },
   "hosts": [
     "xps",
