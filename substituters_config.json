@@ -2,7 +2,8 @@
   "extra-substituters": [
     "https://cache.numtide.com",
     "https://hyprland.cachix.org",
-    "https://cache.nixos.org"
+    "https://cache.nixos.org",
+    "https://install.determinate.systems"
   ],
   "extra-trusted-substituters": [
     "https://numtide.cachix.org",
@@ -16,6 +17,7 @@
     "192.168.1.244:h8wg9T+8ykiw1D7ZT6toe/cYEf2Ue76pXQ+6C1GTvFo=",
     "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=",
     "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=",
-    "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=",
+    "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
   ]
 }
