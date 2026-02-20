@@ -40,19 +40,6 @@ def "main install" [] {
         save --force $config_file
     )
 
-    # create subdir for host
-    let host_dir = [
-        $conf
-        "hosts"
-        $hostname
-    ] | path join
-    try { mkdir $host_dir }
-
-    let base_config_file = ($conf | path join "hosts/xps/configuration.nix")
-    cp $base_config_file $host_dir
-
-    cp /etc/nixos/hardware-configuration.nix $host_dir
-
     # start new branch for this host temporarily
     git checkout -b $hostname
     git add -A
