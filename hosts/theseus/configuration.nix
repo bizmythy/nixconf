@@ -8,6 +8,14 @@
     ./hardware-configuration.nix
   ];
 
+  # Alder Lake-P iGPU (46a6) should use i915 on this host.
+  # xe currently probes first on linuxPackages_latest but is unsupported here,
+  # which causes userspace to fall back to llvmpipe software rendering.
+  boot.kernelParams = [
+    "xe.force_probe=!46a6"
+    "i915.force_probe=46a6"
+  ];
+
   services.fwupd.enable = true;
 
   laptop.enable = true;
