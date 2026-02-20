@@ -7,6 +7,9 @@
   ...
 }:
 
+let
+  substitutersConfig = builtins.fromJSON (builtins.readFile ../substituters_config.json);
+in
 {
   imports = [
     inputs.home-manager.nixosModules.default
@@ -30,40 +33,22 @@
     efi.canTouchEfiVariables = true;
   };
 
-  nix.settings =
-    let
-      # cachix for hyprland flake and dirac
-      substituters = [
-        "https://numtide.cachix.org"
-        "https://hyprland.cachix.org"
-        "https://cache.nixos.org"
-      ];
-    in
-    {
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
 
-      trusted-users = [
-        "root"
-        "@wheel"
-      ];
-
-      inherit substituters;
-      trusted-substituters = substituters ++ [
-        # "http://192.168.1.244:3926"
-        "http://192.168.1.244:3926/buildos-web"
-        "http://192.168.1.244:8501"
-      ];
-      trusted-public-keys = [
-        "buildos-web:br3Fxm43hseV0czV1voottug4KzqC3O6AXj8q4e0Vq4="
-        "192.168.1.244:h8wg9T+8ykiw1D7ZT6toe/cYEf2Ue76pXQ+6C1GTvFo="
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-        "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
-        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      ];
-    };
+    trusted-users = [
+      "root"
+      "@wheel"
+    ];
+  }
+  // lib.getAttrs [
+    "extra-substituters"
+    "extra-trusted-substituters"
+    "extra-trusted-public-keys"
+  ] substitutersConfig;
 
   programs.nix-ld = {
     enable = true;
