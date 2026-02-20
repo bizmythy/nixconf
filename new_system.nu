@@ -7,6 +7,32 @@ def say [msg: string] {
     print $"(ansi cyan_bold)($msg)(ansi reset)"
 }
 
+def rebuild-boot [hostname: string] {
+    say $"rebuilding for ($hostname)"
+    let substituters_config = (open "substituters_config.json")
+    let extra_substituters = (
+        $substituters_config
+        | get "extra-substituters"
+        | str join " "
+    )
+    let extra_trusted_public_keys = (
+        $substituters_config
+        | get "extra-trusted-public-keys"
+        | str join " "
+    )
+
+    (
+        nixos-rebuild boot --sudo --flake $".#($hostname)"
+        --option extra-substituters $extra_substituters
+        --option extra-trusted-public-keys $extra_trusted_public_keys
+    )
+}
+
+def "main rebuild" [] {
+    let hostname = (hostname)
+    rebuild-boot $hostname
+}
+
 def "main install" [] {
     let hostname = (input "new system's hostname: ")
 
@@ -45,23 +71,7 @@ def "main install" [] {
     git add -A
     git commit -m $"adding host ($hostname)"
 
-    let substituters_config = (open "substituters_config.json")
-    let extra_substituters = (
-        $substituters_config
-        | get "extra-substituters"
-        | str join " "
-    )
-    let extra_trusted_public_keys = (
-        $substituters_config
-        | get "extra-trusted-public-keys"
-        | str join " "
-    )
-
-    (
-        nixos-rebuild boot --sudo --flake $".#($hostname)"
-        --option extra-substituters $extra_substituters
-        --option extra-trusted-public-keys $extra_trusted_public_keys
-    )
+    rebuild-boot $hostname
 
     # unset temp git config settings
     $git_user | items { |key, val|
