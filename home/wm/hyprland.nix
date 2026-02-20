@@ -41,14 +41,19 @@ in
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [
+      pkgs.kdePackages.xdg-desktop-portal-kde
+      pkgs.xdg-desktop-portal-gtk
+    ];
   };
 
   # Write portal config file
   home.file.".config/xdg-desktop-portal/hyprland-portals.conf".text = ''
     [preferred]
-    default = hyprland;gtk
-    org.freedesktop.impl.portal.FileChooser = gtk
+    default = kde;gtk
+    org.freedesktop.impl.portal.FileChooser = kde
+    org.freedesktop.impl.portal.ScreenCast = hyprland
+    org.freedesktop.impl.portal.Screenshot = hyprland
   '';
 
   wayland.windowManager.hyprland = {
