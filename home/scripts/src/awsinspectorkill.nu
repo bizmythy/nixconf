@@ -231,12 +231,10 @@ def main [pr_arg: string, --dry-run] {
     return
   }
 
-  mut resolved_count = 0
-  for thread in $matching_unresolved {
+  $matching_unresolved | par-each { |thread|
     resolve-thread $thread.id | ignore
-    $resolved_count = ($resolved_count + 1)
     print $"Resolved thread ($thread.id)"
   }
 
-  print $"Resolved ($resolved_count) threads containing comments by ($bot_login)."
+  print $"Resolved threads containing comments by ($bot_login)."
 }
