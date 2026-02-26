@@ -34,7 +34,7 @@
 
         thunderbird # email
         libreoffice-qt6-fresh # office suite
-        marktext # markdown wysiwyg editor
+        # marktext # markdown wysiwyg editor
         logseq # markdown note-taking
         kdePackages.okular # pdf viewer
         system-config-printer
@@ -64,7 +64,7 @@
         vlc
         mpv # preferred media playback
         spotify
-        calibre
+        # calibre
         pdfarranger
 
         # code editors
