@@ -49,6 +49,7 @@ def --env new-buildos [name: string] {
 def --env open-buildos [] {
     ls ~/dirac |
     where name =~ "buildos-web" |
+    sort-by modified |
     get name |
     fzf-list |
     cd $in
