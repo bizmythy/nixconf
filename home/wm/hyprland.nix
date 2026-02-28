@@ -184,6 +184,16 @@ in
           "${modKey}, down, movefocus, d"
           "${modKey}, J, movefocus, d"
 
+          # Resize active window with mainMod + ALT + arrow keys or VIM keys
+          "${modKey} ALT, left, resizeactive, -5% 0"
+          "${modKey} ALT, H, resizeactive, -5% 0"
+          "${modKey} ALT, right, resizeactive, 5% 0"
+          "${modKey} ALT, L, resizeactive, 5% 0"
+          "${modKey} ALT, up, resizeactive, 0 -5%"
+          "${modKey} ALT, K, resizeactive, 0 -5%"
+          "${modKey} ALT, down, resizeactive, 0 5%"
+          "${modKey} ALT, J, resizeactive, 0 5%"
+
           "${modKey}, Tab, cyclenext" # change focus to another window
           "${modKey}, Tab, bringactivetotop" # bring it to the top
 
