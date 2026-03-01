@@ -31,6 +31,7 @@
   };
 
   home.sessionVariables = {
+    GTK_USE_PORTAL = "1";
     HYPRSHOT_DIR = "${vars.home}/Pictures/screenshots";
   };
 }
