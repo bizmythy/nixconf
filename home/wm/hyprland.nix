@@ -50,8 +50,9 @@ in
   # Write portal config file
   home.file.".config/xdg-desktop-portal/hyprland-portals.conf".text = ''
     [preferred]
-    default = kde;gtk
+    default = hyprland;gtk;kde
     org.freedesktop.impl.portal.FileChooser = kde
+    org.freedesktop.impl.portal.Settings = gtk
     org.freedesktop.impl.portal.ScreenCast = hyprland
     org.freedesktop.impl.portal.Screenshot = hyprland
   '';
