@@ -97,3 +97,7 @@ def clogs [] {
     let log = (fd .log ./docker_compose_logs/ | fzf)
     nvim $log
 }
+
+def fopen [search: string] {
+    fd $search ./ | fzf | nvim $in
+}
