@@ -63,6 +63,8 @@
 
         vlc
         mpv # preferred media playback
+        kdePackages.kdenlive
+
         spotify
         # calibre
         pdfarranger
@@ -96,7 +98,6 @@
             qbittorrent
 
             # jellyfin-mpv-shim
-            # kdePackages.kdenlive
 
             signal-desktop
             # element-desktop currently pulls in the insecure jitsi-meet-1.0.8792 package causing nix evaluation failures.
