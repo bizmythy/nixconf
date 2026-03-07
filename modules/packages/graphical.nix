@@ -70,6 +70,7 @@
         pdfarranger
 
         # code editors
+        t3code
         code-cursor
         zed-editor # preferred code editor
         vscode

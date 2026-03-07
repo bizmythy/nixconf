@@ -11,6 +11,7 @@ self: super: {
   );
 
   protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
+  t3code = super.callPackage ./pkgs/t3code.nix { };
 
   nu-plugin-toon = super.callPackage ./pkgs/nu_plugin_toon.nix { };
 
