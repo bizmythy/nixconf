@@ -8,7 +8,7 @@
   config = lib.mkIf (vars.isPersonal config) {
     # low-latency desktop/game streaming
     services.sunshine = {
-      enable = false; # TEMP
+      enable = true;
       autoStart = false;
       openFirewall = true;
     };
