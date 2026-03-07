@@ -212,7 +212,7 @@ in
       enableZshIntegration = true;
       enableNushellIntegration = true;
       enableBashIntegration = false;
-      options = [ "--cmd cd" ];
+      options = [ "--cmd z" ];
     };
   };
 }
