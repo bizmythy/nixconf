@@ -164,6 +164,9 @@
         protobuf-language-server
         buf
         zig_0_15
+        rustc
+        cargo
+        rustfmt
 
         # nix tools
         nix-output-monitor
