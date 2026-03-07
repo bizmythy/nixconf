@@ -26,16 +26,18 @@ def make-template-copy [repo_path: string] {
     let template_path = (setup-template)
 
     mkdir $repo_path
-    (
-        rsync
-        -a
-        --exclude=.git
-        --exclude=.gitmodules
-        --exclude=.direnv
-        --exclude=flake.lock
-        ($template_path + "/")
-        ($repo_path + "/")
-    )
+
+    let exclude_args = [
+        .git
+        .gitmodules
+        .direnv
+        flake.lock
+        README.md
+        LICENSE
+    ] | each {|path| $"--exclude=($path)" }
+
+    rsync -a ...$exclude_args ($template_path + "/") ($repo_path + "/")
+
     return $repo_path
 }
 
