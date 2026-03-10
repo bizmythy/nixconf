@@ -50,98 +50,54 @@
         yq
         cowsay
         tetris
-        # curl replacement, http requests
-        xh
-        # disk usage, more intuative du
-        dust
-        # interactive disk usage
-        dua
-        # benchmarking tool
-        hyperfine
-        # SQL queries for files
-        fselect
-        # ripgrep lots of file types
-        ripgrep-all
-        # count ammount of code by language
-        tokei
-        # wikipedia search
-        wiki-tui
-        # modern make replacement
-        just
-        # self-documenting command runner
-        mask
-        # tui for running multiple processes
-        mprocs
-        # terminal presentation
-        presenterm
-        # find replace with confirmation
-        repgrep
-        # git log with tree
-        serie
-        # postgres (and other db) tui viewer
-        rainfrog
-        # scan for wifi and devices
-        netscanner
-        # postman from tui
-        atac
-        # cpu stress test/monitor
-        s-tui
-        # another top tool, shows lots of data
-        atop
-        # show network interface usage
-        iftop
-        # show disk bandwidth usage
-        iotop
-        # container process inspection
-        sysdig
-        # performance inspection
-        perf
-        # wifi monitoring
-        wavemon
-        # gpu monitoring
-        nvtop-appimage
-        # check opencl devices
-        clinfo
-        # for very productive and serious work
-        rust-stakeholder
-        # determine type of FILEs
-        file
-        # exfat support
-        exfatprogs
-        # includes `jstest`, a tool for testing joystick inputs
-        linuxConsoleTools
-        # disk imaging/flashing
-        caligula
-        # command-line tool to generate, analyze, convert and manipulate colors
-        pastel
-        # take screenshots of colored terminal output
-        termshot
-        # get html of terminal output
-        aha
-        # lightweight terminal session recordings
-        asciinema
-        # silly fish swimming around
-        asciiquarium-transparent
-        # download files fast and in parallel
-        aria2
-        # dowload internet video
-        yt-dlp
-        # hex/binary viewing
-        xxd
-        # mounting tar archives
-        archivemount
-        # terminal presentations
-        presenterm
-        # run commands in background
-        screen
-        # spell check text files
-        (aspellWithDicts (ps: with ps; [ en ]))
+        xh # curl replacement, http requests
+        dust # disk usage, more intuative du
+        dua # interactive disk usage
+        hyperfine # benchmarking tool
+        fselect # SQL queries for files
+        ripgrep-all # ripgrep lots of file types
+        tokei # count ammount of code by language
+        wiki-tui # wikipedia search
+        just # modern make replacement
+        mask # self-documenting command runner
+        mprocs # tui for running multiple processes
+        presenterm # terminal presentation
+        repgrep # find replace with confirmation
+        serie # git log with tree
+        rainfrog # postgres (and other db) tui viewer
+        netscanner # scan for wifi and devices
+        atac # postman from tui
+        s-tui # cpu stress test/monitor
+        atop # another top tool, shows lots of data
+        iftop # show network interface usage
+        iotop # show disk bandwidth usage
+        sysdig # container process inspection
+        perf # performance inspection
+        wavemon # wifi monitoring
+        nvtop-appimage # gpu monitoring
+        clinfo # check opencl devices
+        rust-stakeholder # for very productive and serious work
+        file # determine type of FILEs
+        exfatprogs # exfat support
+        linuxConsoleTools # includes `jstest`, a tool for testing joystick inputs
+        caligula # disk imaging/flashing
+        pastel # command-line tool to generate, analyze, convert and manipulate colors
+        termshot # take screenshots of colored terminal output
+        aha # get html of terminal output
+        asciinema # lightweight terminal session recordings
+        asciiquarium-transparent # silly fish swimming around
+        aria2 # download files fast and in parallel
+        yt-dlp # dowload internet video
+        xxd # hex/binary viewing
+        archivemount # mounting tar archives
+        presenterm # terminal presentations
+        screen # run commands in background
+        (aspellWithDicts (ps: with ps; [ en ])) # spell check text files
 
         graphite-cli
 
         # document tools
-        # latex-killer, create documents in expressive language
-        typst
+        typst # latex-killer, create documents in expressive language
 
         # docker tools
         docker-buildx
