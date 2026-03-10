@@ -37,7 +37,8 @@
         nerdfetch
         fastfetch
         ffmpeg
-        imagemagick
+        imagemagick # image conversion
+        ghostscript # pdf reading for image conversion
         zstd
         nmap
         traceroute
