@@ -60,6 +60,7 @@
         gimp # raster editor
         inkscape # vector editor
         feh # image viewer
+        prusa-slicer # slicer for 3D printing
 
         vlc
         mpv # preferred media playback
