@@ -29,6 +29,12 @@
     # precompiled AI tools
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    # database of nixpkgs for searching
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # neovim configured in nix
     nixvim = {
       url = "github:nix-community/nixvim";
@@ -102,6 +108,7 @@
             imports = [
               inputs.opnix.homeManagerModules.default
               inputs.catppuccin.homeModules.catppuccin
+              inputs.nix-index-database.homeModules.default
               inputs.nixvim.homeModules.nixvim
               ./home
             ];

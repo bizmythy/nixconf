@@ -19,4 +19,7 @@
     ./vesktop.nix
     # keep-sorted end
   ];
+
+  # enable comma for command execution direct from nix-index search
+  programs.nix-index-database.comma.enable = true;
 }
