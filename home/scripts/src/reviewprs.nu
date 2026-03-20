@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-let json_flag = "--json=number,title,url,author"
+const JSON_FLAG = "--json=number,title,url,author"
 
 def open_prs [] {
     # open each pr in a new kitty tab in reverse order so that first element is on top
@@ -10,7 +10,7 @@ def open_prs [] {
     }
 }
 
-def main [count: int = 30] {
+def main [count: int = 30, --noslop] {
     cd ~/dirac/buildos-web
 
     let search_results = (
@@ -19,7 +19,7 @@ def main [count: int = 30] {
         --limit=30
         --sort=updated
         --state=open
-        $json_flag
+        $JSON_FLAG
         --
         -reviewed-by:@me -author:@me -is:draft
     )
@@ -27,8 +27,14 @@ def main [count: int = 30] {
     (
         $search_results |
         from json |
+        where { |pr|
+            if (not $noslop) {
+                return true
+            }
+            $pr.author.login =~ `(sean|mihai)` | not $in
+        } |
         # format for input display
-        upsert "display" {|pr|
+        upsert "display" { |pr|
             $"@($pr.author.login | fill --alignment left --width 20)($pr.title)"
         } |
         # get user selection ("a" for all)
@@ -48,7 +54,7 @@ def "main urls" [] {
     (
         $urls |
         par-each {|url|
-            gh pr view $url $json_flag | from json
+            gh pr view $url $JSON_FLAG | from json
         } |
         open_prs
     )
