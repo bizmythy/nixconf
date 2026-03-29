@@ -60,8 +60,28 @@
     let
       lib = nixpkgs.lib;
 
+      nixpkgsSettings = {
+        # Allow unfree packages
+        config.allowUnfree = true;
+        overlays = [
+          (import ./overlays.nix { inherit inputs; })
+        ];
+      };
+
       # Small tool to iterate over each systems
-      eachSystem = f: lib.genAttrs (import inputs.systems) (system: f nixpkgs.legacyPackages.${system});
+      eachSystem =
+        f:
+        lib.genAttrs (import inputs.systems) (
+          system:
+          f (
+            import nixpkgs (
+              {
+                inherit system;
+              }
+              // nixpkgsSettings
+            )
+          )
+        );
 
       # Eval the treefmt modules from ./treefmt.nix
       treefmtEval = eachSystem (pkgs: inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
@@ -89,14 +109,6 @@
 
         # function that will give whether the config refers to a personal machine
         isPersonal = config: !(lib.strings.hasInfix "dirac" config.networking.hostName);
-      };
-
-      nixpkgsSettings = {
-        # Allow unfree packages
-        config.allowUnfree = true;
-        overlays = [
-          (import ./overlays.nix { inherit inputs; })
-        ];
       };
 
       home = {
@@ -180,6 +192,7 @@
         nvim = inputs.nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim (
           import ./nixvim.nix { inherit pkgs; }
         );
+        topiary-nushell = pkgs.topiary-nushell;
       });
 
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);

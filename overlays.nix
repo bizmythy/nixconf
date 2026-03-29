@@ -14,6 +14,7 @@ self: super: {
   t3code = super.callPackage ./pkgs/t3code.nix { };
 
   nu-plugin-toon = super.callPackage ./pkgs/nu_plugin_toon.nix { };
+  topiary-nushell = super.callPackage ./pkgs/topiary-nushell.nix { };
 
   amd-ctk = super.callPackage ./pkgs/amd-ctk.nix { };
   amd-container-runtime = super.callPackage ./pkgs/amd-container-runtime.nix { };

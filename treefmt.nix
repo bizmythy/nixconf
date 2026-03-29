@@ -12,7 +12,8 @@
   programs.ruff.enable = true;
   programs.toml-sort.enable = true;
 
-  # buggy as of right now
-  # programs.nufmt.enable = true;
-  # settings.formatter.nufmt.includes = lib.mkAfter [ "pre-commit" ];
+  settings.formatter.nufmt = {
+    command = lib.getExe pkgs.topiary-nushell;
+    includes = [ "*.nu" ];
+  };
 }
