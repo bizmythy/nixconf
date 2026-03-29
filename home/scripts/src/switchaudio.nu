@@ -2,47 +2,42 @@
 
 use std/assert
 
-let pw_ports = (pw-dump | from json | where type == "PipeWire:Interface:Port")
-let ports_info = ($pw_ports | get info | reject params change-mask)
+def get_default_sink_name [] {
+    pactl --format=json info | from json | get default_sink_name
+}
 
-# crazy parse of wpctl status to extract the audio sink devices
 def get_sinks [] {
-    let relevant_text = (
-        wpctl status |
-        split row "Sinks:" | get 1 |
-        split row "Sources" | get 0 |
-        lines |
-        where {($in | str length) > 10 }
-    )
+    let default_sink_name = (get_default_sink_name)
 
-    let trimmed = (
-        $relevant_text |
-        split column "[" |
-        get column0 |
-        str substring 6.. |
-        str trim
-    )
+    pactl --format=json list sinks |
+    from json |
+    each {|row|
+        let properties = ($row | get properties)
+        let label = ($row.description | default $row.name)
 
-    $trimmed |
-    split column ". " |
-    rename id_str name |
-    upsert selected {|row| $row | get id_str | str contains "*"} |
-    upsert id {|row| $row | get id_str | str replace "* " "" | into int}
+        {
+            id: ($properties | get "object.id" | into int)
+            name: $row.name
+            label: $label
+            selected: ($row.name == $default_sink_name)
+        }
+    }
 }
 
 let sinks = get_sinks
+let defaults = ($sinks | where selected == true)
+assert length $defaults 1
+
 let choices = (
     $sinks |
-    each {|row| if $row.selected { "✅ " + $row.name } else { $row.name }} |
+    each {|row| if $row.selected { "✅ " + $row.label } else { $row.label }} |
     str join "\n"
 )
 let selected_idx = ($choices | fuzzel --dmenu --index --use-bold | into int)
-let selected = ($sinks | get $selected_idx | reject selected)
-print $selected
+let selected = ($sinks | get $selected_idx)
+print ($selected | reject selected)
 
 wpctl set-default $selected.id
 
 # confirm that selected_id is new default
-let defaults = (get_sinks | where selected == true)
-assert length $defaults 1
-assert equal ($defaults | get 0 | get id) $selected.id
+assert equal (get_default_sink_name) $selected.name
