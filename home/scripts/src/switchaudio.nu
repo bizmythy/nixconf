@@ -13,12 +13,12 @@ def get_sinks [] {
     from json |
     each {|row|
         let properties = ($row | get properties)
-        let label = ($row.description | default $row.name)
+        let description = ($row.description | default $row.name)
 
         {
             id: ($properties | get "object.id" | into int)
             name: $row.name
-            label: $label
+            label: $"($properties | get 'alsa.name')\t($description)"
             selected: ($row.name == $default_sink_name)
         }
     }
@@ -33,7 +33,7 @@ let choices = (
     each {|row| if $row.selected { "✅ " + $row.label } else { $row.label }} |
     str join "\n"
 )
-let selected_idx = ($choices | fuzzel --dmenu --index --use-bold | into int)
+let selected_idx = ($choices | fuzzel --dmenu --index --use-bold --width=60 | into int)
 let selected = ($sinks | get $selected_idx)
 print ($selected | reject selected)
 
