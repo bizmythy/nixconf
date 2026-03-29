@@ -93,6 +93,7 @@
         libva-utils # utilites to check vaapi stuff
         vulkan-tools # tools for testing vulkan
         mesa-demos # grahphics demos for testing GPU
+        pulseaudio # utilities for pulseaudio control, works against wireplumber emulated pulseaudio
       ]
       ++ (
         if (vars.isPersonal config) then
