@@ -2,7 +2,7 @@
   "tab_size": 2,
   "languages": {
     "Nu": {
-      "tab_size": 4
+      "tab_size": 2
     },
     "Nix": {
       "formatter": {
