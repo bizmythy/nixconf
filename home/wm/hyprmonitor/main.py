@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import click
+from nixconf_audio import AudioCommandError, switch_default_sink_by_alsa_name
 
 
 @dataclass(frozen=True)
@@ -44,6 +45,7 @@ class MonitorProfile:
     enabled_outputs: tuple[str, ...]
     use_tablet: bool
     monitor_overrides: dict[str, dict[str, Any]]
+    default_audio_output_alsa_name: str | None
 
     @classmethod
     def from_raw(cls, raw: dict[str, Any]) -> "MonitorProfile":
@@ -68,6 +70,11 @@ class MonitorProfile:
             enabled_outputs=enabled_outputs,
             use_tablet=bool(raw["useTablet"]),
             monitor_overrides=monitor_overrides,
+            default_audio_output_alsa_name=(
+                str(raw["defaultAudioOutputAlsaName"])
+                if raw.get("defaultAudioOutputAlsaName") is not None
+                else None
+            ),
         )
 
 
@@ -76,6 +83,7 @@ class DeviceConfig:
     default_settings: tuple[MonitorSetting, ...]
     workspace_rules: tuple[str, ...]
     profiles: tuple[MonitorProfile, ...]
+    default_audio_output_alsa_name: str | None
 
     @classmethod
     def from_raw(cls, raw: dict[str, Any]) -> "DeviceConfig":
@@ -93,6 +101,11 @@ class DeviceConfig:
             default_settings=default_settings,
             workspace_rules=workspace_rules,
             profiles=profiles,
+            default_audio_output_alsa_name=(
+                str(raw["defaultAudioOutputAlsaName"])
+                if raw.get("defaultAudioOutputAlsaName") is not None
+                else None
+            ),
         )
 
 
@@ -298,6 +311,12 @@ def parse_device_from_hosts_schema(
                 enabled_outputs=enabled_outputs,
                 use_tablet=bool(profile_raw.get("useTablet", False)),
                 monitor_overrides=monitor_overrides,
+                default_audio_output_alsa_name=(
+                    str(profile_raw["defaultAudioOutputAlsaName"])
+                    if profile_raw.get("defaultAudioOutputAlsaName")
+                    is not None
+                    else None
+                ),
             )
         )
 
@@ -305,6 +324,11 @@ def parse_device_from_hosts_schema(
         default_settings=tuple(default_settings),
         workspace_rules=workspace_rules,
         profiles=tuple(profiles),
+        default_audio_output_alsa_name=(
+            str(host_raw["defaultAudioOutputAlsaName"])
+            if host_raw.get("defaultAudioOutputAlsaName") is not None
+            else None
+        ),
     )
 
 
@@ -573,6 +597,19 @@ def reload_hyprland() -> None:
     hyprctl("reload")
 
 
+def maybe_switch_audio_output(alsa_name: str | None) -> None:
+    if alsa_name is None:
+        return
+
+    try:
+        sink = switch_default_sink_by_alsa_name(alsa_name)
+    except AudioCommandError as error:
+        click.echo(f"warning: {error}", err=True)
+        return
+
+    click.echo(f"switched audio to {sink.alsa_name}", err=True)
+
+
 def pick_profile(choices: list[str]) -> str | None:
     result = subprocess.run(
         ["fuzzel", "--dmenu", "--index", "--prompt", "Monitors> "],
@@ -619,10 +656,16 @@ def apply_selection(
             setting.output for setting in device_config.default_settings
         }
         use_tablet = False
+        default_audio_output_alsa_name = (
+            device_config.default_audio_output_alsa_name
+        )
     else:
         active_profile = profile.label
         enabled_outputs = set(profile.enabled_outputs)
         use_tablet = profile.use_tablet
+        default_audio_output_alsa_name = (
+            profile.default_audio_output_alsa_name
+        )
 
     runtime_config = build_runtime_monitor_config(
         device_config=device_config,
@@ -648,6 +691,7 @@ def apply_selection(
     state.active_profile = active_profile
     state.sunshine_pid = sunshine_pid
     save_state(state_file, state)
+    maybe_switch_audio_output(default_audio_output_alsa_name)
 
 
 @click.command()

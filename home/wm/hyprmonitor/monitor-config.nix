@@ -36,6 +36,8 @@ let
     };
 
     igneous = {
+      defaultAudioOutputAlsaName = "USB Audio";
+
       monitors = {
         main = {
           desc = "Microstep MSI MAG322UPF";
@@ -73,6 +75,7 @@ let
           useTablet = true;
         };
         tv = {
+          defaultAudioOutputAlsaName = "LG TV SSCR2";
           enabledOutputs = [ "tv" ];
           useTablet = false;
         };

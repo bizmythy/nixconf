@@ -11,6 +11,7 @@
     ./hyprlaunch
     ./hyprmonitor
     ./hyprpaper.nix
+    ./switchaudio
   ];
 
   programs.fuzzel = {

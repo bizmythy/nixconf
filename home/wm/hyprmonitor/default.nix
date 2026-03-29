@@ -7,6 +7,9 @@
 let
   cfg = config.wm.hyprmonitor;
   monitorConfig = import ./monitor-config.nix;
+  sharedPythonLib = pkgs.writeTextDir "lib/nixconf_audio/__init__.py" (
+    builtins.readFile ../../../nixconf_audio/__init__.py
+  );
   configFile = pkgs.writeText "hyprmonitor-config.json" (
     builtins.toJSON {
       outputPath = cfg.configPath;
@@ -21,12 +24,16 @@ let
   } (builtins.readFile ./main.py);
   script = pkgs.symlinkJoin {
     name = "hyprmonitor";
-    paths = [ rawScript ];
+    paths = [
+      rawScript
+      sharedPythonLib
+    ];
     nativeBuildInputs = [ pkgs.makeWrapper ];
     meta.mainProgram = "hyprmonitor";
     postBuild = ''
       wrapProgram "$out/bin/hyprmonitor" \
-        --set HYPRMONITOR_CONFIG_PATH ${configFile}
+        --set HYPRMONITOR_CONFIG_PATH ${configFile} \
+        --prefix PYTHONPATH : "$out/lib"
     '';
   };
   configPathForShell =
