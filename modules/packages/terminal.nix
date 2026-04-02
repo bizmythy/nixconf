@@ -24,7 +24,9 @@
         fd
         bat
         eza
-        unzip
+        unzip # unzip .zip
+        zip # manage .zip
+        _7zz # cli 7zip
         btop
         htop
         hwinfo
