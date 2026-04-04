@@ -29,6 +29,12 @@
     # precompiled AI tools
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    # my t3code fork with a nix build output flake
+    t3code = {
+      url = "github:bizmythy/t3code";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # database of nixpkgs for searching
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
