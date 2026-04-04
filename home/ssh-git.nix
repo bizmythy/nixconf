@@ -99,6 +99,11 @@ in
     {
       enable = true;
       lfs.enable = true;
+      signing = {
+        format = "ssh";
+        # should be declared deterministically, but can't get same pkg as in nixos config
+        signer = "/run/current-system/sw/bin/op-ssh-sign";
+      };
       settings = {
         # preferences
         init.defaultBranch = "main";
@@ -107,9 +112,6 @@ in
         core.editor = vars.defaults.termEditor;
 
         # 1password ssh commit signing
-        gpg.format = "ssh";
-        # should be declared deterministically, but can't get same pkg as in nixos config
-        "gpg \"ssh\"".program = "/run/current-system/sw/bin/op-ssh-sign";
         commit.gpgsign = true;
       }
       // personalConfig; # set default to personal
