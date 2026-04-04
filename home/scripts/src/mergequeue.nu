@@ -27,7 +27,6 @@ query($owner:String!, $repo:String!, $number:Int!) {
       mergeStateStatus
       mergeable
       reviewDecision
-      viewerCanEnableAutoMerge
       headRefOid
       statusCheckRollup {
         state
@@ -207,7 +206,6 @@ def fetch-pr-state [pr: record] {
     mergeStateStatus: $raw_pr.mergeStateStatus
     mergeable: $raw_pr.mergeable
     reviewDecision: ($raw_pr.reviewDecision? | default null)
-    viewerCanEnableAutoMerge: $raw_pr.viewerCanEnableAutoMerge
     headRefOid: $raw_pr.headRefOid
     statusCheckState: ($raw_pr.statusCheckRollup.state? | default null)
     timeline: $timeline
@@ -237,15 +235,6 @@ def assert-initial-eligibility [state: any pr_url: string] {
 
   if ($state.mergeable == "CONFLICTING") {
     fail "INITIAL_INELIGIBLE" "PR has merge conflicts and cannot enter the merge queue."
-  }
-
-  if (
-    (not $state.viewerCanEnableAutoMerge)
-    and (not $state.isInMergeQueue)
-    and ($state.autoMergeRequest == null)
-    and ($state.mergeQueueEntry == null)
-  ) {
-    fail "INITIAL_INELIGIBLE" "You cannot enable auto-merge for this PR, and it is not already armed or queued."
   }
 }
 
