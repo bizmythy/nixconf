@@ -1381,11 +1381,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775330600,
-        "narHash": "sha256-JflmuIk73lkmoTk38lWu4BcYV2LmwlATFSA25H3sKJw=",
+        "lastModified": 1775334898,
+        "narHash": "sha256-A9aKfSxF0MFkjHlzMcrfNkaJPpOyk19nIXwynLFraao=",
         "owner": "bizmythy",
         "repo": "t3code",
-        "rev": "0a19521d0701006871bac53807f5c338c64756bd",
+        "rev": "a18481ac9cd868bcbbf393bded705330329dee25",
         "type": "github"
       },
       "original": {
