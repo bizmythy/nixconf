@@ -4,6 +4,7 @@
 {
   imports = [
     # keep-sorted start
+    ./archive
     ./bat.nix
     ./btop.nix
     ./chromium.nix
