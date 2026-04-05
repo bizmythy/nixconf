@@ -77,7 +77,7 @@ class EntryKind(Enum):
     SYMLINK = "symlink"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ArchiveEntry:
     source_path: Path
     relative_path: PurePosixPath
@@ -95,7 +95,7 @@ class ArchiveEntry:
         return relative
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class CompressionRequest:
     source_directory: Path
     archive_path: Path
@@ -103,7 +103,7 @@ class CompressionRequest:
     force: bool
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ExtractionRequest:
     archive_path: Path
     output_directory: Path
