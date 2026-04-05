@@ -1,9 +1,25 @@
 from __future__ import annotations
 
+import importlib.util
 import subprocess
-import unittest
+import sys
+from pathlib import Path
 
-from nixconf_audio import AudioCommandError, get_sink_by_alsa_name, list_sinks
+import pytest
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load_nixconf_audio_module():
+    module_path = ROOT / "nixconf_audio/__init__.py"
+    spec = importlib.util.spec_from_file_location("nixconf_audio_module", module_path)
+    if spec is None or spec.loader is None:
+        raise AssertionError("unable to load nixconf_audio module")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def make_completed_process(stdout: str) -> subprocess.CompletedProcess[str]:
@@ -21,107 +37,110 @@ def run_with_sinks(sinks_json: str):
     return run
 
 
-class NixconfAudioTests(unittest.TestCase):
-    def test_list_sinks_marks_selected_default(self) -> None:
-        run = run_with_sinks(
-            """
-            [
-              {
-                "name": "sink.usb",
-                "description": "USB Headset",
-                "properties": {
-                  "object.id": "51",
-                  "alsa.name": "USB Audio"
-                }
-              },
-              {
-                "name": "sink.tv",
-                "description": "TV",
-                "properties": {
-                  "object.id": "77",
-                  "alsa.name": "LG TV SSCR2"
-                }
-              }
-            ]
-            """
-        )
+def test_list_sinks_marks_selected_default() -> None:
+    module = load_nixconf_audio_module()
+    run = run_with_sinks(
+        """
+        [
+          {
+            "name": "sink.usb",
+            "description": "USB Headset",
+            "properties": {
+              "object.id": "51",
+              "alsa.name": "USB Audio"
+            }
+          },
+          {
+            "name": "sink.tv",
+            "description": "TV",
+            "properties": {
+              "object.id": "77",
+              "alsa.name": "LG TV SSCR2"
+            }
+          }
+        ]
+        """
+    )
 
-        sinks = list_sinks(run=run)
+    sinks = module.list_sinks(run=run)
 
-        self.assertEqual(len(sinks), 2)
-        self.assertTrue(sinks[0].selected)
-        self.assertFalse(sinks[1].selected)
-        self.assertEqual(sinks[0].alsa_name, "USB Audio")
-
-    def test_get_sink_by_alsa_name_returns_exact_match(self) -> None:
-        run = run_with_sinks(
-            """
-            [
-              {
-                "name": "sink.usb",
-                "description": "USB Headset",
-                "properties": {
-                  "object.id": "51",
-                  "alsa.name": "USB Audio"
-                }
-              }
-            ]
-            """
-        )
-
-        sink = get_sink_by_alsa_name("USB Audio", run=run)
-
-        self.assertEqual(sink.id, 51)
-        self.assertEqual(sink.name, "sink.usb")
-
-    def test_get_sink_by_alsa_name_errors_without_match(self) -> None:
-        run = run_with_sinks(
-            """
-            [
-              {
-                "name": "sink.usb",
-                "description": "USB Headset",
-                "properties": {
-                  "object.id": "51",
-                  "alsa.name": "USB Audio"
-                }
-              }
-            ]
-            """
-        )
-
-        with self.assertRaisesRegex(AudioCommandError, "no audio sink found"):
-            get_sink_by_alsa_name("LG TV SSCR2", run=run)
-
-    def test_get_sink_by_alsa_name_errors_with_duplicates(self) -> None:
-        run = run_with_sinks(
-            """
-            [
-              {
-                "name": "sink.usb.1",
-                "description": "USB Headset",
-                "properties": {
-                  "object.id": "51",
-                  "alsa.name": "USB Audio"
-                }
-              },
-              {
-                "name": "sink.usb.2",
-                "description": "USB DAC",
-                "properties": {
-                  "object.id": "52",
-                  "alsa.name": "USB Audio"
-                }
-              }
-            ]
-            """
-        )
-
-        with self.assertRaisesRegex(
-            AudioCommandError, "multiple audio sinks matched"
-        ):
-            get_sink_by_alsa_name("USB Audio", run=run)
+    assert len(sinks) == 2
+    assert sinks[0].selected is True
+    assert sinks[1].selected is False
+    assert sinks[0].alsa_name == "USB Audio"
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_get_sink_by_alsa_name_returns_exact_match() -> None:
+    module = load_nixconf_audio_module()
+    run = run_with_sinks(
+        """
+        [
+          {
+            "name": "sink.usb",
+            "description": "USB Headset",
+            "properties": {
+              "object.id": "51",
+              "alsa.name": "USB Audio"
+            }
+          }
+        ]
+        """
+    )
+
+    sink = module.get_sink_by_alsa_name("USB Audio", run=run)
+
+    assert sink.id == 51
+    assert sink.name == "sink.usb"
+
+
+def test_get_sink_by_alsa_name_errors_without_match() -> None:
+    module = load_nixconf_audio_module()
+    run = run_with_sinks(
+        """
+        [
+          {
+            "name": "sink.usb",
+            "description": "USB Headset",
+            "properties": {
+              "object.id": "51",
+              "alsa.name": "USB Audio"
+            }
+          }
+        ]
+        """
+    )
+
+    with pytest.raises(module.AudioCommandError, match="no audio sink found"):
+        module.get_sink_by_alsa_name("LG TV SSCR2", run=run)
+
+
+def test_get_sink_by_alsa_name_errors_with_duplicates() -> None:
+    module = load_nixconf_audio_module()
+    run = run_with_sinks(
+        """
+        [
+          {
+            "name": "sink.usb.1",
+            "description": "USB Headset",
+            "properties": {
+              "object.id": "51",
+              "alsa.name": "USB Audio"
+            }
+          },
+          {
+            "name": "sink.usb.2",
+            "description": "USB DAC",
+            "properties": {
+              "object.id": "52",
+              "alsa.name": "USB Audio"
+            }
+          }
+        ]
+        """
+    )
+
+    with pytest.raises(
+        module.AudioCommandError,
+        match="multiple audio sinks matched",
+    ):
+        module.get_sink_by_alsa_name("USB Audio", run=run)

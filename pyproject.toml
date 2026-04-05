@@ -7,12 +7,16 @@ requires-python = ">=3.13"
 dependencies = [
   "click>=8.2.1",
   "hyprpy>=0.2.0",
+  "pytest>=8.4.2",
   "tqdm>=4.67.3",
-  "zstandard>=0.25.0"
+  "zstandard>=0.25.0",
 ]
 
 [tool.ruff]
 line-length = 79
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.ty.environment]
 python = ".venv"
