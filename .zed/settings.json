@@ -16,6 +16,8 @@
       "language_servers": [
         "ty",
         "!basedpyright",
+        "!pyright",
+        "!pylsp",
         "..."
       ]
     }
