@@ -713,9 +713,8 @@ def compress_archive(request: CompressionRequest) -> None:
     else:
         write_tar_zst_archive(request, entries)
 
-    click.echo(
-        f"created {request.archive_type.label} archive at {request.archive_path}"
-    )
+    archive_label = request.archive_type.label
+    click.echo(f"created {archive_label} archive at {request.archive_path}")
 
 
 def extract_archive(request: ExtractionRequest) -> None:
