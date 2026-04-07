@@ -19,10 +19,7 @@ import (
 	"time"
 )
 
-const (
-	kittySocketAddress = "unix:@nixconf-kitty-nav"
-	kittyClass         = "kitty"
-)
+const kittyClass = "kitty"
 
 type daemonState struct {
 	mu          sync.RWMutex
@@ -47,7 +44,7 @@ func main() {
 	slog.SetDefault(logger)
 
 	if len(os.Args) < 2 {
-		fatal("usage", "message", fmt.Sprintf("usage: %s daemon|left|right", filepath.Base(os.Args[0])))
+		fatal("usage", "message", fmt.Sprintf("usage: %s daemon|left|right|kitty-left|kitty-right", filepath.Base(os.Args[0])))
 	}
 
 	switch os.Args[1] {
@@ -55,6 +52,10 @@ func main() {
 		runDaemon()
 	case "left", "right":
 		runClient(os.Args[1])
+	case "kitty-left":
+		runKittyDirection("left")
+	case "kitty-right":
+		runKittyDirection("right")
 	default:
 		fatal("unknown subcommand", "subcommand", os.Args[1])
 	}
@@ -154,21 +155,24 @@ func handleClientRequest(state *daemonState, conn net.Conn) error {
 		return dispatchMoveFocus(direction)
 	}
 
+	return dispatchKittyShortcut(direction)
+}
+
+func runKittyDirection(direction string) {
 	targetIndex, ok, err := nextKittyTabIndex(direction)
 	if err != nil {
-		logger.Warn("kitty tab lookup failed, falling back to Hyprland", "direction", direction, "error", err)
-		return dispatchMoveFocus(direction)
+		fatal("kitty tab lookup failed", "direction", direction, "error", err)
 	}
 	if !ok {
-		return dispatchMoveFocus(direction)
+		if err := dispatchMoveFocus(direction); err != nil {
+			fatal("Hyprland fallback failed", "direction", direction, "error", err)
+		}
+		return
 	}
 
 	if err := focusKittyTab(targetIndex); err != nil {
-		logger.Warn("kitty focus-tab failed, falling back to Hyprland", "direction", direction, "target_index", targetIndex, "error", err)
-		return dispatchMoveFocus(direction)
+		fatal("kitty focus-tab failed", "direction", direction, "target_index", targetIndex, "error", err)
 	}
-
-	return nil
 }
 
 func monitorHyprlandEvents(state *daemonState, stopCh <-chan struct{}) {
@@ -263,6 +267,20 @@ func dispatchMoveFocus(direction string) error {
 	return err
 }
 
+func dispatchKittyShortcut(direction string) error {
+	key := map[string]string{
+		"left":  "h",
+		"right": "l",
+	}[direction]
+
+	if key == "" {
+		return fmt.Errorf("unknown kitty direction %q", direction)
+	}
+
+	_, err := hyprlandCommand("/dispatch sendshortcut SUPER," + key + ",activewindow")
+	return err
+}
+
 func hyprlandCommand(command string) ([]byte, error) {
 	conn, err := net.Dial("unix", hyprCommandSocketPath())
 	if err != nil {
@@ -287,13 +305,7 @@ func hyprlandCommand(command string) ([]byte, error) {
 }
 
 func nextKittyTabIndex(direction string) (int, bool, error) {
-	output, err := exec.Command(
-		"kitten",
-		"@",
-		"--to",
-		kittySocketAddress,
-		"ls",
-	).Output()
+	output, err := exec.Command("kitten", "@", "ls").Output()
 	if err != nil {
 		return 0, false, fmt.Errorf("run kitten @ ls: %w", err)
 	}
@@ -375,15 +387,7 @@ func nextKittyTabIndex(direction string) (int, bool, error) {
 }
 
 func focusKittyTab(index int) error {
-	command := exec.Command(
-		"kitten",
-		"@",
-		"--to",
-		kittySocketAddress,
-		"focus-tab",
-		"--match",
-		fmt.Sprintf("index:%d", index),
-	)
+	command := exec.Command("kitten", "@", "focus-tab", "--match", fmt.Sprintf("index:%d", index))
 
 	output, err := command.CombinedOutput()
 	if err != nil {

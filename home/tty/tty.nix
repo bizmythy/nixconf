@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   vars,
   ...
@@ -9,7 +10,7 @@ let
   fontSize = 12;
   backgroundOpacity = 0.9;
   scrollback = 10000;
-  kittySocketAddress = "unix:@nixconf-kitty-nav";
+  kittyHyprNav = import ../wm/kitty-hypr-nav/package.nix { inherit lib pkgs; };
 in
 {
   programs.alacritty = {
@@ -139,7 +140,6 @@ in
       confirm_os_window_close = 0;
 
       allow_remote_control = true;
-      listen_on = kittySocketAddress;
 
       # configure using neovim as scrollback pager
       scrollback_pager =
@@ -156,6 +156,8 @@ in
       "ctrl+shift+t" = "new_tab_with_cwd";
       "ctrl+shift+space" = "send_text all lg\\r";
       "ctrl+shift+b" = "send_text all zig build\\r";
+      "super+h" = "remote_control_script ${lib.getExe kittyHyprNav} kitty-left";
+      "super+l" = "remote_control_script ${lib.getExe kittyHyprNav} kitty-right";
     };
   };
 }
