@@ -11,6 +11,7 @@
   programs.keep-sorted.enable = true;
   programs.ruff.enable = true;
   programs.toml-sort.enable = true;
+  programs.gofmt.enable = true;
 
   settings.formatter.nufmt = {
     command = lib.getExe pkgs.topiary-nushell;

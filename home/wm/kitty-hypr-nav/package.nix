@@ -2,7 +2,7 @@
   lib,
   pkgs,
 }:
-pkgs.buildGoModule {
+pkgs.buildGo126Module {
   pname = "kitty-hypr-nav";
   version = "0.1.0";
 

@@ -5,10 +5,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"flag"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"net"
 	"os"
 	"os/exec"
@@ -30,6 +29,8 @@ type daemonState struct {
 	activeClass string
 }
 
+var logger = slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{}))
+
 func (s *daemonState) activeWindowClass() string {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -43,10 +44,10 @@ func (s *daemonState) setActiveWindowClass(class string) {
 }
 
 func main() {
-	log.SetFlags(0)
+	slog.SetDefault(logger)
 
 	if len(os.Args) < 2 {
-		log.Fatalf("usage: %s daemon|left|right", filepath.Base(os.Args[0]))
+		fatal("usage", "message", fmt.Sprintf("usage: %s daemon|left|right", filepath.Base(os.Args[0])))
 	}
 
 	switch os.Args[1] {
@@ -55,18 +56,16 @@ func main() {
 	case "left", "right":
 		runClient(os.Args[1])
 	default:
-		log.Fatalf("unknown subcommand: %s", os.Args[1])
+		fatal("unknown subcommand", "subcommand", os.Args[1])
 	}
 }
 
 func runDaemon() {
-	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-
 	state := &daemonState{}
 	if class, err := queryActiveWindowClass(); err == nil {
 		state.setActiveWindowClass(class)
 	} else {
-		log.Printf("initial Hyprland active window query failed: %v", err)
+		logger.Warn("initial Hyprland active window query failed", "error", err)
 	}
 
 	stopCh := make(chan struct{})
@@ -77,7 +76,7 @@ func runDaemon() {
 
 	listener, err := net.Listen("unix", socketPath)
 	if err != nil {
-		log.Fatalf("listen %s: %v", socketPath, err)
+		fatal("listen control socket", "path", socketPath, "error", err)
 	}
 	defer func() {
 		_ = listener.Close()
@@ -99,14 +98,14 @@ func runDaemon() {
 			if errors.Is(err, net.ErrClosed) {
 				return
 			}
-			log.Printf("accept control socket: %v", err)
+			logger.Error("accept control socket", "error", err)
 			continue
 		}
 
 		go func(c net.Conn) {
 			defer c.Close()
 			if err := handleClientRequest(state, c); err != nil {
-				log.Printf("handle request: %v", err)
+				logger.Error("handle request", "error", err)
 				_, _ = io.WriteString(c, "error\n")
 				return
 			}
@@ -120,7 +119,7 @@ func runClient(direction string) {
 	if err != nil {
 		// Fail open to the original Hyprland behavior if the daemon is down.
 		if dispatchMoveFocus(direction); err != nil {
-			log.Fatalf("control socket unavailable and Hyprland fallback failed: %v", err)
+			fatal("control socket unavailable and Hyprland fallback failed", "direction", direction, "error", err)
 		}
 		return
 	}
@@ -128,7 +127,7 @@ func runClient(direction string) {
 
 	_ = conn.SetDeadline(time.Now().Add(500 * time.Millisecond))
 	if _, err := io.WriteString(conn, direction+"\n"); err != nil {
-		log.Fatalf("write %s request: %v", direction, err)
+		fatal("write request", "direction", direction, "error", err)
 	}
 	if unixConn, ok := conn.(*net.UnixConn); ok {
 		_ = unixConn.CloseWrite()
@@ -136,7 +135,7 @@ func runClient(direction string) {
 
 	// Drain the daemon response so we notice obvious failures in logs.
 	if _, err := io.ReadAll(conn); err != nil && !errors.Is(err, os.ErrDeadlineExceeded) {
-		log.Fatalf("read %s response: %v", direction, err)
+		fatal("read response", "direction", direction, "error", err)
 	}
 }
 
@@ -157,7 +156,7 @@ func handleClientRequest(state *daemonState, conn net.Conn) error {
 
 	targetIndex, ok, err := nextKittyTabIndex(direction)
 	if err != nil {
-		log.Printf("kitty tab lookup failed, falling back to Hyprland: %v", err)
+		logger.Warn("kitty tab lookup failed, falling back to Hyprland", "direction", direction, "error", err)
 		return dispatchMoveFocus(direction)
 	}
 	if !ok {
@@ -165,7 +164,7 @@ func handleClientRequest(state *daemonState, conn net.Conn) error {
 	}
 
 	if err := focusKittyTab(targetIndex); err != nil {
-		log.Printf("kitty focus-tab failed, falling back to Hyprland: %v", err)
+		logger.Warn("kitty focus-tab failed, falling back to Hyprland", "direction", direction, "target_index", targetIndex, "error", err)
 		return dispatchMoveFocus(direction)
 	}
 
@@ -183,7 +182,7 @@ func monitorHyprlandEvents(state *daemonState, stopCh <-chan struct{}) {
 		}
 
 		if err := streamHyprlandEvents(state, stopCh); err != nil {
-			log.Printf("Hyprland event stream disconnected: %v", err)
+			logger.Warn("Hyprland event stream disconnected", "error", err)
 		}
 
 		select {
@@ -407,12 +406,12 @@ func boolField(value map[string]any, field string) bool {
 func hyprRuntimeDir() string {
 	runtimeDir := os.Getenv("XDG_RUNTIME_DIR")
 	if runtimeDir == "" {
-		log.Fatal("XDG_RUNTIME_DIR is not set")
+		fatal("missing runtime dir", "env", "XDG_RUNTIME_DIR")
 	}
 
 	signature := os.Getenv("HYPRLAND_INSTANCE_SIGNATURE")
 	if signature == "" {
-		log.Fatal("HYPRLAND_INSTANCE_SIGNATURE is not set")
+		fatal("missing Hyprland signature", "env", "HYPRLAND_INSTANCE_SIGNATURE")
 	}
 
 	return filepath.Join(runtimeDir, "hypr", signature)
@@ -429,8 +428,13 @@ func hyprEventSocketPath() string {
 func clientSocketPath() string {
 	runtimeDir := os.Getenv("XDG_RUNTIME_DIR")
 	if runtimeDir == "" {
-		log.Fatal("XDG_RUNTIME_DIR is not set")
+		fatal("missing runtime dir", "env", "XDG_RUNTIME_DIR")
 	}
 
 	return filepath.Join(runtimeDir, "kitty-hypr-nav.sock")
+}
+
+func fatal(msg string, args ...any) {
+	logger.Error(msg, args...)
+	os.Exit(1)
 }

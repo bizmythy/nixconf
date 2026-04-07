@@ -9,14 +9,14 @@ dependencies = [
   "hyprpy>=0.2.0",
   "pytest>=8.4.2",
   "tqdm>=4.67.3",
-  "zstandard>=0.25.0",
+  "zstandard>=0.25.0"
 ]
-
-[tool.ruff]
-line-length = 79
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 79
 
 [tool.ty.environment]
 python = ".venv"
