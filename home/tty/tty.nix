@@ -9,6 +9,7 @@ let
   fontSize = 12;
   backgroundOpacity = 0.9;
   scrollback = 10000;
+  kittySocketAddress = "unix:@nixconf-kitty-nav";
 in
 {
   programs.alacritty = {
@@ -138,6 +139,7 @@ in
       confirm_os_window_close = 0;
 
       allow_remote_control = true;
+      listen_on = kittySocketAddress;
 
       # configure using neovim as scrollback pager
       scrollback_pager =

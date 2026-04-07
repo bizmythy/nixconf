@@ -9,6 +9,7 @@
 let
   hyprmonitor = config.wm.hyprmonitor;
   mkHyprlaunch = import ./hyprlaunch/mk-launcher.nix { inherit pkgs lib; };
+  kittyHyprNav = import ./kitty-hypr-nav/package.nix { inherit pkgs lib; };
 
   launchwork = mkHyprlaunch {
     name = "launchwork";
@@ -181,10 +182,10 @@ in
           # "${modKey}, J, togglesplit," # dwindle
 
           # Move focus with mainMod + arrow keys or VIM keys
-          "${modKey}, left, movefocus, l"
-          "${modKey}, H, movefocus, l"
-          "${modKey}, right, movefocus, r"
-          "${modKey}, L, movefocus, r"
+          "${modKey}, left, exec, ${lib.getExe kittyHyprNav} left"
+          "${modKey}, H, exec, ${lib.getExe kittyHyprNav} left"
+          "${modKey}, right, exec, ${lib.getExe kittyHyprNav} right"
+          "${modKey}, L, exec, ${lib.getExe kittyHyprNav} right"
           "${modKey}, up, movefocus, u"
           "${modKey}, K, movefocus, u"
           "${modKey}, down, movefocus, d"
