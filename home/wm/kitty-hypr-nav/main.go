@@ -44,18 +44,20 @@ func main() {
 	slog.SetDefault(logger)
 
 	if len(os.Args) < 2 {
-		fatal("usage", "message", fmt.Sprintf("usage: %s daemon|left|right|kitty-left|kitty-right", filepath.Base(os.Args[0])))
+		fatal("usage", "message", fmt.Sprintf("usage: %s daemon|left|right|close|kitty-left|kitty-right|kitty-close-tab", filepath.Base(os.Args[0])))
 	}
 
 	switch os.Args[1] {
 	case "daemon":
 		runDaemon()
-	case "left", "right":
+	case "left", "right", "close":
 		runClient(os.Args[1])
 	case "kitty-left":
 		runKittyDirection("left")
 	case "kitty-right":
 		runKittyDirection("right")
+	case "kitty-close-tab":
+		runKittyCloseTab()
 	default:
 		fatal("unknown subcommand", "subcommand", os.Args[1])
 	}
@@ -115,20 +117,20 @@ func runDaemon() {
 	}
 }
 
-func runClient(direction string) {
+func runClient(action string) {
 	conn, err := net.DialTimeout("unix", clientSocketPath(), 150*time.Millisecond)
 	if err != nil {
 		// Fail open to the original Hyprland behavior if the daemon is down.
-		if dispatchMoveFocus(direction); err != nil {
-			fatal("control socket unavailable and Hyprland fallback failed", "direction", direction, "error", err)
+		if err := dispatchHyprlandFallback(action); err != nil {
+			fatal("control socket unavailable and Hyprland fallback failed", "action", action, "error", err)
 		}
 		return
 	}
 	defer conn.Close()
 
 	_ = conn.SetDeadline(time.Now().Add(500 * time.Millisecond))
-	if _, err := io.WriteString(conn, direction+"\n"); err != nil {
-		fatal("write request", "direction", direction, "error", err)
+	if _, err := io.WriteString(conn, action+"\n"); err != nil {
+		fatal("write request", "action", action, "error", err)
 	}
 	if unixConn, ok := conn.(*net.UnixConn); ok {
 		_ = unixConn.CloseWrite()
@@ -136,7 +138,7 @@ func runClient(direction string) {
 
 	// Drain the daemon response so we notice obvious failures in logs.
 	if _, err := io.ReadAll(conn); err != nil && !errors.Is(err, os.ErrDeadlineExceeded) {
-		fatal("read response", "direction", direction, "error", err)
+		fatal("read response", "action", action, "error", err)
 	}
 }
 
@@ -146,16 +148,18 @@ func handleClientRequest(state *daemonState, conn net.Conn) error {
 		return fmt.Errorf("read request: %w", err)
 	}
 
-	direction := strings.TrimSpace(string(request))
-	if direction != "left" && direction != "right" {
-		return fmt.Errorf("unsupported direction %q", direction)
+	action := strings.TrimSpace(string(request))
+	switch action {
+	case "left", "right", "close":
+	default:
+		return fmt.Errorf("unsupported action %q", action)
 	}
 
 	if state.activeWindowClass() != kittyClass {
-		return dispatchMoveFocus(direction)
+		return dispatchHyprlandFallback(action)
 	}
 
-	return dispatchKittyShortcut(direction)
+	return dispatchKittyShortcut(action)
 }
 
 func runKittyDirection(direction string) {
@@ -172,6 +176,15 @@ func runKittyDirection(direction string) {
 
 	if err := focusKittyTab(targetIndex); err != nil {
 		fatal("kitty focus-tab failed", "direction", direction, "target_index", targetIndex, "error", err)
+	}
+}
+
+func runKittyCloseTab() {
+	command := exec.Command("kitten", "@", "close-tab", "--self")
+
+	output, err := command.CombinedOutput()
+	if err != nil {
+		fatal("kitty close-tab failed", "error", err, "output", strings.TrimSpace(string(output)))
 	}
 }
 
@@ -267,14 +280,31 @@ func dispatchMoveFocus(direction string) error {
 	return err
 }
 
-func dispatchKittyShortcut(direction string) error {
+func dispatchKillActive() error {
+	_, err := hyprlandCommand("/dispatch killactive")
+	return err
+}
+
+func dispatchHyprlandFallback(action string) error {
+	switch action {
+	case "left", "right":
+		return dispatchMoveFocus(action)
+	case "close":
+		return dispatchKillActive()
+	default:
+		return fmt.Errorf("unknown fallback action %q", action)
+	}
+}
+
+func dispatchKittyShortcut(action string) error {
 	key := map[string]string{
 		"left":  "h",
 		"right": "l",
-	}[direction]
+		"close": "w",
+	}[action]
 
 	if key == "" {
-		return fmt.Errorf("unknown kitty direction %q", direction)
+		return fmt.Errorf("unknown kitty action %q", action)
 	}
 
 	_, err := hyprlandCommand("/dispatch sendshortcut SUPER," + key + ",activewindow")

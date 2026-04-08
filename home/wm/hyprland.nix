@@ -174,7 +174,8 @@ in
           "${modKey}, PERIOD, exec, playerctl next"
           "${modKey}, SPACE, exec, playerctl play-pause"
 
-          "${modKey}, W, killactive,"
+          "${modKey}, W, exec, ${lib.getExe kittyHyprNav} close"
+          "${modKey} SHIFT, W, killactive,"
           "${modKey}, F, togglefloating,"
           "${modKey} SHIFT, M, fullscreen,"
           "${modKey}, M, exec, ${lib.getExe hyprmonitor.package}"

@@ -158,6 +158,7 @@ in
       "ctrl+shift+b" = "send_text all zig build\\r";
       "super+h" = "remote_control_script ${lib.getExe kittyHyprNav} kitty-left";
       "super+l" = "remote_control_script ${lib.getExe kittyHyprNav} kitty-right";
+      "super+w" = "remote_control_script ${lib.getExe kittyHyprNav} kitty-close-tab";
     };
   };
 }
