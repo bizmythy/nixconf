@@ -48,7 +48,9 @@
 
       customCommands = [
         {
-          key = "<c-f>";
+          # <c-f> is a built-in Lazygit binding for findBaseCommitForFixup
+          # in files/commit views, so use an actually free key instead.
+          key = "<c-g>";
           context = "global";
           command = "nix fmt";
           description = "Run nix fmt";
