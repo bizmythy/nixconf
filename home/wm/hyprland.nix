@@ -165,6 +165,7 @@ in
           "${modKey}, D, exec, ${vars.defaults.editor} ${vars.home}/dirac/buildos-web"
           "${modKey} SHIFT, D, exec, ${lib.getExe launchwork}"
           "${modKey}, N, exec, ${vars.defaults.editor} ${vars.home}/nixconf"
+          "${modKey}, T, exec, ${lib.getExe kittyHyprNav} new-tab"
 
           "${modKey}, ${modKey}_L, exec, fuzzel"
           "${modKey}, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"

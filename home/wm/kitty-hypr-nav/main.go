@@ -44,13 +44,13 @@ func main() {
 	slog.SetDefault(logger)
 
 	if len(os.Args) < 2 {
-		fatal("usage", "message", fmt.Sprintf("usage: %s daemon|left|right|close|kitty-left|kitty-right|kitty-close-tab", filepath.Base(os.Args[0])))
+		fatal("usage", "message", fmt.Sprintf("usage: %s daemon|left|right|close|new-tab|kitty-left|kitty-right|kitty-close-tab", filepath.Base(os.Args[0])))
 	}
 
 	switch os.Args[1] {
 	case "daemon":
 		runDaemon()
-	case "left", "right", "close":
+	case "left", "right", "close", "new-tab":
 		runClient(os.Args[1])
 	case "kitty-left":
 		runKittyDirection("left")
@@ -150,7 +150,7 @@ func handleClientRequest(state *daemonState, conn net.Conn) error {
 
 	action := strings.TrimSpace(string(request))
 	switch action {
-	case "left", "right", "close":
+	case "left", "right", "close", "new-tab":
 	default:
 		return fmt.Errorf("unsupported action %q", action)
 	}
@@ -291,6 +291,8 @@ func dispatchHyprlandFallback(action string) error {
 		return dispatchMoveFocus(action)
 	case "close":
 		return dispatchKillActive()
+	case "new-tab":
+		return nil
 	default:
 		return fmt.Errorf("unknown fallback action %q", action)
 	}
@@ -298,9 +300,10 @@ func dispatchHyprlandFallback(action string) error {
 
 func dispatchKittyShortcut(action string) error {
 	key := map[string]string{
-		"left":  "h",
-		"right": "l",
-		"close": "w",
+		"left":    "h",
+		"right":   "l",
+		"close":   "w",
+		"new-tab": "t",
 	}[action]
 
 	if key == "" {
