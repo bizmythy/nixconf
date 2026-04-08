@@ -54,7 +54,8 @@
           context = "global";
           command = "nix fmt";
           description = "Run nix fmt";
-          output = "terminal";
+          loadingText = "Running nix fmt";
+          output = "log";
         }
       ];
     };
