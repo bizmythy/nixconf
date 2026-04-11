@@ -1,10 +1,16 @@
 {
   lib,
+  vars,
   ...
 }:
 {
   # don't get the default graphical packages, i will manage them myself
   dirac.graphical = false;
+
+  services.dirac-workspaces = {
+    enable = true;
+    user = vars.user;
+  };
 
   # override what i am already managing in home manager
   programs = {
