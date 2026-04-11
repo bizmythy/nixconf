@@ -157,6 +157,7 @@ in
           # "${modKey} SHIFT, RETURN, exec, ${vars.defaults.tty}"
           "${modKey}, E, exec, ${vars.defaults.fileManager}"
           "${modKey}, B, exec, ${vars.defaults.browser}"
+          "${modKey}, R, exec, ${lib.getExe pkgs.xhisper-local}"
           "${modKey} SHIFT, B, exec, ${vars.defaults.browser} --private-window duckduckgo.com"
           "${modKey}, P, exec, hyprpicker -a"
           "${modKey}, EQUAL, exec, ${vars.defaults.calculator}"
