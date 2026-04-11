@@ -12,6 +12,7 @@ self: super: {
 
   protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
   t3code = inputs.t3code.packages.${super.stdenv.hostPlatform.system}.default;
+  xhisper-local = super.callPackage ./pkgs/xhisper-local.nix { };
 
   nu-plugin-toon = super.callPackage ./pkgs/nu_plugin_toon.nix { };
   topiary-nushell = super.callPackage ./pkgs/topiary-nushell.nix { };

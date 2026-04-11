@@ -107,6 +107,8 @@ in
         vulkan-tools # tools for testing vulkan
         mesa-demos # grahphics demos for testing GPU
         pulseaudio # utilities for pulseaudio control, works against wireplumber emulated pulseaudio
+
+        xhisper-local # local voice to text transcription
       ]
       ++ (
         if (vars.isPersonal config) then
