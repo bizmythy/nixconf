@@ -197,6 +197,7 @@ in
       "wheel"
       "docker"
       "cdrom"
+      "input"
     ];
     # packages = with pkgs; [
     # ];
