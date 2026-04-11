@@ -1,7 +1,7 @@
 {
   lib,
   stdenv,
-  fetchFromGitHub,
+  fetchurl,
   makeWrapper,
   bash,
   bc,
@@ -13,13 +13,24 @@
   ollama,
   pipewire,
   procps,
-  python3,
+  whisperCpp,
   wl-clipboard,
   xclip,
 }:
 let
-  rev = "9a53cbad3adfdf55a2bf44d469a8e3475c3bdeb6";
-  pythonEnv = python3.withPackages (ps: [ ps.faster-whisper ]);
+  upstreamRev = "9a53cbad3adfdf55a2bf44d469a8e3475c3bdeb6";
+  whisperRuntime = whisperCpp.override {
+    vulkanSupport = true;
+    withSDL = false;
+  };
+  bundledModel = fetchurl {
+    url = "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin";
+    sha256 = "00nhqqvgwyl9zgyy7vk9i3n017q2wlncp5p7ymsk0cpkdp47jdx0";
+  };
+  bundledVadModel = fetchurl {
+    url = "https://huggingface.co/ggml-org/whisper-vad/resolve/main/ggml-silero-v6.2.0.bin";
+    sha256 = "11v9zgvwkihs750kmdiswd49q7bwvwfm081sk213mdgfhnvnk8ia";
+  };
   runtimePath = lib.makeBinPath [
     bash
     bc
@@ -37,13 +48,16 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "xhisper-local";
-  version = "unstable-${lib.substring 0 7 rev}";
+  version = "unstable-${lib.substring 0 7 upstreamRev}";
 
-  src = fetchFromGitHub {
-    owner = "wpbryant";
-    repo = "xhisper-local";
-    inherit rev;
-    hash = "sha256-keYX3+kKaKHyaNMzuXRKuSlayE66m85sSoAm/SmQmTk=";
+  src = lib.cleanSourceWith {
+    src = ../xhisper-local;
+    filter =
+      path: type:
+      let
+        baseName = builtins.baseNameOf (toString path);
+      in
+      !(baseName == ".git" || baseName == ".github");
   };
 
   nativeBuildInputs = [ makeWrapper ];
@@ -62,22 +76,29 @@ stdenv.mkDerivation rec {
   installPhase = ''
     runHook preInstall
 
+    install -d $out/share/xhisper-local/models
     install -Dm755 xhispertool $out/bin/xhispertool
     ln -s xhispertool $out/bin/xhispertoold
 
     install -Dm755 xhisper.sh $out/bin/xhisper
-    install -Dm644 xhisper_transcribe.py $out/libexec/xhisper_transcribe.py
+    install -Dm755 xhisper_transcribe $out/bin/xhisper_transcribe
     install -Dm644 default_xhisperrc $out/share/xhisper-local/default_xhisperrc
+    install -Dm644 ${bundledModel} $out/share/xhisper-local/models/ggml-base.en.bin
+    install -Dm644 ${bundledVadModel} $out/share/xhisper-local/models/ggml-silero-v6.2.0.bin
 
-    substituteInPlace $out/bin/xhisper \
-      --replace-fail 'export LD_LIBRARY_PATH=/usr/local/lib/ollama/cuda_v12/lib:$LD_LIBRARY_PATH' "" \
-      --replace-fail 'TRANSCRIPT_SCRIPT="$SCRIPT_DIR/xhisper_transcribe.py"' 'TRANSCRIPT_SCRIPT="$SCRIPT_DIR/xhisper_transcribe"' \
-      --replace-fail 'local transcription=$(python3 "$TRANSCRIPT_SCRIPT" "$recording" $cmd_args 2>/dev/null)' 'local transcription=$("$TRANSCRIPT_SCRIPT" "$recording" $cmd_args 2>/dev/null)'
+    patchShebangs $out/bin/xhisper $out/bin/xhisper_transcribe
 
-    patchShebangs $out/bin/xhisper $out/libexec/xhisper_transcribe.py
-
-    makeWrapper ${pythonEnv}/bin/python $out/bin/xhisper_transcribe \
-      --add-flags "$out/libexec/xhisper_transcribe.py"
+    wrapProgram $out/bin/xhisper_transcribe \
+      --prefix PATH : "${
+        lib.makeBinPath [
+          coreutils
+          gnused
+        ]
+      }" \
+      --set XHISPER_WHISPER_CLI "${whisperRuntime}/bin/whisper-cli" \
+      --set XHISPER_MODEL_PATH "$out/share/xhisper-local/models/ggml-base.en.bin" \
+      --set XHISPER_VAD_MODEL_PATH "$out/share/xhisper-local/models/ggml-silero-v6.2.0.bin" \
+      --set XHISPER_GPU_DEVICE "0"
 
     wrapProgram $out/bin/xhisper \
       --prefix PATH : "$out/bin:${runtimePath}"
@@ -86,7 +107,7 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with lib; {
-    description = "Linux dictation tool with local Whisper transcription and optional Ollama formatting";
+    description = "Linux dictation tool with local whisper.cpp transcription and optional Ollama formatting";
     homepage = "https://github.com/wpbryant/xhisper-local";
     license = licenses.mit;
     mainProgram = "xhisper";

@@ -1,0 +1,43 @@
+# xhisper configuration
+# Copy to ~/.config/xhisper/xhisperrc and customize
+# When in doubt, check by running 'xhisper --log'
+
+# Whisper Model Settings:
+# This fork uses whisper.cpp models in ggml format.
+# Leave model-path empty to use the packaged default model.
+# Set it to a custom ggml model file to override the packaged model.
+model-path : ""
+
+# Device: auto, cpu, or gpu
+# - auto: try Vulkan GPU first, then fall back to CPU
+# - cpu: force CPU usage
+# - gpu: force GPU usage via whisper.cpp
+model-device : auto
+
+# Language: use a language code (e.g., en, es, fr) or "auto"
+# The packaged default model is English-only, so "en" is recommended.
+model-language : en
+
+# Transcription Settings:
+transcription-prompt     : ""
+
+# Paste Timing (seconds):
+non-ascii-initial-delay : 0.15 # Increase this if first character comes out wrong.
+non-ascii-default-delay : 0.025
+
+# Silence Detection:
+silence-threshold  : -50
+
+# AI Post-Processing (optional):
+# Improve grammar, punctuation, and capitalization using local LLM via Ollama
+# - post-process-model : Ollama model name (e.g., gemma3:4b, phi3, llama3.2:3b)
+#   Leave empty to disable post-processing
+# - post-process-timeout : Maximum seconds to wait for LLM response
+# - post-process-mode : auto, standard, command, email
+#   auto: detects context based on content (default)
+#   standard: normal grammar/punctuation fixes
+#   command: preserves command syntax, fixes command names
+#   email: formats as email with salutations and sign-offs
+post-process-model     : ""
+post-process-timeout   : 10
+post-process-mode      : auto

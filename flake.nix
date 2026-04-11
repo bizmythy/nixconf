@@ -199,6 +199,7 @@
           import ./nixvim.nix { inherit pkgs; }
         );
         topiary-nushell = pkgs.topiary-nushell;
+        xhisper-local = pkgs.xhisper-local;
       });
 
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);

@@ -1,0 +1,176 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: xhisper_transcribe <audio_file> [--model-path <path>] [--device auto|cpu|gpu] [--language <code>] [--prompt <text>]
+
+Transcribe an audio file with whisper.cpp.
+
+Environment defaults:
+  XHISPER_WHISPER_CLI     Path to whisper-cli (default: whisper-cli)
+  XHISPER_MODEL_PATH      Default ggml model path
+  XHISPER_VAD_MODEL_PATH  Default ggml VAD model path
+  XHISPER_GPU_DEVICE      GPU index for whisper-cli (default: 0)
+EOF
+}
+
+normalize_output() {
+  tr '\n' ' ' | sed 's/[[:space:]]\+/ /g; s/^ //; s/ $//'
+}
+
+run_whisper() {
+  local output
+
+  output=$("$XHISPER_WHISPER_CLI" "$@")
+  printf '%s' "$output" | normalize_output
+}
+
+audio_file=""
+device="auto"
+language=""
+prompt=""
+model_path="${XHISPER_MODEL_PATH:-}"
+vad_model_path="${XHISPER_VAD_MODEL_PATH:-}"
+gpu_device="${XHISPER_GPU_DEVICE:-0}"
+XHISPER_WHISPER_CLI="${XHISPER_WHISPER_CLI:-whisper-cli}"
+
+while (($# > 0)); do
+  case "$1" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --model-path)
+      [ $# -ge 2 ] || {
+        echo "Error: --model-path requires a value" >&2
+        exit 1
+      }
+      model_path="$2"
+      shift 2
+      ;;
+    --device)
+      [ $# -ge 2 ] || {
+        echo "Error: --device requires a value" >&2
+        exit 1
+      }
+      device="$2"
+      shift 2
+      ;;
+    --language)
+      [ $# -ge 2 ] || {
+        echo "Error: --language requires a value" >&2
+        exit 1
+      }
+      language="$2"
+      shift 2
+      ;;
+    --prompt)
+      [ $# -ge 2 ] || {
+        echo "Error: --prompt requires a value" >&2
+        exit 1
+      }
+      prompt="$2"
+      shift 2
+      ;;
+    --gpu-device)
+      [ $# -ge 2 ] || {
+        echo "Error: --gpu-device requires a value" >&2
+        exit 1
+      }
+      gpu_device="$2"
+      shift 2
+      ;;
+    --vad-model-path)
+      [ $# -ge 2 ] || {
+        echo "Error: --vad-model-path requires a value" >&2
+        exit 1
+      }
+      vad_model_path="$2"
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      echo "Error: Unknown option '$1'" >&2
+      usage >&2
+      exit 1
+      ;;
+    *)
+      if [ -n "$audio_file" ]; then
+        echo "Error: Multiple audio files are not supported" >&2
+        usage >&2
+        exit 1
+      fi
+      audio_file="$1"
+      shift
+      ;;
+  esac
+done
+
+[ -n "$audio_file" ] || {
+  echo "Error: No audio file provided" >&2
+  usage >&2
+  exit 1
+}
+
+[ -f "$audio_file" ] || {
+  echo "Error: Audio file not found: $audio_file" >&2
+  exit 1
+}
+
+[ -n "$model_path" ] || {
+  echo "Error: No Whisper model path configured" >&2
+  exit 1
+}
+
+[ -n "$vad_model_path" ] || {
+  echo "Error: No VAD model path configured" >&2
+  exit 1
+}
+
+if [ -z "$language" ]; then
+  language="auto"
+fi
+
+common_args=(
+  --no-prints
+  --no-timestamps
+  --output-txt
+  --output-file -
+  --model "$model_path"
+  --file "$audio_file"
+  --language "$language"
+  --vad
+  --vad-model "$vad_model_path"
+)
+
+if [ -n "$prompt" ]; then
+  common_args+=(--prompt "$prompt")
+fi
+
+case "$device" in
+  auto)
+    if output=$(run_whisper --device "$gpu_device" "${common_args[@]}" 2>/dev/null) && [ -n "$output" ]; then
+      printf '%s\n' "$output"
+    else
+      run_whisper --no-gpu "${common_args[@]}"
+      printf '\n'
+    fi
+    ;;
+  cpu)
+    run_whisper --no-gpu "${common_args[@]}"
+    printf '\n'
+    ;;
+  gpu)
+    run_whisper --device "$gpu_device" "${common_args[@]}"
+    printf '\n'
+    ;;
+  *)
+    echo "Error: Unsupported device '$device'. Use auto, cpu, or gpu." >&2
+    exit 1
+    ;;
+esac
