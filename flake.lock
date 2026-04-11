@@ -304,11 +304,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1775948394,
-        "narHash": "sha256-V6HuPvsMmvzHHMynU1gkB+bY63BsvbR7lKOZcKGd0NU=",
+        "lastModified": 1775950039,
+        "narHash": "sha256-0HR9JzV816D6hG95qZinOd7wK7dmEdzn2JQWuPRiCkA=",
         "ref": "main",
-        "rev": "c86139e9bc554fdbca2d4475787e75056cc208c9",
-        "revCount": 13,
+        "rev": "6ae477b6ebe1c1d109df6d9015c6e8edd0c987c6",
+        "revCount": 14,
         "type": "git",
         "url": "ssh://git@dirac-github/drew-dirac/dirac-workspaces.git"
       },
