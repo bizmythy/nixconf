@@ -57,6 +57,14 @@
           loadingText = "Running nix fmt";
           output = "log";
         }
+        {
+          key = "<c-G>";
+          context = "global";
+          command = "mask generate";
+          description = "Run mask generate";
+          loadingText = "Running mask generate";
+          output = "log";
+        }
       ];
     };
   };
