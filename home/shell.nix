@@ -12,6 +12,7 @@ let
     NIXPKGS_ALLOW_UNFREE = 1;
     PAGER = "nvimpager";
     OP_ACCOUNT = "PLU4HO2JCJF23NNQK2ERWIYIZI"; # default to work account
+    USE_DEPOT = "true"; # enable depot builds (temp)
   };
   myShellAliases = {
     cdn = "cd ${vars.flakePath}";
