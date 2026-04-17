@@ -6,7 +6,10 @@
 {
   programs.chromium = {
     enable = true;
-    commandLineArgs = lib.mkIf osConfig.nvidiaEnable [
+    commandLineArgs = [
+      "--remote-debugging-port=9222"
+    ]
+    ++ lib.optionals osConfig.nvidiaEnable [
       "--ozone-platform-hint=x11"
     ];
   };
