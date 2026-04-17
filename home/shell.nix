@@ -19,7 +19,7 @@ let
 
     zed = "zeditor";
     e = "${vars.defaults.editor} .";
-    code = "zsh -c '(&>/dev/null cursor . &)'";
+    cx = "codex";
 
     ld = "lazydocker";
     hmclean = "fd '${vars.hmBackupFileExtension}' ~ -u -x rm";
