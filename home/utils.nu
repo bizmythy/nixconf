@@ -1,3 +1,25 @@
+# --------- CONSTS ---------
+
+const PROMPTS = {
+  rust_lint: "
+run `mask lint rust` and fix all warnings and errors.
+
+we want to generally avoid panics. if possible, errors should be propogated up.
+if impossible or if errors are truly certain to never occurr, you should use .expect() with an explicit nolint comment with an explanation comment explaining why this is safe to use
+
+do not attempt to circumvent with inlined panic calls.
+"
+  git_conflicts: "
+view the git context for the current repository branch and main.
+then, resolve all conflicts and proceed with the current operation (rebase, cherry pick, merge, etc.) until fully complete and all conflicts are resolved.
+
+when resolving conflicts, ALWAYS analyze semantically and preserve the intention of BOTH sides of the conflict whenever possible.
+if it is unclear, you should read commit messages and understand the contextual info such that you can safely resolve without deleting crucial work.
+"
+}
+
+# --------- COMMANDS ---------
+
 # make input json and print with syntax highlighting
 export def pjp [] {
   $in | to json | bat -l json
