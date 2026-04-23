@@ -11,7 +11,12 @@
 
   laptop.enable = true;
   services.fwupd.enable = true;
-  services.libinput.enable = true;
+
+  # The built-in Raydium touchscreen is detected, but the dedicated
+  # raydium_i2c_ts driver does not expose a usable touch device to Hyprland.
+  # Let the generic HID multitouch stack claim it instead.
+  boot.blacklistedKernelModules = [ "raydium_i2c_ts" ];
+  boot.kernelModules = [ "hid_multitouch" ];
 
   boot.initrd.luks.devices."luks-30ead0c5-44cb-4dae-9620-f72db25f725b".device =
     "/dev/disk/by-uuid/30ead0c5-44cb-4dae-9620-f72db25f725b";
