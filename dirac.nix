@@ -8,11 +8,11 @@
   dirac.graphical = false;
 
   services.dirac-workspaces = {
-    enable = true;
+    enable = false;
     user = vars.user;
   };
 
-  systemd.user.services.dirac-workspacesd.environment.SSH_AUTH_SOCK = "%h/.1password/agent.sock";
+  # systemd.user.services.dirac-workspacesd.environment.SSH_AUTH_SOCK = "%h/.1password/agent.sock";
 
   # override what i am already managing in home manager
   programs = {
