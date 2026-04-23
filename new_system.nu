@@ -117,6 +117,7 @@ def "main configure" [] {
     let password = (read "op://Private/atuin sync/password")
     let key = (read "op://Private/atuin sync/key")
     atuin login --username $username --password $password --key $key
+    atuin sync
   }
 
   say "setting up zed"
