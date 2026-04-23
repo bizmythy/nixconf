@@ -12,6 +12,9 @@
   laptop.enable = true;
   services.fwupd.enable = true;
 
+  boot.initrd.luks.devices."luks-30ead0c5-44cb-4dae-9620-f72db25f725b".device =
+    "/dev/disk/by-uuid/30ead0c5-44cb-4dae-9620-f72db25f725b";
+
   hardware = {
     graphics.extraPackages = with pkgs; [
       intel-compute-runtime
