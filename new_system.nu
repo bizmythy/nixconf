@@ -56,11 +56,27 @@ def "main install" [] {
   }
   cd $conf
 
+  let host_dir = ($conf | path join "hosts" $hostname)
+  let hardware_config = ($host_dir | path join "hardware-configuration.nix")
+  assert ($host_dir | path exists) $"host config directory not found: ($host_dir)"
+  assert ("/etc/nixos/hardware-configuration.nix" | path exists) "/etc/nixos/hardware-configuration.nix not found"
+  say $"copying hardware configuration to ($hardware_config)"
+  cp --force /etc/nixos/hardware-configuration.nix $hardware_config
+
   # disable private flake pull, add hostname
   let config_file = ($conf | path join "build_config.json")
   let old_config = (open $config_file)
+  let existing_hosts = ($old_config | get hosts)
+  let updated_hosts = if ($existing_hosts | any {|host| $host == $hostname }) {
+    $existing_hosts
+  } else {
+    $existing_hosts | append $hostname
+  }
   (
-    $old_config | update flags.enableDirac false | update hosts ($old_config | get hosts | append $hostname) | save --force $config_file
+    $old_config
+    | update flags.enableDirac false
+    | update hosts $updated_hosts
+    | save --force $config_file
   )
 
   # start new branch for this host temporarily

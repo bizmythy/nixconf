@@ -710,6 +710,8 @@ def main(device: str | None, apply_default: bool) -> None:
     current_device = device or os.uname().nodename
 
     if current_device not in config.devices:
+        if apply_default:
+            return
         raise click.ClickException(
             f"no hyprmonitor configuration defined for {current_device}"
         )
