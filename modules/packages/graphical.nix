@@ -83,7 +83,7 @@ in
         pdfarranger
 
         # code editors
-        t3code
+        # t3code
         code-cursor
         zed-editor # preferred code editor
         zed # alias
