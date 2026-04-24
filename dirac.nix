@@ -8,7 +8,7 @@
   dirac.graphical = false;
 
   services.dirac-workspaces = {
-    enable = true;
+    enable = false;
     user = vars.user;
   };
 
