@@ -110,7 +110,8 @@
   extraPlugins = [
     # plugin that toggles between relative and absolute line number based on mode
     (pkgs.vimUtils.buildVimPlugin {
-      name = "nvim-numbertoggle";
+      pname = "nvim-numbertoggle";
+      version = "4b898b84d6f31f76bd563330d76177d5eb299efa";
       src = pkgs.fetchFromGitHub {
         owner = "sitiom";
         repo = "nvim-numbertoggle";
@@ -121,7 +122,8 @@
 
     # plugin that colorizes ANSI escape sequences
     (pkgs.vimUtils.buildVimPlugin {
-      name = "baleia";
+      pname = "baleia";
+      version = "1b25eac3ac03659c3d3af75c7455e179e5f197f7";
       src = pkgs.fetchFromGitHub {
         owner = "m00qek";
         repo = "baleia.nvim";
