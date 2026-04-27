@@ -6,6 +6,7 @@ run `mask lint rust` and fix all warnings and errors.
 
 we want to generally avoid panics. if possible, errors should be propogated up.
 if impossible or if errors are truly certain to never occurr, you should use .expect() with an explicit nolint comment with an explanation comment explaining why this is safe to use
+> in test files, do not panic. just have the test file return Result<_,_> and propogate errors cleanly.
 
 do not attempt to circumvent with inlined panic calls.
 "
