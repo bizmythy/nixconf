@@ -14,6 +14,8 @@ do not attempt to circumvent with inlined panic calls.
 view the git context for the current repository branch and main.
 then, resolve all conflicts and proceed with the current operation (rebase, cherry pick, merge, etc.) until fully complete and all conflicts are resolved.
 
+be sure to run all git operations with GIT_EDITOR=true so you do not enter interactive editor.
+
 when resolving conflicts, ALWAYS analyze semantically and preserve the intention of BOTH sides of the conflict whenever possible.
 if it is unclear, you should read commit messages and understand the contextual info such that you can safely resolve without deleting crucial work.
 "
