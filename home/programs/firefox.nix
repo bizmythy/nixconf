@@ -1,13 +1,15 @@
 {
+  config,
   lib,
   vars,
   ...
 }:
 
 {
-  home.file.".mozilla/firefox/default/search.json.mozlz4".force = lib.mkForce true;
+  xdg.configFile."mozilla/firefox/default/search.json.mozlz4".force = lib.mkForce true;
   programs.firefox = {
     enable = true;
+    configPath = "${config.xdg.configHome}/mozilla/firefox";
 
     # https://nix-community.github.io/home-manager/options.html#opt-programs.firefox.profiles
     profiles = {
