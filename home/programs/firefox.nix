@@ -6,7 +6,6 @@
 }:
 
 {
-  xdg.configFile."mozilla/firefox/default/search.json.mozlz4".force = lib.mkForce true;
   programs.firefox = {
     enable = true;
     configPath = "${config.xdg.configHome}/mozilla/firefox";
@@ -35,6 +34,7 @@
           };
         };
         search = {
+          force = true;
           engines = {
             "unduck" = {
               urls = [ { template = "https://unduck.link?q={searchTerms}"; } ];
