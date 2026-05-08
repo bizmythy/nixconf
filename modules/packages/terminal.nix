@@ -143,6 +143,7 @@
       aiTools = with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
         claude-code
         codex
+        pi
         # gemini-cli
       ];
     in
