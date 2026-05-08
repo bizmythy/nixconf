@@ -126,6 +126,7 @@
         rustc
         cargo
         rustfmt
+        nodejs
 
         # nix tools
         nix-output-monitor
