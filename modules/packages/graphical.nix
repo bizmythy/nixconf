@@ -109,6 +109,7 @@ in
         pulseaudio # utilities for pulseaudio control, works against wireplumber emulated pulseaudio
 
         xhisper-local # local voice to text transcription
+        hidapi # needed for steam controller
       ]
       ++ (
         if (vars.isPersonal config) then
