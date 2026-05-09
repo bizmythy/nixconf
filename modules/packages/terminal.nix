@@ -126,6 +126,7 @@
         rustc
         cargo
         rustfmt
+        nodejs
         (writeShellApplication {
           name = "pi-npm";
           text = ''
