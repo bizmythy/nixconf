@@ -9,7 +9,6 @@
     ./hyprland.nix
     ./hyprlock.nix
     ./hyprlaunch
-    ./hyprmonitor
     ./hyprpaper.nix
     ./kitty-hypr-nav
     ./switchaudio

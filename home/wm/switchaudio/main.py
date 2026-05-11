@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import subprocess
 import sys
 
@@ -7,6 +8,7 @@ from nixconf_audio import (
     AudioCommandError,
     AudioSink,
     get_default_sink_name,
+    get_sink_by_alsa_name,
     list_sinks,
     set_default_sink,
 )
@@ -72,9 +74,24 @@ def pick_sink() -> int | None:
     return index
 
 
+def switch_sink_by_alsa_name(alsa_name: str) -> None:
+    sink = get_sink_by_alsa_name(alsa_name)
+    set_default_sink(sink.id)
+
+
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--alsa-name",
+        help="Switch to the sink whose PipeWire ALSA name matches.",
+    )
+    args = parser.parse_args()
+
     try:
-        pick_sink()
+        if args.alsa_name is not None:
+            switch_sink_by_alsa_name(args.alsa_name)
+        else:
+            pick_sink()
     except AudioCommandError as error:
         print(error, file=sys.stderr)
         return 1
