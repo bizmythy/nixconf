@@ -17,6 +17,9 @@
     # catppuccin theming for all applications
     catppuccin.url = "github:catppuccin/nix";
 
+    # latest Hyprland packages from upstream flake
+    hyprland.url = "github:hyprwm/Hyprland";
+
     # flakpak installation management
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
 
