@@ -11,7 +11,7 @@ let
   mkHyprlaunch = import ./hyprlaunch/mk-launcher.nix { inherit pkgs lib; };
   kittyHyprNav = import ./kitty-hypr-nav/package.nix { inherit pkgs lib; };
   switchaudio = import ./switchaudio/package.nix { inherit pkgs; };
-  monitorConfig = import ./hyprmonitor/monitor-config.nix;
+  monitorConfig = import ./hyprland/monitor-config.nix;
   toLua = lib.generators.toLua { };
 
   launchwork = mkHyprlaunch {
