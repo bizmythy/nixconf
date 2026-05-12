@@ -1,0 +1,12 @@
+{
+  "workspace": {
+    "library": [
+      "/home/drew/.nix-profile/share/hypr/stubs"
+    ]
+  },
+  "diagnostics": {
+    "globals": [
+      "hl"
+    ]
+  }
+}
