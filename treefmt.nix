@@ -8,6 +8,7 @@
   programs.nixfmt.enable = true;
   programs.jsonfmt.enable = true;
   programs.shellcheck.enable = true;
+  programs.stylua.enable = true;
   programs.keep-sorted.enable = true;
   programs.ruff.enable = true;
   programs.toml-sort.enable = true;

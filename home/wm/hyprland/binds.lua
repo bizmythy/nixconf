@@ -6,7 +6,7 @@ local commands = generated.commands
 local mod = "SUPER"
 
 local function bind_exec(keys, command, opts)
-  hl.bind(keys, hl.dsp.exec_cmd(command), opts)
+	hl.bind(keys, hl.dsp.exec_cmd(command), opts)
 end
 
 bind_exec(mod .. " + RETURN", defaults.tty)
@@ -36,7 +36,7 @@ hl.bind(mod .. " + SHIFT + W", hl.dsp.window.close())
 hl.bind(mod .. " + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + SHIFT + M", hl.dsp.window.fullscreen())
 hl.bind(mod .. " + M", function()
-  hl.exec_cmd(monitors.choose_profile_command())
+	hl.exec_cmd(monitors.choose_profile_command())
 end)
 
 bind_exec(mod .. " + left", commands.kittyHyprNav .. " left")
@@ -58,14 +58,14 @@ hl.bind(mod .. " + ALT + down", hl.dsp.window.resize({ x = 0, y = 60, relative =
 hl.bind(mod .. " + ALT + J", hl.dsp.window.resize({ x = 0, y = 60, relative = true }))
 
 hl.bind(mod .. " + Tab", function()
-  hl.dispatch(hl.dsp.window.cycle_next())
-  hl.dispatch(hl.dsp.window.bring_to_top())
+	hl.dispatch(hl.dsp.window.cycle_next())
+	hl.dispatch(hl.dsp.window.bring_to_top())
 end)
 
 for workspace = 1, 10 do
-  local key = tostring(workspace % 10)
-  hl.bind(mod .. " + " .. key, hl.dsp.focus({ workspace = workspace, on_current_monitor = true }))
-  hl.bind(mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = workspace }))
+	local key = tostring(workspace % 10)
+	hl.bind(mod .. " + " .. key, hl.dsp.focus({ workspace = workspace, on_current_monitor = true }))
+	hl.bind(mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = workspace }))
 end
 
 hl.bind(mod .. " + CONTROL + H", hl.dsp.focus({ workspace = "e-1" }))
