@@ -8,7 +8,6 @@
     ./waybar
     ./hyprland.nix
     ./hyprlock.nix
-    ./hyprlaunch
     ./hyprpaper.nix
     ./kitty-hypr-nav
     ./switchaudio

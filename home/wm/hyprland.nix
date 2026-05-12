@@ -8,7 +8,6 @@
   ...
 }:
 let
-  mkHyprlaunch = import ./hyprlaunch/mk-launcher.nix { inherit pkgs lib; };
   kittyHyprNav = import ./kitty-hypr-nav/package.nix { inherit pkgs lib; };
   switchaudio = import ./switchaudio/package.nix { inherit pkgs; };
   monitorConfig = import ./hyprland/monitor-config.nix;
@@ -22,27 +21,24 @@ let
     inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   toLua = lib.generators.toLua { };
 
-  launchwork = mkHyprlaunch {
-    name = "launchwork";
-    directives = [
-      {
-        command = vars.defaults.tty;
-        workspace = 1;
-      }
-      {
-        command = "slack";
-        workspace = 8;
-      }
-      {
-        command = "${vars.defaults.editor} ${vars.home}/dirac/buildos-web";
-        workspace = 2;
-      }
-      {
-        command = vars.defaults.browser;
-        workspace = 3;
-      }
-    ];
-  };
+  launchworkDirectives = [
+    {
+      command = vars.defaults.tty;
+      workspace = 1;
+    }
+    {
+      command = "slack";
+      workspace = 8;
+    }
+    {
+      command = "${vars.defaults.editor} ${vars.home}/dirac/buildos-web";
+      workspace = 2;
+    }
+    {
+      command = vars.defaults.browser;
+      workspace = 3;
+    }
+  ];
 
   monitorProfileSelector = pkgs.writeShellApplication {
     name = "hypr-monitor-profile";
@@ -125,7 +121,6 @@ let
     };
     commands = {
       kwalletInit = "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init";
-      launchwork = lib.getExe launchwork;
       kittyHyprNav = lib.getExe kittyHyprNav;
       monitorProfileSelector = lib.getExe monitorProfileSelector;
       switchaudio = lib.getExe switchaudio;
@@ -134,6 +129,9 @@ let
       mauve = "rgba(cba6f7ff)";
       pink = "rgba(f5c2e7ff)";
       accent = "mauve";
+    };
+    launchers = {
+      launchwork = launchworkDirectives;
     };
     monitor = monitorConfig;
   };
@@ -221,7 +219,6 @@ in
   };
 
   home.packages = [
-    launchwork
     monitorProfileSelector
   ];
 }

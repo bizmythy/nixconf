@@ -4,9 +4,37 @@ local monitors = require("nixconf.monitor_profiles")
 local defaults = generated.defaults
 local commands = generated.commands
 local mod = "SUPER"
+local launcher_timers = {}
 
 local function bind_exec(keys, command, opts)
 	hl.bind(keys, hl.dsp.exec_cmd(command), opts)
+end
+
+local function run_workspace_launcher(directives, opts)
+	opts = opts or {}
+	local index = 1
+	local initial_workspace = opts.restore and "previous" or nil
+
+	local function step()
+		launcher_timers[directives] = nil
+		local directive = directives[index]
+		if directive == nil then
+			if initial_workspace ~= nil then
+				hl.dispatch(hl.dsp.focus({ workspace = initial_workspace }))
+			end
+			return
+		end
+
+		hl.dispatch(hl.dsp.focus({ workspace = directive.workspace }))
+		hl.dispatch(hl.dsp.exec_cmd(directive.command))
+		index = index + 1
+
+		if directives[index] ~= nil or initial_workspace ~= nil then
+			launcher_timers[directives] = hl.timer(step, { timeout = directive.delay or 250, type = "oneshot" })
+		end
+	end
+
+	step()
 end
 
 bind_exec(mod .. " + RETURN", defaults.tty)
@@ -19,7 +47,9 @@ bind_exec(mod .. " + EQUAL", defaults.calculator)
 
 bind_exec(mod .. " + Z", defaults.editor)
 bind_exec(mod .. " + D", defaults.editor .. " " .. defaults.home .. "/dirac/buildos-web")
-bind_exec(mod .. " + SHIFT + D", commands.launchwork)
+hl.bind(mod .. " + SHIFT + D", function()
+	run_workspace_launcher(generated.launchers.launchwork)
+end)
 bind_exec(mod .. " + N", defaults.editor .. " " .. defaults.home .. "/nixconf")
 bind_exec(mod .. " + T", commands.kittyHyprNav .. " new-tab")
 
