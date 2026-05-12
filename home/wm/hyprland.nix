@@ -16,9 +16,8 @@ let
     "default"
   ]
   ++ lib.sort lib.lessThan (lib.attrNames (hostMonitorConfig.profiles or { }));
-  hyprlandPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-  hyprlandPortalPackage =
-    inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+  hyprlandPackage = pkgs.hyprland;
+  hyprlandPortalPackage = pkgs.xdg-desktop-portal-hyprland;
   toLua = lib.generators.toLua { };
 
   launchworkDirectives = [

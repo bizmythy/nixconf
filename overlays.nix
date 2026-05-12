@@ -1,6 +1,16 @@
 { inputs }:
 
-self: super: {
+self: super:
+let
+  hyprlandPackages = import ./pkgs/hyprland-upstream.nix {
+    pkgs = super;
+    inherit inputs;
+  };
+in
+{
+  hyprland = hyprlandPackages.hyprland;
+  xdg-desktop-portal-hyprland = hyprlandPackages.xdg-desktop-portal-hyprland;
+
   # Use rocmPackages from nixpkgs-stable to avoid crashes with unstable
   rocmPackages =
     inputs.nixpkgs-stable.legacyPackages.${super.stdenv.hostPlatform.system}.rocmPackages;
