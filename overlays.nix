@@ -8,6 +8,7 @@ let
   };
 in
 {
+  aquamarine = hyprlandPackages.aquamarine;
   hyprland = hyprlandPackages.hyprland;
   xdg-desktop-portal-hyprland = hyprlandPackages.xdg-desktop-portal-hyprland;
 

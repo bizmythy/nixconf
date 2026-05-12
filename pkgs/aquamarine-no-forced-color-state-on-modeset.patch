@@ -1,0 +1,40 @@
+diff --git a/src/backend/drm/DRM.cpp b/src/backend/drm/DRM.cpp
+index 4632255..4d833b2 100644
+--- a/src/backend/drm/DRM.cpp
++++ b/src/backend/drm/DRM.cpp
+@@ -2126,12 +2126,7 @@ bool Aquamarine::CDRMOutput::commitState(bool onlyTest) {
+     else
+         data.calculateMode(connector);
+ 
+-    // always re-send CTM on modeset, identity included, otherwise a stale matrix
+-    // left by a previous compositor (e.g. kwin's color management) survives our
+-    // session. prepareConnector builds a real identity blob when STATE.ctm is
+-    // identity, so we never send blob_id=0 (which some drivers mishandle, see #256).
+-    // (see #127)
+-    if (data.modeset || (COMMITTED & COutputState::eOutputStateProperties::AQ_OUTPUT_STATE_CTM))
++    if ((data.modeset && STATE.ctm != Mat3x3()) || (COMMITTED & COutputState::eOutputStateProperties::AQ_OUTPUT_STATE_CTM))
+         data.ctm = STATE.ctm;
+ 
+     bool ok = connector->commitState(data);
+diff --git a/src/backend/drm/impl/Atomic.cpp b/src/backend/drm/impl/Atomic.cpp
+index 5218d30..9c0badf 100644
+--- a/src/backend/drm/impl/Atomic.cpp
++++ b/src/backend/drm/impl/Atomic.cpp
+@@ -395,15 +395,10 @@ bool Aquamarine::CDRMAtomicImpl::prepareConnector(Hyprutils::Memory::CSharedPoin
+         return false;
+     };
+ 
+-    // re-send gamma/degamma on modeset so a previous compositor's lut does not
+-    // bleed into our session. an empty STATE.gammaLut produces a zero blob, which
+-    // clears the kernel state. only ride the modeset path when the prop actually
+-    // exists, otherwise we'd log a spurious "no gamma_lut prop" error per modeset.
+-    // (see #127)
+-    if ((data.modeset && connector->crtc->props.values.gamma_lut) || (STATE.committed & COutputState::AQ_OUTPUT_STATE_GAMMA_LUT))
++    if (STATE.committed & COutputState::AQ_OUTPUT_STATE_GAMMA_LUT)
+         data.atomic.gammad = prepareGammaBlob(connector->crtc->props.values.gamma_lut, STATE.gammaLut, &data.atomic.gammaLut);
+ 
+-    if ((data.modeset && connector->crtc->props.values.degamma_lut) || (STATE.committed & COutputState::AQ_OUTPUT_STATE_DEGAMMA_LUT))
++    if (STATE.committed & COutputState::AQ_OUTPUT_STATE_DEGAMMA_LUT)
+         data.atomic.degammad = prepareGammaBlob(connector->crtc->props.values.degamma_lut, STATE.degammaLut, &data.atomic.degammaLut);
+ 
+     if (data.ctm.has_value() && (data.modeset || (STATE.committed & COutputState::AQ_OUTPUT_STATE_CTM))) {
