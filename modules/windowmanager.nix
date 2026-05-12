@@ -4,15 +4,13 @@
   ...
 }:
 
-let
-  hyprlandPackages = import ../pkgs/hyprland-upstream.nix { inherit inputs pkgs; };
-in
 {
   # Enable Hyprland
   programs.hyprland = {
     enable = true;
-    package = hyprlandPackages.hyprland;
-    portalPackage = hyprlandPackages.xdg-desktop-portal-hyprland;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    portalPackage =
+      inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   };
 
   environment.sessionVariables = {
