@@ -17,9 +17,9 @@ let
     "default"
   ]
   ++ lib.sort lib.lessThan (lib.attrNames (hostMonitorConfig.profiles or { }));
-  hyprlandPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-  hyprlandPortalPackage =
-    inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+  hyprlandPackages = import ../../pkgs/hyprland-upstream.nix { inherit inputs pkgs; };
+  hyprlandPackage = hyprlandPackages.hyprland;
+  hyprlandPortalPackage = hyprlandPackages.xdg-desktop-portal-hyprland;
   toLua = lib.generators.toLua { };
 
   launchwork = mkHyprlaunch {
@@ -55,22 +55,38 @@ let
         cases = lib.concatMapStringsSep "\n" (
           label:
           let
-            lua = "require(\"nixconf.monitor_profiles\").apply_profile(${builtins.toJSON label})";
+            profile = (hostMonitorConfig.profiles or { }).${label} or { };
           in
           ''
             ${lib.escapeShellArg label})
-              lua=${lib.escapeShellArg lua}
+              use_tablet=${if profile.useTablet or false then "1" else "0"}
               ;;
           ''
         ) profileLabels;
       in
       ''
+        log="''${XDG_RUNTIME_DIR:-/tmp}/hypr-monitor-profile.log"
+        {
+          printf '[%s] launch WAYLAND_DISPLAY=%s DISPLAY=%s XDG_RUNTIME_DIR=%s\n' \
+            "$(date --iso-8601=seconds)" \
+            "''${WAYLAND_DISPLAY:-}" \
+            "''${DISPLAY:-}" \
+            "''${XDG_RUNTIME_DIR:-}"
+        } >>"$log"
+
         choice="$(
           printf '%s\n' ${menuItems} \
             | ${fuzzel} --dmenu --prompt 'Monitors> '
-        )" || exit 0
+        )" || {
+          status=$?
+          printf '[%s] fuzzel exited with %s\n' "$(date --iso-8601=seconds)" "$status" >>"$log"
+          exit 0
+        }
 
-        [ -n "$choice" ] || exit 0
+        [ -n "$choice" ] || {
+          printf '[%s] no profile selected\n' "$(date --iso-8601=seconds)" >>"$log"
+          exit 0
+        }
 
         case "$choice" in
         ${cases}
@@ -80,14 +96,17 @@ let
             ;;
         esac
 
-        output="$(${hyprctl} eval "$lua" 2>&1)" || {
-          ${notifySend} 'hyprmonitor' "$output"
-          exit 1
-        }
+        printf '[%s] selected %s\n' "$(date --iso-8601=seconds)" "$choice" >>"$log"
 
-        if [ "$output" != 'ok' ]; then
-          ${notifySend} 'hyprmonitor' "$output"
+        if [ "$use_tablet" = '1' ]; then
+          ${hyprctl} output create headless ${lib.escapeShellArg monitorConfig.tabletHeadless.name} >>"$log" 2>&1 || true
+        else
+          ${hyprctl} output remove ${lib.escapeShellArg monitorConfig.tabletHeadless.name} >>"$log" 2>&1 || true
         fi
+
+        request_id="$(date +%s%N)"
+        printf '%s\n%s\n' "$request_id" "$choice" >"''${XDG_RUNTIME_DIR:-/tmp}/hyprmonitor-profile-request"
+        printf '[%s] queued request %s for %s\n' "$(date --iso-8601=seconds)" "$request_id" "$choice" >>"$log"
       '';
   };
 

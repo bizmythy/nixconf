@@ -1,0 +1,14 @@
+diff --git a/src/config/lua/bindings/LuaBindingsConfigRules.cpp b/src/config/lua/bindings/LuaBindingsConfigRules.cpp
+index 8b0b0f8..fe00c5d 100644
+--- a/src/config/lua/bindings/LuaBindingsConfigRules.cpp
++++ b/src/config/lua/bindings/LuaBindingsConfigRules.cpp
+@@ -93,8 +93,7 @@ namespace {
+         }},
+         {"disabled", []() -> ILuaConfigValue* { return new CLuaConfigBool(false); },
+          [](ILuaConfigValue* v, CMonitorRuleParser& p) {
+-             if (*sc<const Config::BOOL*>(v->data()))
+-                 p.setDisabled();
++             p.rule().m_disabled = *sc<const Config::BOOL*>(v->data());
+              return true;
+          }},
+         {"transform", []() -> ILuaConfigValue* { return new CLuaConfigInt(0, 0, 7); },

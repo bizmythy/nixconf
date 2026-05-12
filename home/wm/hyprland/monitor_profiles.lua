@@ -11,10 +11,16 @@ local state = {
   sunshine_pid = nil,
 }
 local debounce_timer = nil
+local last_profile_request_id = nil
 
 local function state_path()
   local runtime_dir = os.getenv("XDG_RUNTIME_DIR") or "/tmp"
   return runtime_dir .. "/hyprmonitor-state.lua"
+end
+
+local function profile_request_path()
+  local runtime_dir = os.getenv("XDG_RUNTIME_DIR") or "/tmp"
+  return runtime_dir .. "/hyprmonitor-profile-request"
 end
 
 local function load_state()
@@ -28,6 +34,38 @@ local function load_state()
     state.active_profile = loaded.active_profile or state.active_profile
     state.sunshine_pid = loaded.sunshine_pid
   end
+end
+
+local function read_profile_request()
+  local file = io.open(profile_request_path(), "r")
+  if file == nil then
+    return nil, nil
+  end
+
+  local request_id = file:read("*l")
+  local label = file:read("*l")
+  file:close()
+
+  if label == nil then
+    label = request_id
+    request_id = label
+  end
+
+  if request_id == nil or request_id == "" or label == nil or label == "" then
+    return nil, nil
+  end
+
+  return request_id, label
+end
+
+local function load_desired_profile()
+  local request_id, label = read_profile_request()
+  if label == nil then
+    return
+  end
+
+  last_profile_request_id = request_id
+  state.active_profile = label
 end
 
 local function save_state()
@@ -89,6 +127,10 @@ local function get_profile(label)
   return profiles_by_label()[label]
 end
 
+local function is_valid_profile_label(label)
+  return label == default_label or profiles_by_label()[label] ~= nil
+end
+
 local function profile_labels()
   local labels = { default_label }
   for label, _ in pairs(profiles_by_label()) do
@@ -137,16 +179,13 @@ local function stop_sunshine()
   end
 end
 
-local function remove_headless()
-  util.run("hyprctl output remove " .. util.shell_quote(headless.name) .. " >/dev/null 2>&1")
-end
-
 local function apply_monitor(output, settings, overrides)
   local spec = {
     output = output,
     mode = overrides.mode or settings.mode,
     position = overrides.position or settings.position,
     scale = tostring(overrides.scale or settings.scale),
+    disabled = false,
   }
 
   for key, value in pairs(settings) do
@@ -177,8 +216,6 @@ local function apply_workspace_rules()
 end
 
 local function start_sunshine()
-  util.run("hyprctl output create headless " .. util.shell_quote(headless.name) .. " >/dev/null 2>&1")
-
   local monitor_id = nil
   for _ = 1, 30 do
     local monitor = hl.get_monitor(headless.name)
@@ -220,12 +257,17 @@ function M.apply_profile(label)
     return
   end
 
+  label = label or default_label
+  if not is_valid_profile_label(label) then
+    util.notify("hyprmonitor", "unknown monitor profile: " .. tostring(label))
+    return
+  end
+
   local profile = get_profile(label)
   local enabled_outputs = profile_enabled_outputs(profile)
   local overrides = profile_overrides(profile)
 
   stop_sunshine()
-  remove_headless()
 
   for _, key in ipairs(monitor_names()) do
     local monitor = host_config.monitors[key]
@@ -243,11 +285,12 @@ function M.apply_profile(label)
       mode = tostring(math.floor(headless.width / headless.downsample)) .. "x" .. tostring(math.floor(headless.height / headless.downsample)),
       position = headless.position,
       scale = tostring(headless.scale),
+      disabled = false,
     })
     start_sunshine()
   end
 
-  state.active_profile = label or default_label
+  state.active_profile = label
   save_state()
   switch_audio(profile)
 end
@@ -286,10 +329,22 @@ local function debounce_reapply()
   end, { timeout = 500, type = "oneshot" })
 end
 
+local function poll_profile_request()
+  local request_id, label = read_profile_request()
+  if request_id == nil or request_id == last_profile_request_id then
+    return
+  end
+
+  last_profile_request_id = request_id
+  M.apply_profile(label)
+end
+
 if host_config ~= nil then
   load_state()
+  load_desired_profile()
   apply_workspace_rules()
   M.apply_profile(state.active_profile)
+  M.profile_request_timer = hl.timer(poll_profile_request, { timeout = 250, type = "repeat" })
   hl.on("monitor.added", debounce_reapply)
   hl.on("monitor.removed", debounce_reapply)
 end
