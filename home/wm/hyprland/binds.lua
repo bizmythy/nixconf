@@ -9,10 +9,6 @@ local function bind_exec(keys, command, opts)
   hl.bind(keys, hl.dsp.exec_cmd(command), opts)
 end
 
-local function bind_dispatch(keys, dispatcher, opts)
-  bind_exec(keys, "hyprctl dispatch " .. dispatcher, opts)
-end
-
 bind_exec(mod .. " + RETURN", defaults.tty)
 bind_exec(mod .. " + E", defaults.fileManager)
 bind_exec(mod .. " + B", defaults.browser)
@@ -39,9 +35,7 @@ bind_exec(mod .. " + W", commands.kittyHyprNav .. " close")
 hl.bind(mod .. " + SHIFT + W", hl.dsp.window.close())
 hl.bind(mod .. " + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + SHIFT + M", hl.dsp.window.fullscreen())
-hl.bind(mod .. " + M", function()
-  monitors.choose_profile()
-end)
+bind_exec(mod .. " + M", monitors.choose_profile_command())
 
 bind_exec(mod .. " + left", commands.kittyHyprNav .. " left")
 bind_exec(mod .. " + H", commands.kittyHyprNav .. " left")
@@ -52,14 +46,14 @@ hl.bind(mod .. " + K", hl.dsp.focus({ direction = "up" }))
 hl.bind(mod .. " + down", hl.dsp.focus({ direction = "down" }))
 hl.bind(mod .. " + J", hl.dsp.focus({ direction = "down" }))
 
-bind_dispatch(mod .. " + ALT + left", "resizeactive -5% 0")
-bind_dispatch(mod .. " + ALT + H", "resizeactive -5% 0")
-bind_dispatch(mod .. " + ALT + right", "resizeactive 5% 0")
-bind_dispatch(mod .. " + ALT + L", "resizeactive 5% 0")
-bind_dispatch(mod .. " + ALT + up", "resizeactive 0 -5%")
-bind_dispatch(mod .. " + ALT + K", "resizeactive 0 -5%")
-bind_dispatch(mod .. " + ALT + down", "resizeactive 0 5%")
-bind_dispatch(mod .. " + ALT + J", "resizeactive 0 5%")
+hl.bind(mod .. " + ALT + left", hl.dsp.window.resize({ x = -80, y = 0, relative = true }))
+hl.bind(mod .. " + ALT + H", hl.dsp.window.resize({ x = -80, y = 0, relative = true }))
+hl.bind(mod .. " + ALT + right", hl.dsp.window.resize({ x = 80, y = 0, relative = true }))
+hl.bind(mod .. " + ALT + L", hl.dsp.window.resize({ x = 80, y = 0, relative = true }))
+hl.bind(mod .. " + ALT + up", hl.dsp.window.resize({ x = 0, y = -60, relative = true }))
+hl.bind(mod .. " + ALT + K", hl.dsp.window.resize({ x = 0, y = -60, relative = true }))
+hl.bind(mod .. " + ALT + down", hl.dsp.window.resize({ x = 0, y = 60, relative = true }))
+hl.bind(mod .. " + ALT + J", hl.dsp.window.resize({ x = 0, y = 60, relative = true }))
 
 hl.bind(mod .. " + Tab", function()
   hl.dispatch(hl.dsp.window.cycle_next())
@@ -68,7 +62,7 @@ end)
 
 for workspace = 1, 10 do
   local key = tostring(workspace % 10)
-  bind_dispatch(mod .. " + " .. key, "focusworkspaceoncurrentmonitor " .. workspace)
+  hl.bind(mod .. " + " .. key, hl.dsp.focus({ workspace = workspace, on_current_monitor = true }))
   hl.bind(mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = workspace }))
 end
 

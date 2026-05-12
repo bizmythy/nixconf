@@ -267,21 +267,18 @@ func queryActiveWindowClass() (string, error) {
 }
 
 func dispatchMoveFocus(direction string) error {
-	hyprDirection := map[string]string{
-		"left":  "l",
-		"right": "r",
-	}[direction]
-
-	if hyprDirection == "" {
+	switch direction {
+	case "left", "right":
+	default:
 		return fmt.Errorf("unknown Hyprland direction %q", direction)
 	}
 
-	_, err := hyprlandCommand("/dispatch movefocus " + hyprDirection)
+	_, err := hyprlandCommand(`/dispatch hl.dsp.focus({ direction = "` + direction + `" })`)
 	return err
 }
 
-func dispatchKillActive() error {
-	_, err := hyprlandCommand("/dispatch killactive")
+func dispatchCloseActive() error {
+	_, err := hyprlandCommand("/dispatch hl.dsp.window.close()")
 	return err
 }
 
@@ -290,7 +287,7 @@ func dispatchHyprlandFallback(action string) error {
 	case "left", "right":
 		return dispatchMoveFocus(action)
 	case "close":
-		return dispatchKillActive()
+		return dispatchCloseActive()
 	case "new-tab":
 		return nil
 	default:
@@ -310,7 +307,7 @@ func dispatchKittyShortcut(action string) error {
 		return fmt.Errorf("unknown kitty action %q", action)
 	}
 
-	_, err := hyprlandCommand("/dispatch sendshortcut SUPER," + key + ",activewindow")
+	_, err := hyprlandCommand(`/dispatch hl.dsp.send_shortcut({ mods = "SUPER", key = "` + key + `", window = "activewindow" })`)
 	return err
 }
 

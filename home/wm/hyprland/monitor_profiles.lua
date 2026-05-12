@@ -273,6 +273,10 @@ function M.choose_profile()
   end
 end
 
+function M.choose_profile_command()
+  return generated.commands.monitorProfileSelector
+end
+
 local function debounce_reapply()
   if debounce_timer ~= nil then
     debounce_timer:set_enabled(false)

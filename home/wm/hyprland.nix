@@ -12,6 +12,14 @@ let
   kittyHyprNav = import ./kitty-hypr-nav/package.nix { inherit pkgs lib; };
   switchaudio = import ./switchaudio/package.nix { inherit pkgs; };
   monitorConfig = import ./hyprland/monitor-config.nix;
+  hostMonitorConfig = monitorConfig.hosts.${osConfig.networking.hostName} or { };
+  profileLabels = [
+    "default"
+  ]
+  ++ lib.sort lib.lessThan (lib.attrNames (hostMonitorConfig.profiles or { }));
+  hyprlandPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+  hyprlandPortalPackage =
+    inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   toLua = lib.generators.toLua { };
 
   launchwork = mkHyprlaunch {
@@ -36,6 +44,53 @@ let
     ];
   };
 
+  monitorProfileSelector = pkgs.writeShellApplication {
+    name = "hypr-monitor-profile";
+    text =
+      let
+        menuItems = lib.concatMapStringsSep " " lib.escapeShellArg profileLabels;
+        fuzzel = lib.escapeShellArg (lib.getExe pkgs.fuzzel);
+        hyprctl = lib.escapeShellArg (lib.getExe' hyprlandPackage "hyprctl");
+        notifySend = lib.escapeShellArg (lib.getExe pkgs.libnotify);
+        cases = lib.concatMapStringsSep "\n" (
+          label:
+          let
+            lua = "require(\"nixconf.monitor_profiles\").apply_profile(${builtins.toJSON label})";
+          in
+          ''
+            ${lib.escapeShellArg label})
+              lua=${lib.escapeShellArg lua}
+              ;;
+          ''
+        ) profileLabels;
+      in
+      ''
+        choice="$(
+          printf '%s\n' ${menuItems} \
+            | ${fuzzel} --dmenu --prompt 'Monitors> '
+        )" || exit 0
+
+        [ -n "$choice" ] || exit 0
+
+        case "$choice" in
+        ${cases}
+          *)
+            ${notifySend} 'hyprmonitor' "unknown monitor profile: $choice"
+            exit 1
+            ;;
+        esac
+
+        output="$(${hyprctl} eval "$lua" 2>&1)" || {
+          ${notifySend} 'hyprmonitor' "$output"
+          exit 1
+        }
+
+        if [ "$output" != 'ok' ]; then
+          ${notifySend} 'hyprmonitor' "$output"
+        fi
+      '';
+  };
+
   generatedLua = {
     host = osConfig.networking.hostName;
     nvidia = osConfig.nvidiaEnable;
@@ -53,6 +108,7 @@ let
       kwalletInit = "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init";
       launchwork = lib.getExe launchwork;
       kittyHyprNav = lib.getExe kittyHyprNav;
+      monitorProfileSelector = lib.getExe monitorProfileSelector;
       switchaudio = lib.getExe switchaudio;
     };
     catppuccin = {
@@ -90,9 +146,8 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
-    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    portalPackage =
-      inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+    package = hyprlandPackage;
+    portalPackage = hyprlandPortalPackage;
     systemd.enable = false;
     xwayland = {
       enable = true;
@@ -104,6 +159,20 @@ in
     "hypr/hyprland.lua".text = ''
       local config_home = os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")
       package.path = config_home .. "/hypr/?.lua;" .. config_home .. "/hypr/?/init.lua;" .. package.path
+
+      local modules = {
+        "nixconf.generated",
+        "nixconf.util",
+        "nixconf.core",
+        "nixconf.animations",
+        "nixconf.autostart",
+        "nixconf.monitor_profiles",
+        "nixconf.binds",
+      }
+
+      for _, module in ipairs(modules) do
+        package.loaded[module] = nil
+      end
 
       require("nixconf.core")
       require("nixconf.animations")
@@ -132,5 +201,8 @@ in
     };
   };
 
-  home.packages = [ launchwork ];
+  home.packages = [
+    launchwork
+    monitorProfileSelector
+  ];
 }
