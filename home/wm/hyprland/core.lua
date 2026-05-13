@@ -1,5 +1,14 @@
 local generated = require("nixconf.generated")
 
+hl.window_rule({
+	name = "steam-big-picture-fullscreen",
+	match = {
+		class = "^steam$",
+		title = "^Steam Big Picture Mode$",
+	},
+	fullscreen = true,
+})
+
 hl.config({
 	xwayland = {
 		force_zero_scaling = true,
