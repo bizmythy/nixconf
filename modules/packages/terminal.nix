@@ -69,6 +69,7 @@
         rainfrog # postgres (and other db) tui viewer
         netscanner # scan for wifi and devices
         atac # postman from tui
+        tdx # markdown todo manager
         s-tui # cpu stress test/monitor
         atop # another top tool, shows lots of data
         iftop # show network interface usage

@@ -38,6 +38,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # markdown todo manager
+    tdx = {
+      url = "github:niklas-heer/tdx";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # database of nixpkgs for searching
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
