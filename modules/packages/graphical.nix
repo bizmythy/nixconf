@@ -156,6 +156,7 @@ in
   programs = {
     steam = lib.mkIf (vars.isPersonal config) {
       enable = true;
+      extest.enable = true;
       extraPackages = with pkgs; [
         hidapi
         python3Packages.hidapi
@@ -194,7 +195,7 @@ in
     enable = true;
     description = "Open Steam in the background at boot";
     serviceConfig = {
-      ExecStart = "${lib.getExe pkgs.steam} -nochatui -nofriendsui -silent %U";
+      ExecStart = "${lib.getExe config.programs.steam.package} -nochatui -nofriendsui -silent %U";
       wantedBy = [ "graphical-session.target" ];
       Restart = "on-failure";
       RestartSec = "5s";
