@@ -156,6 +156,10 @@ in
   programs = {
     steam = lib.mkIf (vars.isPersonal config) {
       enable = true;
+      extraPackages = with pkgs; [
+        hidapi
+        python3Packages.hidapi
+      ];
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
       localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
