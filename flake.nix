@@ -217,6 +217,7 @@
         );
         topiary-nushell = pkgs.topiary-nushell;
         xhisper-local = pkgs.xhisper-local;
+        linear-cli = pkgs.linear-cli;
       });
 
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
