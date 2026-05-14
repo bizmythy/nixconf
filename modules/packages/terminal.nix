@@ -70,6 +70,7 @@
         netscanner # scan for wifi and devices
         atac # postman from tui
         tdx # markdown todo manager
+        linear-cli # Linear issue tracker CLI
         s-tui # cpu stress test/monitor
         atop # another top tool, shows lots of data
         iftop # show network interface usage
