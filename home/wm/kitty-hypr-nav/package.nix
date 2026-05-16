@@ -17,7 +17,7 @@ pkgs.buildGo126Module {
   '';
 
   meta = with lib; {
-    description = "Kitty-aware Hyprland horizontal focus navigation";
+    description = "Kitty tab navigation helper with Hyprland edge fallback";
     license = licenses.mit;
     platforms = platforms.linux;
     mainProgram = "kitty-hypr-nav";

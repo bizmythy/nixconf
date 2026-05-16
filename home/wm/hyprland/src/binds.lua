@@ -36,6 +36,43 @@ local function run_workspace_launcher(directives, opts)
 	step()
 end
 
+local function send_active_shortcut(key)
+	hl.dispatch(hl.dsp.send_shortcut({ mods = mod, key = key, window = "activewindow" }))
+end
+
+local function active_window_class()
+	local window = hl.get_active_window()
+	if window == nil then
+		return nil
+	end
+
+	return window.class
+end
+
+local function navigate(action)
+	return function()
+		if active_window_class() == "kitty" then
+			local key = ({
+				left = "h",
+				right = "l",
+				close = "w",
+				new_tab = "t",
+			})[action]
+
+			if key ~= nil then
+				send_active_shortcut(key)
+			end
+			return
+		end
+
+		if action == "left" or action == "right" then
+			hl.dispatch(hl.dsp.focus({ direction = action }))
+		elseif action == "close" then
+			hl.dispatch(hl.dsp.window.close())
+		end
+	end
+end
+
 bind_exec(mod .. " + RETURN", defaults.tty)
 bind_exec(mod .. " + E", defaults.fileManager)
 bind_exec(mod .. " + B", defaults.browser)
@@ -50,7 +87,7 @@ hl.bind(mod .. " + SHIFT + D", function()
 	run_workspace_launcher(generated.launchers.launchwork)
 end)
 bind_exec(mod .. " + N", defaults.editor .. " " .. defaults.home .. "/nixconf")
-bind_exec(mod .. " + T", commands.kittyHyprNav .. " new-tab")
+hl.bind(mod .. " + T", navigate("new_tab"))
 
 bind_exec(mod .. " + SUPER_L", "fuzzel")
 bind_exec(mod .. " + V", "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy")
@@ -60,16 +97,16 @@ bind_exec(mod .. " + COMMA", "playerctl previous")
 bind_exec(mod .. " + PERIOD", "playerctl next")
 bind_exec(mod .. " + SPACE", "playerctl play-pause")
 
-bind_exec(mod .. " + W", commands.kittyHyprNav .. " close")
+hl.bind(mod .. " + W", navigate("close"))
 hl.bind(mod .. " + SHIFT + W", hl.dsp.window.close())
 hl.bind(mod .. " + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + SHIFT + M", hl.dsp.window.fullscreen())
 bind_exec(mod .. " + M", commands.monitorProfileSelector)
 
-bind_exec(mod .. " + left", commands.kittyHyprNav .. " left")
-bind_exec(mod .. " + H", commands.kittyHyprNav .. " left")
-bind_exec(mod .. " + right", commands.kittyHyprNav .. " right")
-bind_exec(mod .. " + L", commands.kittyHyprNav .. " right")
+hl.bind(mod .. " + left", navigate("left"))
+hl.bind(mod .. " + H", navigate("left"))
+hl.bind(mod .. " + right", navigate("right"))
+hl.bind(mod .. " + L", navigate("right"))
 hl.bind(mod .. " + up", hl.dsp.focus({ direction = "up" }))
 hl.bind(mod .. " + K", hl.dsp.focus({ direction = "up" }))
 hl.bind(mod .. " + down", hl.dsp.focus({ direction = "down" }))

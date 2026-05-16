@@ -6,7 +6,6 @@
   ...
 }:
 let
-  kittyHyprNav = import ../kitty-hypr-nav/package.nix { inherit pkgs lib; };
   switchaudio = import ../switchaudio/package.nix { inherit pkgs; };
   monitorConfig = import ./monitor-config.nix;
   hyprlandPackage = pkgs.hyprland;
@@ -47,7 +46,6 @@ let
     };
     commands = {
       kwalletInit = "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init";
-      kittyHyprNav = lib.getExe kittyHyprNav;
       monitorProfileSelector = "hypr-monitor-profile";
       switchaudio = lib.getExe switchaudio;
     };
