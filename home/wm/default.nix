@@ -6,7 +6,7 @@
 {
   imports = [
     ./waybar
-    ./hyprland.nix
+    ./hyprland
     ./hyprlock.nix
     ./hyprpaper.nix
     ./kitty-hypr-nav

@@ -1,6 +1,4 @@
 {
-  config,
-  inputs,
   lib,
   pkgs,
   osConfig,
@@ -8,9 +6,9 @@
   ...
 }:
 let
-  kittyHyprNav = import ./kitty-hypr-nav/package.nix { inherit pkgs lib; };
-  switchaudio = import ./switchaudio/package.nix { inherit pkgs; };
-  monitorConfig = import ./hyprland/monitor-config.nix;
+  kittyHyprNav = import ../kitty-hypr-nav/package.nix { inherit pkgs lib; };
+  switchaudio = import ../switchaudio/package.nix { inherit pkgs; };
+  monitorConfig = import ./monitor-config.nix;
   hostMonitorConfig = monitorConfig.hosts.${osConfig.networking.hostName} or { };
   profileLabels = [
     "default"
@@ -199,12 +197,12 @@ in
     "hypr/nixconf/generated.lua".text = ''
       return ${toLua generatedLua}
     '';
-    "hypr/nixconf/util.lua".source = ./hyprland/util.lua;
-    "hypr/nixconf/core.lua".source = ./hyprland/core.lua;
-    "hypr/nixconf/animations.lua".source = ./hyprland/animations.lua;
-    "hypr/nixconf/autostart.lua".source = ./hyprland/autostart.lua;
-    "hypr/nixconf/binds.lua".source = ./hyprland/binds.lua;
-    "hypr/nixconf/monitor_profiles.lua".source = ./hyprland/monitor_profiles.lua;
+    "hypr/nixconf/util.lua".source = ./util.lua;
+    "hypr/nixconf/core.lua".source = ./core.lua;
+    "hypr/nixconf/animations.lua".source = ./animations.lua;
+    "hypr/nixconf/autostart.lua".source = ./autostart.lua;
+    "hypr/nixconf/binds.lua".source = ./binds.lua;
+    "hypr/nixconf/monitor_profiles.lua".source = ./monitor_profiles.lua;
   };
 
   systemd.user.targets.hyprland-session = {
