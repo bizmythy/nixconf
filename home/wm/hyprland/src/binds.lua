@@ -1,5 +1,4 @@
 local generated = require("nixconf.generated")
-local monitors = require("nixconf.monitor_profiles")
 
 local defaults = generated.defaults
 local commands = generated.commands
@@ -65,9 +64,7 @@ bind_exec(mod .. " + W", commands.kittyHyprNav .. " close")
 hl.bind(mod .. " + SHIFT + W", hl.dsp.window.close())
 hl.bind(mod .. " + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + SHIFT + M", hl.dsp.window.fullscreen())
-hl.bind(mod .. " + M", function()
-	hl.exec_cmd(monitors.choose_profile_command())
-end)
+bind_exec(mod .. " + M", commands.monitorProfileSelector)
 
 bind_exec(mod .. " + left", commands.kittyHyprNav .. " left")
 bind_exec(mod .. " + H", commands.kittyHyprNav .. " left")
