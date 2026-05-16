@@ -4,6 +4,7 @@ local defaults = generated.defaults
 local commands = generated.commands
 local mod = "SUPER"
 local launcher_timers = {}
+local navigation_binds = {}
 
 ---@enum NavAction
 local NavAction = {
@@ -60,10 +61,6 @@ local function run_workspace_launcher(directives, opts)
 	step()
 end
 
-local function send_active_shortcut(key)
-	hl.dispatch(hl.dsp.send_shortcut({ mods = mod, key = key, window = "activewindow" }))
-end
-
 local function active_window_class()
 	local window = hl.get_active_window()
 	if window == nil then
@@ -73,16 +70,8 @@ local function active_window_class()
 	return window.class
 end
 
-local function navigate(action)
+local function default_navigation_dispatcher(action)
 	return function()
-		if active_window_class() == "kitty" then
-			local key = kitty_nav_keys[action]
-			if key ~= nil then
-				send_active_shortcut(key)
-				return
-			end
-		end
-
 		local direction = nav_directions[action]
 		if direction ~= nil then
 			hl.dispatch(hl.dsp.focus({ direction = direction }))
@@ -90,6 +79,34 @@ local function navigate(action)
 			hl.dispatch(hl.dsp.window.close())
 		end
 	end
+end
+
+local function update_navigation_bind_state()
+	local is_kitty = active_window_class() == "kitty"
+	for _, binds in ipairs(navigation_binds) do
+		local kitty_bind = binds.kitty
+		local use_kitty_bind = is_kitty and kitty_bind ~= nil
+
+		binds.default:set_enabled(not use_kitty_bind)
+		if kitty_bind ~= nil then
+			kitty_bind:set_enabled(use_kitty_bind)
+		end
+	end
+end
+
+local function bind_navigation(keys, action)
+	local binds = {
+		default = hl.bind(keys, default_navigation_dispatcher(action)),
+	}
+
+	local kitty_key = kitty_nav_keys[action]
+	if kitty_key ~= nil then
+		binds.kitty = hl.bind(keys, hl.dsp.send_shortcut({ mods = mod, key = kitty_key, window = "activewindow" }))
+		binds.kitty:set_enabled(false)
+	end
+
+	table.insert(navigation_binds, binds)
+	return binds.default
 end
 
 bind_exec(mod .. " + RETURN", defaults.tty)
@@ -106,7 +123,7 @@ hl.bind(mod .. " + SHIFT + D", function()
 	run_workspace_launcher(generated.launchers.launchwork)
 end)
 bind_exec(mod .. " + N", defaults.editor .. " " .. defaults.home .. "/nixconf")
-hl.bind(mod .. " + T", navigate(NavAction.NewTab))
+bind_navigation(mod .. " + T", NavAction.NewTab)
 
 bind_exec(mod .. " + SUPER_L", "fuzzel")
 bind_exec(mod .. " + V", "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy")
@@ -116,20 +133,20 @@ bind_exec(mod .. " + COMMA", "playerctl previous")
 bind_exec(mod .. " + PERIOD", "playerctl next")
 bind_exec(mod .. " + SPACE", "playerctl play-pause")
 
-hl.bind(mod .. " + W", navigate(NavAction.Close))
+bind_navigation(mod .. " + W", NavAction.Close)
 hl.bind(mod .. " + SHIFT + W", hl.dsp.window.close())
 hl.bind(mod .. " + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + SHIFT + M", hl.dsp.window.fullscreen())
 bind_exec(mod .. " + M", commands.monitorProfileSelector)
 
-hl.bind(mod .. " + left", navigate(NavAction.Left))
-hl.bind(mod .. " + H", navigate(NavAction.Left))
-hl.bind(mod .. " + right", navigate(NavAction.Right))
-hl.bind(mod .. " + L", navigate(NavAction.Right))
-hl.bind(mod .. " + up", navigate(NavAction.Up))
-hl.bind(mod .. " + K", navigate(NavAction.Up))
-hl.bind(mod .. " + down", navigate(NavAction.Down))
-hl.bind(mod .. " + J", navigate(NavAction.Down))
+bind_navigation(mod .. " + left", NavAction.Left)
+bind_navigation(mod .. " + H", NavAction.Left)
+bind_navigation(mod .. " + right", NavAction.Right)
+bind_navigation(mod .. " + L", NavAction.Right)
+bind_navigation(mod .. " + up", NavAction.Up)
+bind_navigation(mod .. " + K", NavAction.Up)
+bind_navigation(mod .. " + down", NavAction.Down)
+bind_navigation(mod .. " + J", NavAction.Down)
 
 hl.bind(mod .. " + ALT + left", hl.dsp.window.resize({ x = -80, y = 0, relative = true }))
 hl.bind(mod .. " + ALT + H", hl.dsp.window.resize({ x = -80, y = 0, relative = true }))
@@ -182,3 +199,7 @@ bind_exec(mod .. " + SHIFT + S", "hyprshot -z -m region")
 bind_exec(mod .. " + CONTROL + S", "hyprshot -z -m output")
 bind_exec(mod .. " + PRINT", "hyprshot -z -m output")
 bind_exec(mod .. " + SHIFT + PRINT", "hyprshot -z -m window")
+
+hl.on("window.active", update_navigation_bind_state)
+hl.on("window.class", update_navigation_bind_state)
+update_navigation_bind_state()
