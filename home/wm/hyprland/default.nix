@@ -50,6 +50,7 @@ let
           let
             profile = (hostMonitorConfig.profiles or { }).${label} or { };
           in
+          # bash
           ''
             ${lib.escapeShellArg label})
               use_tablet=${if profile.useTablet or false then "1" else "0"}
@@ -57,6 +58,7 @@ let
           ''
         ) profileLabels;
       in
+      # bash
       ''
         log="''${XDG_RUNTIME_DIR:-/tmp}/hypr-monitor-profile.log"
         {
@@ -170,33 +172,35 @@ in
   };
 
   xdg.configFile = {
-    "hypr/hyprland.lua".text = ''
-      local config_home = os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")
-      package.path = config_home .. "/hypr/?.lua;" .. config_home .. "/hypr/?/init.lua;" .. package.path
+    "hypr/hyprland.lua".text = # lua
+      ''
+        local config_home = os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")
+        package.path = config_home .. "/hypr/?.lua;" .. config_home .. "/hypr/?/init.lua;" .. package.path
 
-      local modules = {
-        "nixconf.generated",
-        "nixconf.util",
-        "nixconf.core",
-        "nixconf.animations",
-        "nixconf.autostart",
-        "nixconf.monitor_profiles",
-        "nixconf.binds",
-      }
+        local modules = {
+          "nixconf.generated",
+          "nixconf.util",
+          "nixconf.core",
+          "nixconf.animations",
+          "nixconf.autostart",
+          "nixconf.monitor_profiles",
+          "nixconf.binds",
+        }
 
-      for _, module in ipairs(modules) do
-        package.loaded[module] = nil
-      end
+        for _, module in ipairs(modules) do
+          package.loaded[module] = nil
+        end
 
-      require("nixconf.core")
-      require("nixconf.animations")
-      require("nixconf.autostart")
-      require("nixconf.monitor_profiles")
-      require("nixconf.binds")
-    '';
-    "hypr/nixconf/generated.lua".text = ''
-      return ${toLua generatedLua}
-    '';
+        require("nixconf.core")
+        require("nixconf.animations")
+        require("nixconf.autostart")
+        require("nixconf.monitor_profiles")
+        require("nixconf.binds")
+      '';
+    "hypr/nixconf/generated.lua".text = # lua
+      ''
+        return ${toLua generatedLua}
+      '';
     "hypr/nixconf/util.lua".source = ./util.lua;
     "hypr/nixconf/core.lua".source = ./core.lua;
     "hypr/nixconf/animations.lua".source = ./animations.lua;
