@@ -135,6 +135,32 @@ let
     monitor = monitorConfig;
   };
 
+  # lua module files in require order
+  luaModules = [
+    "core"
+    "util"
+    "animations"
+    "autostart"
+    "monitor_profiles"
+    "binds"
+  ];
+
+  luaModuleRequires = map (module: "nixconf.${module}") luaModules;
+
+  luaModuleConfigFiles = lib.listToAttrs (
+    map (module: {
+      name = "hypr/nixconf/${module}.lua";
+      value.source = ./src + "/${module}.lua";
+    }) luaModules
+  );
+
+  luaModuleClearLines = lib.concatMapStringsSep "\n" (module: ''package.loaded["${module}"] = nil'') (
+    [ "nixconf.generated" ] ++ luaModuleRequires
+  );
+  luaModuleRequireLines = lib.concatMapStringsSep "\n" (
+    module: ''require("${module}")''
+  ) luaModuleRequires;
+
 in
 {
   catppuccin.hyprland = {
@@ -177,37 +203,16 @@ in
         local config_home = os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")
         package.path = config_home .. "/hypr/?.lua;" .. config_home .. "/hypr/?/init.lua;" .. package.path
 
-        local modules = {
-          "nixconf.generated",
-          "nixconf.util",
-          "nixconf.core",
-          "nixconf.animations",
-          "nixconf.autostart",
-          "nixconf.monitor_profiles",
-          "nixconf.binds",
-        }
+        ${luaModuleClearLines}
 
-        for _, module in ipairs(modules) do
-          package.loaded[module] = nil
-        end
-
-        require("nixconf.core")
-        require("nixconf.animations")
-        require("nixconf.autostart")
-        require("nixconf.monitor_profiles")
-        require("nixconf.binds")
+        ${luaModuleRequireLines}
       '';
     "hypr/nixconf/generated.lua".text = # lua
       ''
         return ${toLua generatedLua}
       '';
-    "hypr/nixconf/util.lua".source = ./util.lua;
-    "hypr/nixconf/core.lua".source = ./core.lua;
-    "hypr/nixconf/animations.lua".source = ./animations.lua;
-    "hypr/nixconf/autostart.lua".source = ./autostart.lua;
-    "hypr/nixconf/binds.lua".source = ./binds.lua;
-    "hypr/nixconf/monitor_profiles.lua".source = ./monitor_profiles.lua;
-  };
+  }
+  // luaModuleConfigFiles;
 
   systemd.user.targets.hyprland-session = {
     Unit = {
