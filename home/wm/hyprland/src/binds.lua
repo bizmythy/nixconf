@@ -66,7 +66,7 @@ hl.bind(mod .. " + SHIFT + W", hl.dsp.window.close())
 hl.bind(mod .. " + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + SHIFT + M", hl.dsp.window.fullscreen())
 hl.bind(mod .. " + M", function()
-	monitors.choose_profile()
+	hl.exec_cmd(monitors.choose_profile_command())
 end)
 
 bind_exec(mod .. " + left", commands.kittyHyprNav .. " left")

@@ -11,10 +11,16 @@ local state = {
 	sunshine_pid = nil,
 }
 local debounce_timer = nil
+local last_profile_request_id = nil
 
 local function state_path()
 	local runtime_dir = os.getenv("XDG_RUNTIME_DIR") or "/tmp"
 	return runtime_dir .. "/hyprmonitor-state.lua"
+end
+
+local function profile_request_path()
+	local runtime_dir = os.getenv("XDG_RUNTIME_DIR") or "/tmp"
+	return runtime_dir .. "/hyprmonitor-profile-request"
 end
 
 local function load_state()
@@ -30,11 +36,36 @@ local function load_state()
 	end
 end
 
-local function trim(value)
-	if value == nil then
-		return nil
+local function read_profile_request()
+	local file = io.open(profile_request_path(), "r")
+	if file == nil then
+		return nil, nil
 	end
-	return tostring(value):match("^%s*(.-)%s*$")
+
+	local request_id = file:read("*l")
+	local label = file:read("*l")
+	file:close()
+
+	if label == nil then
+		label = request_id
+		request_id = label
+	end
+
+	if request_id == nil or request_id == "" or label == nil or label == "" then
+		return nil, nil
+	end
+
+	return request_id, label
+end
+
+local function load_desired_profile()
+	local request_id, label = read_profile_request()
+	if label == nil then
+		return
+	end
+
+	last_profile_request_id = request_id
+	state.active_profile = label
 end
 
 local function save_state()
@@ -80,7 +111,13 @@ local function monitor_names()
 end
 
 local function profiles_by_label()
-	return host_config.profiles or {}
+	local profiles = {}
+	for key, profile in pairs(host_config.profiles or {}) do
+		profile.key = key
+		profile.label = key
+		profiles[key] = profile
+	end
+	return profiles
 end
 
 local function get_profile(label)
@@ -139,20 +176,6 @@ local function stop_sunshine()
 	if state.sunshine_pid ~= nil then
 		util.run("kill " .. tostring(state.sunshine_pid) .. " >/dev/null 2>&1")
 		state.sunshine_pid = nil
-	end
-end
-
-local function run_hyprctl(args)
-	util.run(generated.commands.hyprctl .. " " .. args .. " >/dev/null 2>&1")
-end
-
-local function set_headless_enabled(enabled)
-	if enabled then
-		if hl.get_monitor(headless.name) == nil then
-			run_hyprctl("output create headless " .. util.shell_quote(headless.name))
-		end
-	else
-		run_hyprctl("output remove " .. util.shell_quote(headless.name))
 	end
 end
 
@@ -243,12 +266,10 @@ function M.apply_profile(label)
 	end
 
 	local profile = get_profile(label)
-	local use_tablet = profile ~= nil and profile.useTablet == true
 	local enabled_outputs = profile_enabled_outputs(profile)
 	local overrides = profile_overrides(profile)
 
 	stop_sunshine()
-	set_headless_enabled(use_tablet)
 
 	for _, key in ipairs(monitor_names()) do
 		local monitor = host_config.monitors[key]
@@ -260,7 +281,7 @@ function M.apply_profile(label)
 		end
 	end
 
-	if use_tablet then
+	if profile ~= nil and profile.useTablet then
 		hl.monitor({
 			output = headless.name,
 			mode = tostring(math.floor(headless.width / headless.downsample)) .. "x" .. tostring(
@@ -279,25 +300,31 @@ function M.apply_profile(label)
 end
 
 function M.choose_profile()
+	local labels = profile_labels()
 	local result = util.capture(
 		"printf %s "
-			.. util.shell_quote(util.join_lines(profile_labels()) .. "\n")
-			.. " | "
-			.. util.shell_quote(generated.commands.fuzzel)
-			.. " --dmenu --prompt "
+			.. util.shell_quote(util.join_lines(labels))
+			.. " | fuzzel --dmenu --index --prompt "
 			.. util.shell_quote("Monitors> ")
 	)
-	local selected = trim(result)
-	if selected == nil or selected == "" then
+	if result == nil or result == "" then
 		return
 	end
 
-	if not is_valid_profile_label(selected) then
-		util.notify("hyprmonitor", "unknown monitor profile: " .. selected)
+	local index = tonumber(result:match("%d+"))
+	if index == nil then
+		util.notify("hyprmonitor", "fuzzel returned a non-numeric selection")
 		return
 	end
 
-	M.apply_profile(selected)
+	local selected = labels[index + 1]
+	if selected ~= nil then
+		M.apply_profile(selected)
+	end
+end
+
+function M.choose_profile_command()
+	return generated.commands.monitorProfileSelector
 end
 
 local function debounce_reapply()
@@ -309,10 +336,22 @@ local function debounce_reapply()
 	end, { timeout = 500, type = "oneshot" })
 end
 
+local function poll_profile_request()
+	local request_id, label = read_profile_request()
+	if request_id == nil or request_id == last_profile_request_id then
+		return
+	end
+
+	last_profile_request_id = request_id
+	M.apply_profile(label)
+end
+
 if host_config ~= nil then
 	load_state()
+	load_desired_profile()
 	apply_workspace_rules()
 	M.apply_profile(state.active_profile)
+	M.profile_request_timer = hl.timer(poll_profile_request, { timeout = 250, type = "repeat" })
 	hl.on("monitor.added", debounce_reapply)
 	hl.on("monitor.removed", debounce_reapply)
 end
