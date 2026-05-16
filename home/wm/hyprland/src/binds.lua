@@ -5,6 +5,30 @@ local commands = generated.commands
 local mod = "SUPER"
 local launcher_timers = {}
 
+---@enum NavAction
+local NavAction = {
+	Up = 0,
+	Down = 1,
+	Left = 2,
+	Right = 3,
+	Close = 4,
+	NewTab = 5,
+}
+
+local nav_directions = {
+	[NavAction.Up] = "up",
+	[NavAction.Down] = "down",
+	[NavAction.Left] = "left",
+	[NavAction.Right] = "right",
+}
+
+local kitty_nav_keys = {
+	[NavAction.Left] = "h",
+	[NavAction.Right] = "l",
+	[NavAction.Close] = "w",
+	[NavAction.NewTab] = "t",
+}
+
 local function bind_exec(keys, command, opts)
 	hl.bind(keys, hl.dsp.exec_cmd(command), opts)
 end
@@ -52,22 +76,17 @@ end
 local function navigate(action)
 	return function()
 		if active_window_class() == "kitty" then
-			local key = ({
-				left = "h",
-				right = "l",
-				close = "w",
-				new_tab = "t",
-			})[action]
-
+			local key = kitty_nav_keys[action]
 			if key ~= nil then
 				send_active_shortcut(key)
 			end
 			return
 		end
 
-		if action == "left" or action == "right" then
-			hl.dispatch(hl.dsp.focus({ direction = action }))
-		elseif action == "close" then
+		local direction = nav_directions[action]
+		if direction ~= nil then
+			hl.dispatch(hl.dsp.focus({ direction = direction }))
+		elseif action == NavAction.Close then
 			hl.dispatch(hl.dsp.window.close())
 		end
 	end
@@ -87,7 +106,7 @@ hl.bind(mod .. " + SHIFT + D", function()
 	run_workspace_launcher(generated.launchers.launchwork)
 end)
 bind_exec(mod .. " + N", defaults.editor .. " " .. defaults.home .. "/nixconf")
-hl.bind(mod .. " + T", navigate("new_tab"))
+hl.bind(mod .. " + T", navigate(NavAction.NewTab))
 
 bind_exec(mod .. " + SUPER_L", "fuzzel")
 bind_exec(mod .. " + V", "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy")
@@ -97,20 +116,20 @@ bind_exec(mod .. " + COMMA", "playerctl previous")
 bind_exec(mod .. " + PERIOD", "playerctl next")
 bind_exec(mod .. " + SPACE", "playerctl play-pause")
 
-hl.bind(mod .. " + W", navigate("close"))
+hl.bind(mod .. " + W", navigate(NavAction.Close))
 hl.bind(mod .. " + SHIFT + W", hl.dsp.window.close())
 hl.bind(mod .. " + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + SHIFT + M", hl.dsp.window.fullscreen())
 bind_exec(mod .. " + M", commands.monitorProfileSelector)
 
-hl.bind(mod .. " + left", navigate("left"))
-hl.bind(mod .. " + H", navigate("left"))
-hl.bind(mod .. " + right", navigate("right"))
-hl.bind(mod .. " + L", navigate("right"))
-hl.bind(mod .. " + up", hl.dsp.focus({ direction = "up" }))
-hl.bind(mod .. " + K", hl.dsp.focus({ direction = "up" }))
-hl.bind(mod .. " + down", hl.dsp.focus({ direction = "down" }))
-hl.bind(mod .. " + J", hl.dsp.focus({ direction = "down" }))
+hl.bind(mod .. " + left", navigate(NavAction.Left))
+hl.bind(mod .. " + H", navigate(NavAction.Left))
+hl.bind(mod .. " + right", navigate(NavAction.Right))
+hl.bind(mod .. " + L", navigate(NavAction.Right))
+hl.bind(mod .. " + up", navigate(NavAction.Up))
+hl.bind(mod .. " + K", navigate(NavAction.Up))
+hl.bind(mod .. " + down", navigate(NavAction.Down))
+hl.bind(mod .. " + J", navigate(NavAction.Down))
 
 hl.bind(mod .. " + ALT + left", hl.dsp.window.resize({ x = -80, y = 0, relative = true }))
 hl.bind(mod .. " + ALT + H", hl.dsp.window.resize({ x = -80, y = 0, relative = true }))
