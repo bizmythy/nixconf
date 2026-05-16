@@ -79,8 +79,8 @@ local function navigate(action)
 			local key = kitty_nav_keys[action]
 			if key ~= nil then
 				send_active_shortcut(key)
+				return
 			end
-			return
 		end
 
 		local direction = nav_directions[action]
