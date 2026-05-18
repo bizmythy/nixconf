@@ -55,5 +55,10 @@ def main [repo_name: string] {
   git add flake.lock
   git commit -m "init: update flake.lock"
 
+  let user = "bizmythy"
+  let branch = (git branch --show-current)
+  gh repo create $"($user)/($repo_name)" --public --source . --remote origin
+  git push --set-upstream origin $branch
+
   print $"(ansi green)new repo configured:\n($repo_path)(ansi reset)"
 }
