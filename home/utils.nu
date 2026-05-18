@@ -26,6 +26,34 @@ export def pjp [] {
   $in | to json | bat -l json
 }
 
+# Copy the previous shell command to the system clipboard.
+export def copy-last-command [] {
+  let command = (
+    history
+    | get command
+    | reverse
+    | where {|cmd|
+        let trimmed = ($cmd | str trim)
+        ($trimmed != "copy-last-command") and ($trimmed != "clc")
+      }
+    | first
+  )
+
+  if ((which wl-copy | length) > 0) {
+    $command | wl-copy
+  } else if ((which xclip | length) > 0) {
+    $command | xclip -selection clipboard
+  } else if ((which pbcopy | length) > 0) {
+    $command | pbcopy
+  } else {
+    error make { msg: "No clipboard command found: install wl-copy, xclip, or pbcopy" }
+  }
+
+  print $"Copied: ($command)"
+}
+
+export alias clc = copy-last-command
+
 def safe-dir-cp [src dst] {
   use std/assert
   assert not ($dst | path exists) "output path already exists"
