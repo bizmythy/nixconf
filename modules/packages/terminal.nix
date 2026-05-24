@@ -96,6 +96,7 @@
         archivemount # mounting tar archives
         presenterm # terminal presentations
         screen # run commands in background
+        glow # view markdown in terminal
         (aspellWithDicts (ps: with ps; [ en ])) # spell check text files
 
         graphite-cli
