@@ -140,7 +140,10 @@ def clogs [] {
 }
 
 def fopen [search: string] {
-  fd $search ./ | fzf | nvim $in
+  let file = (fd $search ./ | fzf | str trim)
+  if ($file | is-not-empty) {
+    nvim $file
+  }
 }
 
 # Compress a directory as a tarball using zst compression
