@@ -33,9 +33,9 @@ export def copy-last-command [] {
     | get command
     | reverse
     | where {|cmd|
-        let trimmed = ($cmd | str trim)
-        ($trimmed != "copy-last-command") and ($trimmed != "clc")
-      }
+      let trimmed = ($cmd | str trim)
+      ($trimmed != "copy-last-command") and ($trimmed != "clc")
+    }
     | first
   )
 
@@ -46,7 +46,7 @@ export def copy-last-command [] {
   } else if ((which pbcopy | length) > 0) {
     $command | pbcopy
   } else {
-    error make { msg: "No clipboard command found: install wl-copy, xclip, or pbcopy" }
+    error make {msg: "No clipboard command found: install wl-copy, xclip, or pbcopy"}
   }
 
   print $"Copied: ($command)"
