@@ -218,19 +218,9 @@ end
 local function find_sunshine_output_index(output_name)
 	-- Sunshine's Linux output_name is its zero-based Wayland monitor list index,
 	-- not Hyprland's monitor ID.
-	local monitors = util.capture("hyprctl monitors")
-	if monitors == nil then
-		return nil
-	end
-
-	local index = 0
-	for line in monitors:gmatch("[^\n]+") do
-		local name = line:match("^Monitor%s+(%S+)%s+%(ID%s+%-?%d+%):")
-		if name ~= nil then
-			if name == output_name then
-				return index
-			end
-			index = index + 1
+	for index, monitor in ipairs(hl.get_monitors()) do
+		if monitor.name == output_name then
+			return index - 1
 		end
 	end
 
