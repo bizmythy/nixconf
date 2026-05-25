@@ -215,24 +215,45 @@ local function apply_workspace_rules()
 	end
 end
 
+local function find_sunshine_output_index(output_name)
+	-- Sunshine's Linux output_name is its zero-based Wayland monitor list index,
+	-- not Hyprland's monitor ID.
+	local monitors = util.capture("hyprctl monitors")
+	if monitors == nil then
+		return nil
+	end
+
+	local index = 0
+	for line in monitors:gmatch("[^\n]+") do
+		local name = line:match("^Monitor%s+(%S+)%s+%(ID%s+%-?%d+%):")
+		if name ~= nil then
+			if name == output_name then
+				return index
+			end
+			index = index + 1
+		end
+	end
+
+	return nil
+end
+
 local function start_sunshine()
-	local monitor_id = nil
+	local output_index = nil
 	for _ = 1, 30 do
-		local monitor = hl.get_monitor(headless.name)
-		if monitor ~= nil then
-			monitor_id = monitor.id
+		output_index = find_sunshine_output_index(headless.name)
+		if output_index ~= nil then
 			break
 		end
 		util.run("sleep 0.1")
 	end
 
-	if monitor_id == nil then
+	if output_index == nil then
 		util.notify("hyprmonitor", "unable to find tablet headless output")
 		return
 	end
 
 	local pid = util.capture(
-		"sh -c " .. util.shell_quote("sunshine output_name=" .. tostring(monitor_id) .. " >/dev/null 2>&1 & echo $!")
+		"sh -c " .. util.shell_quote("sunshine output_name=" .. tostring(output_index) .. " >/dev/null 2>&1 & echo $!")
 	)
 	if pid ~= nil then
 		state.sunshine_pid = tonumber(pid:match("%d+"))
