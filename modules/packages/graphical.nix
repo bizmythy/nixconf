@@ -7,6 +7,10 @@
   ...
 }:
 let
+  icat = pkgs.writeShellScriptBin "icat" ''
+    exec ${lib.getExe pkgs.kitty} +kitten icat "$@"
+  '';
+
   # nixpkgs exposes Zed as `zeditor`; add the expected `zed` binary to PATH.
   zed = pkgs.symlinkJoin {
     name = "zed";
@@ -94,6 +98,7 @@ in
         alacritty
         ghostty
         kitty
+        icat
 
         kdePackages.qtwayland
         kdePackages.qtsvg
