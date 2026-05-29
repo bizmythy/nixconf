@@ -89,6 +89,20 @@ let
       };
     };
 
+    drewdiracthinkpad = {
+      monitors = {
+        laptop = {
+          desc = "AU Optronics 0x323D";
+          workspace = 1;
+          settings = {
+            mode = "1920x1080@60.05";
+            position = "0x0";
+            scale = 1.0;
+          };
+        };
+      };
+    };
+
     theseus = {
       monitors = {
         laptop = {
