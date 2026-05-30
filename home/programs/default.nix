@@ -11,6 +11,7 @@
     ./feh.nix
     ./firefox.nix
     ./gh.nix
+    ./glow.nix
     ./helix.nix
     ./lazydocker.nix
     ./lazygit.nix
