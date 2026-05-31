@@ -5,6 +5,10 @@
 
 # configure neovim using nixvim
 {
+  # This flake intentionally shares the host nixpkgs with nixvim.
+  nixpkgs.source = pkgs.path;
+  version.enableNixpkgsReleaseCheck = false;
+
   # set up color scheme
   colorschemes.catppuccin = {
     enable = true;
