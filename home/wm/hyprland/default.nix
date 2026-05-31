@@ -118,14 +118,12 @@ in
     package = hyprlandPackage;
     portalPackage = hyprlandPortalPackage;
     systemd.enable = false;
+    configType = "lua";
     xwayland = {
       enable = true;
     };
     settings = { };
-  };
-
-  xdg.configFile = {
-    "hypr/hyprland.lua".text = # lua
+    extraConfig = # lua
       ''
         local config_home = os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")
         package.path = config_home .. "/hypr/?.lua;" .. config_home .. "/hypr/?/init.lua;" .. package.path
@@ -134,6 +132,9 @@ in
 
         ${luaModuleRequireLines}
       '';
+  };
+
+  xdg.configFile = {
     "hypr/nixconf/generated.lua".text = # lua
       ''
         return ${toLua generatedLua}
