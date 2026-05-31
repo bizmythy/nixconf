@@ -17,6 +17,7 @@ in
   # Theming
   catppuccin = {
     enable = true;
+    autoEnable = true;
     flavor = "mocha";
     # kvantum = {
     #   enable = true;

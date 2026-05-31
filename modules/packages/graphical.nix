@@ -212,7 +212,10 @@ in
     enable = true;
   };
 
-  catppuccin.enable = true;
+  catppuccin = {
+    enable = true;
+    autoEnable = true;
+  };
 
   qt = {
     enable = true;
