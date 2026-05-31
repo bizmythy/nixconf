@@ -22,6 +22,7 @@ in
   );
 
   protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
+  manix = inputs.manix.packages.${super.stdenv.hostPlatform.system}.manix;
   t3code = inputs.t3code.packages.${super.stdenv.hostPlatform.system}.default;
   tdx = inputs.tdx.packages.${super.stdenv.hostPlatform.system}.default;
   xhisper-local = super.callPackage ./pkgs/xhisper-local.nix {
