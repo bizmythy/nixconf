@@ -57,6 +57,7 @@ in
 
         # browsers
         inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+        google-chrome-stable
         # firefox in home manager
 
         qalculate-qt # calculator
