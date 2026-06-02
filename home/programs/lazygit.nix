@@ -49,8 +49,8 @@
       customCommands = [
         {
           # <c-f> is a built-in Lazygit binding for findBaseCommitForFixup
-          # in files/commit views, so use an actually free key instead.
-          key = "<c-g>";
+          # in files/commit views, so use uppercase F as the mnemonic key for format.
+          key = "F";
           context = "global";
           command = "nix fmt";
           description = "Run nix fmt";
@@ -58,7 +58,8 @@
           output = "log";
         }
         {
-          key = "<c-G>";
+          # Lazygit accepts control bindings only with lowercase letters.
+          key = "<c-g>";
           context = "global";
           command = "mask generate";
           description = "Run mask generate";
