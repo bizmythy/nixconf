@@ -133,7 +133,7 @@
           fileManager = "dolphin";
           browser = "zen-beta";
           calculator = "qalculate-qt";
-          editor = "zeditor";
+          editor = "zeditor --new";
           termEditor = "nvim";
           shell = "nu";
         };
