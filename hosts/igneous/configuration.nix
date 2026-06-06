@@ -36,6 +36,10 @@
     };
   };
 
+  networking.firewall.allowedTCPPorts = [
+    41707 # pi remote-control
+  ];
+
   fileSystems = {
     # mount windows partition
     "/mnt/windows" = {
