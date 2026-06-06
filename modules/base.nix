@@ -24,6 +24,11 @@ in
 
   boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
 
+  boot.kernel.sysctl = {
+    # Raise the inotify watch limit for large workspaces and dev tools.
+    "fs.inotify.max_user_watches" = 4 * 1024 * 1024;
+  };
+
   # Bootloader.
   boot.loader = {
     systemd-boot = {
