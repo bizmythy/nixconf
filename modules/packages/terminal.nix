@@ -107,6 +107,7 @@
         # docker tools
         docker-buildx
         dive
+        traefik # reverse proxy and load balancer
 
         # go tools
         go
