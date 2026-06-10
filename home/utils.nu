@@ -49,7 +49,7 @@ export def copy-last-command [] {
     error make {msg: "No clipboard command found: install wl-copy, xclip, or pbcopy"}
   }
 
-  print $"Copied: ($command)"
+  print $"Copied: (ansi cyan)($command)(ansi reset)"
 }
 
 export alias clc = copy-last-command
