@@ -104,6 +104,7 @@
         # document tools
         typst # latex-killer, create documents in expressive language
         mermaid-cli # generate diagrams and flowcharts from Mermaid markdown
+        d2 # generate diagrams from declarative text files
 
         # docker tools
         docker-buildx
