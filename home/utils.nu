@@ -83,9 +83,10 @@ def --env aws-switch-profile [profile?: string] {
     return
   }
 
-  let available_profiles = (aws-list-profiles | str join "\n")
+  let available_profiles = (aws-list-profiles)
   if not ($available_profiles | any {|available| $available == $profile }) {
-    error make {msg: $"Profile '($profile)' not configured in '($env.HOME)/.aws/config'.\nAvailable profiles: \n($available_profiles)"}
+    let available_profiles_text = ($available_profiles | str join "\n")
+    error make {msg: $"Profile '($profile)' not configured in '($env.HOME)/.aws/config'.\nAvailable profiles: \n($available_profiles_text)"}
   }
 
   $env.AWS_DEFAULT_PROFILE = $profile
