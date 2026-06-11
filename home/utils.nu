@@ -54,6 +54,46 @@ export def copy-last-command [] {
 
 export alias clc = copy-last-command
 
+# List AWS CLI profiles configured for this shell.
+def aws-list-profiles [] {
+  let result = (aws --no-cli-pager configure list-profiles | complete)
+  let profiles = ($result.stdout | str trim | lines)
+
+  if ($profiles | is-empty) {
+    let config_file = ($env.AWS_CONFIG_FILE? | default $"($env.HOME)/.aws/config")
+    error make {msg: $"No AWS profiles found in ($config_file), check if it exists and is properly configured."}
+  }
+
+  $profiles
+}
+
+# List all AWS CLI profiles.
+alias alp = aws-list-profiles
+
+# Set AWS profile for the current shell. Run without an argument to clear it.
+def --env aws-switch-profile [profile?: string] {
+  if ($profile == null) {
+    if "AWS_DEFAULT_PROFILE" in $env {
+      hide-env AWS_DEFAULT_PROFILE
+    }
+    if "AWS_PROFILE" in $env {
+      hide-env AWS_PROFILE
+    }
+    print "Zero argument provided, AWS profile cleared."
+    return
+  }
+
+  let available_profiles = (aws-list-profiles | str join "\n")
+  if not ($available_profiles | any {|available| $available == $profile }) {
+    error make {msg: $"Profile '($profile)' not configured in '($env.HOME)/.aws/config'.\nAvailable profiles: \n($available_profiles)"}
+  }
+
+  $env.AWS_DEFAULT_PROFILE = $profile
+  $env.AWS_PROFILE = $profile
+}
+
+alias asp = aws-switch-profile
+
 def safe-dir-cp [src dst] {
   use std/assert
   assert not ($dst | path exists) "output path already exists"
