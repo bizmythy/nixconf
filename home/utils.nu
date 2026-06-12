@@ -70,20 +70,19 @@ def aws-list-profiles [] {
 # List all AWS CLI profiles.
 alias alp = aws-list-profiles
 
-# Set AWS profile for the current shell. Run without an argument to clear it.
+# Set AWS profile for the current shell. Run without an argument to select one interactively.
 def --env aws-switch-profile [profile?: string] {
+  let available_profiles = (aws-list-profiles)
+  let profile = if ($profile == null) {
+    $available_profiles | input list --fuzzy "Select AWS profile"
+  } else {
+    $profile
+  }
+
   if ($profile == null) {
-    if "AWS_DEFAULT_PROFILE" in $env {
-      hide-env AWS_DEFAULT_PROFILE
-    }
-    if "AWS_PROFILE" in $env {
-      hide-env AWS_PROFILE
-    }
-    print "Zero argument provided, AWS profile cleared."
     return
   }
 
-  let available_profiles = (aws-list-profiles)
   if not ($available_profiles | any {|available| $available == $profile }) {
     let available_profiles_text = ($available_profiles | str join "\n")
     error make {msg: $"Profile '($profile)' not configured in '($env.HOME)/.aws/config'.\nAvailable profiles: \n($available_profiles_text)"}
