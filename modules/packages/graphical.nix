@@ -51,9 +51,7 @@ in
         thunderbird # email
         libreoffice-qt6-fresh # office suite
         # marktext # markdown wysiwyg editor
-        # logseq currently pulls in the insecure electron-39.8.10 package causing nix evaluation failures.
-        # Installed via Flatpak instead.
-        # logseq # markdown note-taking
+        logseq # markdown note-taking
         kdePackages.okular # pdf viewer
         system-config-printer
 

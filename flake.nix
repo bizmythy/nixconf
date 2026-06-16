@@ -92,8 +92,11 @@
       lib = nixpkgs.lib;
 
       nixpkgsSettings = {
-        # Allow unfree packages
+        # Allow unfree packages and Logseq's Electron runtime
         config.allowUnfree = true;
+        config.permittedInsecurePackages = [
+          "electron-39.8.10"
+        ];
         overlays = [
           (import ./overlays.nix { inherit inputs; })
         ];
