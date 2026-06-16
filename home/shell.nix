@@ -10,7 +10,7 @@ let
     BROWSER = vars.defaults.browser;
     NH_NO_CHECKS = 1;
     NIXPKGS_ALLOW_UNFREE = 1;
-    PAGER = "nvimpager";
+    PAGER = "bat";
     OP_ACCOUNT = "PLU4HO2JCJF23NNQK2ERWIYIZI"; # default to work account
     USE_DEPOT = "true"; # enable depot builds (temp)
   };
