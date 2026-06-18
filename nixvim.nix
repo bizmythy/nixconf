@@ -3,6 +3,19 @@
   ...
 }:
 
+let
+  tree-sitter-flatbuffers = pkgs.tree-sitter.buildGrammar {
+    language = "flatbuffers";
+    version = "0.1.0+rev=95e6f9e";
+    src = pkgs.fetchFromGitHub {
+      owner = "yuanchenxi95";
+      repo = "tree-sitter-flatbuffers";
+      rev = "95e6f9ef101ea97e870bf6eebc0bd1fdfbaf5490";
+      hash = "sha256-rxCgEpZ9NXjhq7ByJLtl/3Oy73dPv1EGG95k3eGOUVE=";
+    };
+    meta.homepage = "https://github.com/yuanchenxi95/tree-sitter-flatbuffers";
+  };
+in
 # configure neovim using nixvim
 {
   # This flake intentionally shares the host nixpkgs with nixvim.
@@ -100,6 +113,10 @@
     # treesitter configuration
     treesitter = {
       enable = true;
+      grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars ++ [
+        tree-sitter-flatbuffers
+      ];
+      languageRegister.flatbuffers = "fbs";
       settings = {
         highlight = {
           enable = true;
@@ -138,6 +155,12 @@
   ];
 
   extraConfigLua = ''
+    vim.filetype.add({
+      extension = {
+        fbs = "fbs",
+      },
+    })
+
     -- Baleia Setup
     vim.g.baleia = require("baleia").setup({ })
 
