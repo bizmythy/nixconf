@@ -77,6 +77,7 @@ in
         gimp # raster editor
         inkscape # vector editor
         feh # image viewer
+        ksnip # image annotation
         prusa-slicer # slicer for 3D printing
 
         vlc
