@@ -24,7 +24,15 @@ in
   protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
   manix = inputs.manix.packages.${super.stdenv.hostPlatform.system}.manix;
   t3code = inputs.t3code.packages.${super.stdenv.hostPlatform.system}.default;
-  tdx = inputs.tdx.packages.${super.stdenv.hostPlatform.system}.default;
+  # Upstream currently hard-codes macOS pbcopy/pbpaste; use Wayland wl-clipboard.
+  tdx = inputs.tdx.packages.${super.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
+    patches = (oldAttrs.patches or [ ]) ++ [ ./pkgs/tdx-clipboard-linux.patch ];
+    nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ super.makeWrapper ];
+    postInstall = (oldAttrs.postInstall or "") + ''
+      wrapProgram $out/bin/tdx \
+        --prefix PATH : ${super.lib.makeBinPath [ super.wl-clipboard ]}
+    '';
+  });
   xhisper-local = super.callPackage ./pkgs/xhisper-local.nix {
     whisperCpp = super.whisper-cpp;
   };
