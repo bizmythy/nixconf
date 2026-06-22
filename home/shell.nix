@@ -66,7 +66,21 @@ in
           hash = "sha256-0fw0fJSlUnT5vbBHDubqLrk3F+OU7CE15vIeU295C4w=";
         };
 
-        formatInput = input: "use ${nuscripts}/custom-completions/${input}/${input}-completions.nu *";
+        cargoCompletions = pkgs.runCommand "cargo-completions.nu" { } ''
+          cp ${nuscripts}/custom-completions/cargo/cargo-completions.nu $out
+          substituteInPlace $out \
+            --replace-fail \
+              "\$metadata | from json | get workspace_members | split column ' ' | get column1" \
+              "let parsed_metadata = (\$metadata | from json); \$parsed_metadata.packages | where id in \$parsed_metadata.workspace_members | get name"
+        '';
+
+        completionPath =
+          input:
+          if input == "cargo" then
+            cargoCompletions
+          else
+            "${nuscripts}/custom-completions/${input}/${input}-completions.nu";
+        formatInput = input: "source ${completionPath input}";
         formatCompletions = inputs: (builtins.concatStringsSep "\n" (map formatInput inputs)) + "\n";
       in
       {
