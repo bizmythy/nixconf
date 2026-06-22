@@ -98,6 +98,7 @@ in
         };
         extraConfig =
           formatCompletions [
+            "cargo"
             "curl"
             "less"
             "make"
