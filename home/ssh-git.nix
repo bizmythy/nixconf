@@ -111,6 +111,20 @@ in
         core.hooksPath = ".githooks";
         core.editor = vars.defaults.termEditor;
 
+        # speed up large Git LFS uploads/downloads
+        lfs = {
+          # Default is 8; a modest increase tends to better saturate fast links.
+          concurrenttransfers = 16;
+          # Avoid restarting large transfers during brief idle/stall periods.
+          activitytimeout = 60;
+          # Use resumable uploads when the LFS server advertises tus.io support.
+          tustransfers = true;
+          transfer = {
+            # Default is 100; fewer Batch API round trips for many LFS objects.
+            batchSize = 256;
+          };
+        };
+
         # 1password ssh commit signing
         commit.gpgsign = true;
       }
