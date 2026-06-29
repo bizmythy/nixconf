@@ -51,7 +51,6 @@ in
         thunderbird # email
         libreoffice-qt6-fresh # office suite
         # marktext # markdown wysiwyg editor
-        logseq # markdown note-taking
         kdePackages.okular # pdf viewer
         system-config-printer
 
@@ -122,6 +121,8 @@ in
         if (vars.isPersonal config) then
           [
             qbittorrent
+
+            logseq # markdown note-taking
 
             # jellyfin-mpv-shim
 
