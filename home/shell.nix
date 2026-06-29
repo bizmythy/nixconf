@@ -184,6 +184,7 @@ in
       enableZshIntegration = false;
       enableFishIntegration = false;
       enableBashIntegration = false;
+      enableNushellIntegration = false;
     };
 
     starship = {
