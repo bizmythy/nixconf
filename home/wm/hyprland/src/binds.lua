@@ -95,7 +95,7 @@ end
 bind_exec(mod .. " + RETURN", defaults.tty)
 bind_exec(mod .. " + E", defaults.fileManager)
 bind_exec(mod .. " + B", defaults.browser)
-bind_exec(mod .. " + R", "xhisper-local")
+-- bind_exec(mod .. " + R", "xhisper-local") -- local voice dictation (temporarily disabled)
 bind_exec(mod .. " + SHIFT + B", defaults.browser .. " --private-window duckduckgo.com")
 bind_exec(mod .. " + P", "hyprpicker -a")
 bind_exec(mod .. " + EQUAL", defaults.calculator)

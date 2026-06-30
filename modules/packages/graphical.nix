@@ -114,7 +114,7 @@ in
         mesa-demos # grahphics demos for testing GPU
         pulseaudio # utilities for pulseaudio control, works against wireplumber emulated pulseaudio
 
-        xhisper-local # local voice to text transcription
+        # xhisper-local # local voice to text transcription (temporarily disabled)
         hidapi # needed for steam controller
       ]
       ++ (
