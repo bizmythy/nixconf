@@ -156,12 +156,15 @@
         # ssm-session-manager-plugin
       ];
 
-      aiTools = with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
-        claude-code
-        codex
-        pi
-        # gemini-cli
-      ];
+      aiTools =
+        # claude-code comes from the overlay (overlays.nix), which bumps it
+        # ahead of the version pinned in the llm-agents.nix input.
+        [ pkgs.claude-code ]
+        ++ (with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
+          codex
+          pi
+          # gemini-cli
+        ]);
     in
     (nixSourcced ++ aiTools);
 

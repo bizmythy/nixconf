@@ -21,6 +21,42 @@ in
     }
   );
 
+  # Bump claude-code ahead of the version pinned in the llm-agents.nix input,
+  # which lags Anthropic's `/latest` release pointer. Override the upstream
+  # package's version + binary src so we get the newest build (needed for new
+  # model availability, e.g. Sonnet 5). Remove this once llm-agents catches up.
+  #
+  # hiPrio: the dirac module also installs claude-code (from the same
+  # llm-agents input, via lib.mkBefore) at the pinned version, so both land in
+  # environment.systemPackages. Without a priority bump that older build would
+  # win the /bin/claude collision. hiPrio makes this newer one win.
+  claude-code =
+    let
+      version = "2.1.197";
+      hashes = {
+        x86_64-linux = "sha256-9U5py8ibLaYaQVcAr3/1KhR+hiUX1PGw7s92hEjPf4M=";
+        aarch64-linux = "sha256-+0hHPEZ8J2Fax5mnVPTvC2jDY+RZbO+7WcOBXVGgzIo=";
+        x86_64-darwin = "sha256-XopXzHqSN38HRPpMeRkc+T1LJsecuRmwekB1Ef7RviY=";
+        aarch64-darwin = "sha256-jMDE0eTrHco7DMkqsC7jUF3nZOAj+MkBdhwWe3IEH7g=";
+      };
+      platformMap = {
+        x86_64-linux = "linux-x64";
+        aarch64-linux = "linux-arm64";
+        x86_64-darwin = "darwin-x64";
+        aarch64-darwin = "darwin-arm64";
+      };
+      system = super.stdenv.hostPlatform.system;
+    in
+    super.lib.hiPrio (
+      inputs.llm-agents.packages.${system}.claude-code.overrideAttrs (_: {
+        inherit version;
+        src = super.fetchurl {
+          url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/${version}/${platformMap.${system}}/claude";
+          hash = hashes.${system};
+        };
+      })
+    );
+
   protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
   manix = inputs.manix.packages.${super.stdenv.hostPlatform.system}.manix;
   t3code = inputs.t3code.packages.${super.stdenv.hostPlatform.system}.default;
