@@ -97,7 +97,6 @@
         presenterm # terminal presentations
         screen # run commands in background
         glow # view markdown in terminal
-        tuicr # github PR review in terminal
         (aspellWithDicts (ps: with ps; [ en ])) # spell check text files
 
         graphite-cli
