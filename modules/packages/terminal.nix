@@ -97,6 +97,7 @@
         presenterm # terminal presentations
         screen # run commands in background
         glow # view markdown in terminal
+        herdr # terminal multiplexer with agent integrations
         (aspellWithDicts (ps: with ps; [ en ])) # spell check text files
 
         graphite-cli
