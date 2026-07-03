@@ -20,7 +20,12 @@
   programs.stylua.enable = true;
   programs.keep-sorted.enable = true;
   programs.ruff.enable = true;
-  programs.toml-sort.enable = true;
+  programs.toml-sort = {
+    enable = true;
+    excludes = [
+      "home/programs/herdr/config.toml"
+    ];
+  };
   programs.gofmt.enable = true;
 
   settings.formatter.nufmt = {
