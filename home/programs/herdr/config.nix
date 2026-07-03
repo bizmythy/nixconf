@@ -109,6 +109,38 @@
     #     command = "lazygit";
     #   }
     # ];
+    command = [
+      {
+        key = "alt+h";
+        type = "plugin_action";
+        command = "drew.herdr-keybinds.navigate-left";
+      }
+      {
+        key = "alt+j";
+        type = "plugin_action";
+        command = "drew.herdr-keybinds.navigate-down";
+      }
+      {
+        key = "alt+k";
+        type = "plugin_action";
+        command = "drew.herdr-keybinds.navigate-up";
+      }
+      {
+        key = "alt+l";
+        type = "plugin_action";
+        command = "drew.herdr-keybinds.navigate-right";
+      }
+      {
+        key = "alt+g";
+        type = "plugin_action";
+        command = "drew.herdr-keybinds.focus-git";
+      }
+      {
+        key = "alt+t";
+        type = "plugin_action";
+        command = "drew.herdr-keybinds.focus-ws";
+      }
+    ];
 
     # Legacy indexed shortcut config is still parsed for compatibility.
     # Prefer switch_tab, switch_workspace, and focus_agent for new configs.
