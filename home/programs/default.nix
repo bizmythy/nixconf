@@ -13,6 +13,7 @@
     ./gh.nix
     ./glow.nix
     ./helix.nix
+    ./herdr
     ./lazydocker.nix
     ./lazygit.nix
     ./nvim.nix
