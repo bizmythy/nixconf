@@ -57,12 +57,6 @@ let
       command = keybindsCommand "toggle-lazygit" [ ];
     }
     {
-      id = "focus-ws";
-      key = "alt+t";
-      title = "Focus ws tab";
-      command = actionCommand "focus-tab" "ws";
-    }
-    {
       id = "new-workspace-picker";
       key = "alt+n";
       title = "New workspace from directory picker";

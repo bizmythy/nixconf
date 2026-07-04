@@ -60,8 +60,10 @@ type paneInfo struct {
 	CWD           string `json:"cwd"`
 	Focused       bool   `json:"focused"`
 	ForegroundCWD string `json:"foreground_cwd"`
+	Label         string `json:"label"`
 	PaneID        string `json:"pane_id"`
 	TabID         string `json:"tab_id"`
+	Title         string `json:"title"`
 	WorkspaceID   string `json:"workspace_id"`
 }
 
@@ -239,6 +241,11 @@ func (c *client) navigate(dir Direction) error {
 	ctx, err := c.resolveContext()
 	if err != nil {
 		return err
+	}
+	if active, err := c.isActiveLazygitOverlay(ctx); err != nil {
+		return err
+	} else if active {
+		return nil
 	}
 
 	edges, err := c.paneEdges(ctx.PaneID)
@@ -487,6 +494,25 @@ func (c *client) currentPane() (paneInfo, error) {
 	}
 
 	return result.Pane, nil
+}
+
+func (c *client) isActiveLazygitOverlay(ctx context) (bool, error) {
+	if ctx.WorkspaceID == "" || ctx.PaneID == "" {
+		return false, nil
+	}
+	state, _, err := loadPluginState()
+	if err != nil {
+		return false, err
+	}
+	if state.LazygitPanes[ctx.WorkspaceID] != ctx.PaneID {
+		return false, nil
+	}
+
+	pane, err := c.currentPane()
+	if err != nil {
+		return false, err
+	}
+	return pane.PaneID == ctx.PaneID && firstNonEmpty(pane.Label, pane.Title) == lazygitEntrypoint, nil
 }
 
 func loadPluginState() (pluginState, string, error) {
