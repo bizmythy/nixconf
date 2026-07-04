@@ -17,10 +17,6 @@
       disableStartupPopups = true;
       notARepository = "quit";
 
-      gui = {
-        showBottomLine = false;
-      };
-
       os = {
         editPreset = "zed";
 
