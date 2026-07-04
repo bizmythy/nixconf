@@ -78,6 +78,18 @@ func newRootCommand() *cobra.Command {
 			},
 		},
 		&cobra.Command{
+			Use:   "watch-lazygit [lazygit]",
+			Short: "Run lazygit and restart it when the focused Herdr workspace changes",
+			Args:  cobra.MaximumNArgs(1),
+			RunE: func(_ *cobra.Command, args []string) error {
+				lazygit := "lazygit"
+				if len(args) == 1 {
+					lazygit = args[0]
+				}
+				return watchLazygit(lazygit)
+			},
+		},
+		&cobra.Command{
 			Use:   "new-workspace-picker [fzf]",
 			Short: "Open the workspace picker overlay or run it inside the picker pane",
 			Args:  cobra.MaximumNArgs(1),

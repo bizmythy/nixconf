@@ -69,8 +69,8 @@ func newClient() (*client, error) {
 	return &client{socketPath: socketPath}, nil
 }
 
-// call sends one JSON RPC request to Herdr and decodes its result into out.
-func (c *client) call(method string, params map[string]any, out any) error {
+// encodeRequest returns one newline-delimited JSON RPC request payload.
+func (c *client) encodeRequest(method string, params map[string]any) ([]byte, string, error) {
 	c.nextID++
 	id := fmt.Sprintf("herdr-keybinds-%d", c.nextID)
 	if params == nil {
@@ -85,26 +85,24 @@ func (c *client) call(method string, params map[string]any, out any) error {
 
 	payload, err := json.Marshal(request)
 	if err != nil {
-		return fmt.Errorf("encode %s request: %w", method, err)
+		return nil, "", fmt.Errorf("encode %s request: %w", method, err)
 	}
 	payload = append(payload, '\n')
+	return payload, id, nil
+}
 
+// dial connects to the Herdr socket for one RPC operation.
+func (c *client) dial(method string) (net.Conn, error) {
 	dialer := net.Dialer{Timeout: 150 * time.Millisecond}
 	conn, err := dialer.Dial("unix", c.socketPath)
 	if err != nil {
-		return fmt.Errorf("dial Herdr socket %s for %s: %w", c.socketPath, method, err)
+		return nil, fmt.Errorf("dial Herdr socket %s for %s: %w", c.socketPath, method, err)
 	}
-	defer conn.Close()
+	return conn, nil
+}
 
-	if _, err := conn.Write(payload); err != nil {
-		return fmt.Errorf("write %s request: %w", method, err)
-	}
-
-	line, err := bufio.NewReader(conn).ReadBytes('\n')
-	if err != nil {
-		return fmt.Errorf("read %s response: %w", method, err)
-	}
-
+// decodeResponse decodes a JSON RPC response envelope and optional result.
+func decodeResponse(method string, id string, line []byte, out any) error {
 	var envelope response
 	if err := json.Unmarshal(line, &envelope); err != nil {
 		return fmt.Errorf("decode %s response: %w", method, err)
@@ -126,6 +124,31 @@ func (c *client) call(method string, params map[string]any, out any) error {
 	}
 
 	return nil
+}
+
+// call sends one JSON RPC request to Herdr and decodes its result into out.
+func (c *client) call(method string, params map[string]any, out any) error {
+	payload, id, err := c.encodeRequest(method, params)
+	if err != nil {
+		return err
+	}
+
+	conn, err := c.dial(method)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	if _, err := conn.Write(payload); err != nil {
+		return fmt.Errorf("write %s request: %w", method, err)
+	}
+
+	line, err := bufio.NewReader(conn).ReadBytes('\n')
+	if err != nil {
+		return fmt.Errorf("read %s response: %w", method, err)
+	}
+
+	return decodeResponse(method, id, line, out)
 }
 
 // currentPane returns the active pane, honoring caller pane env overrides.

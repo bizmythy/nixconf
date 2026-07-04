@@ -58,6 +58,21 @@ in
     );
 
   protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
+  herdr-keybinds = super.callPackage ./home/programs/herdr/keybinds-plugin/package.nix { };
+  lg-herdr-watch =
+    super.runCommand "lg-herdr-watch-0.1.0"
+      {
+        meta = with super.lib; {
+          description = "Restart lazygit when the focused Herdr workspace changes";
+          license = licenses.mit;
+          platforms = platforms.linux;
+          mainProgram = "lg-herdr-watch";
+        };
+      }
+      ''
+        mkdir -p "$out/bin"
+        ln -s "${self.herdr-keybinds}/bin/lg-herdr-watch" "$out/bin/lg-herdr-watch"
+      '';
   manix = inputs.manix.packages.${super.stdenv.hostPlatform.system}.manix;
   t3code = inputs.t3code.packages.${super.stdenv.hostPlatform.system}.default;
   # Upstream currently hard-codes macOS pbcopy/pbpaste; use Wayland wl-clipboard.

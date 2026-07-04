@@ -10,6 +10,14 @@ pkgs.buildGo126Module {
   src = ./.;
   vendorHash = "sha256-7K17JaXFsjf163g5PXCb5ng2gYdotnZ2IDKk8KFjNj0=";
 
+  nativeBuildInputs = [ pkgs.makeWrapper ];
+
+  postInstall = ''
+    makeWrapper "$out/bin/herdr-keybinds" "$out/bin/lg-herdr-watch" \
+      --add-flags watch-lazygit \
+      --prefix PATH : "${lib.makeBinPath [ pkgs.lazygit ]}"
+  '';
+
   meta = with lib; {
     description = "Herdr keybinding helper plugin";
     license = licenses.mit;

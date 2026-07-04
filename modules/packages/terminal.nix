@@ -98,6 +98,7 @@
         screen # run commands in background
         glow # view markdown in terminal
         herdr # terminal multiplexer with agent integrations
+        lg-herdr-watch # lazygit window synced to focused Herdr workspace
         (aspellWithDicts (ps: with ps; [ en ])) # spell check text files
 
         graphite-cli

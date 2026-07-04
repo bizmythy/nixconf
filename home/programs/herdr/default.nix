@@ -7,7 +7,7 @@
 
 let
   toml = pkgs.formats.toml { };
-  keybindsPlugin = pkgs.callPackage ./keybinds-plugin/package.nix { };
+  keybindsPlugin = pkgs.herdr-keybinds;
   pluginId = "drew.herdr-keybinds";
   pluginDir = "herdr/plugins/${pluginId}";
   manifestPath = "${config.xdg.configHome}/${pluginDir}/herdr-plugin.toml";
