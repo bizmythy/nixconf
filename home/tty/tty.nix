@@ -103,7 +103,8 @@ in
         confirm-close-surface = false;
         link-url = true;
 
-        custom-shader = "${ghosttyShaders}/bloom.glsl";
+        # Temporarily disabled: glow/bloom shader is distracting.
+        # custom-shader = "${ghosttyShaders}/bloom.glsl";
       };
       enableBashIntegration = true;
       enableZshIntegration = true;
