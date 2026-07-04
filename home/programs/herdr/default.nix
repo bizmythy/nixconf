@@ -16,15 +16,15 @@ let
     "tab"
     "workspace"
   ];
-  actionCommand = subcommand: arg: [
-    (lib.getExe keybindsPlugin)
-    subcommand
-    arg
-  ];
-  setupCommand = [
-    (lib.getExe keybindsPlugin)
-    "setup-workspace"
-  ];
+  keybindsCommand =
+    subcommand: args:
+    [
+      (lib.getExe keybindsPlugin)
+      subcommand
+    ]
+    ++ args;
+  actionCommand = subcommand: arg: keybindsCommand subcommand [ arg ];
+  setupCommand = keybindsCommand "setup-workspace" [ ];
   keybindActions = [
     {
       id = "navigate-left";
@@ -61,6 +61,12 @@ let
       key = "alt+t";
       title = "Focus ws tab";
       command = actionCommand "focus-tab" "ws";
+    }
+    {
+      id = "new-workspace-picker";
+      key = "alt+n";
+      title = "New workspace from directory picker";
+      command = keybindsCommand "new-workspace-picker" [ (lib.getExe pkgs.fuzzel) ];
     }
   ];
   keybindPluginActions = map (action: {

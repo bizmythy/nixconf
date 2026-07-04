@@ -2,11 +2,13 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -40,6 +42,7 @@ type response struct {
 }
 
 type paneInfo struct {
+	CWD         string `json:"cwd"`
 	Focused     bool   `json:"focused"`
 	PaneID      string `json:"pane_id"`
 	TabID       string `json:"tab_id"`
@@ -57,8 +60,14 @@ type tabInfo struct {
 
 type workspaceInfo struct {
 	Focused     bool   `json:"focused"`
+	Label       string `json:"label"`
 	Number      int    `json:"number"`
 	WorkspaceID string `json:"workspace_id"`
+}
+
+type workspaceChoice struct {
+	Display string
+	Path    string
 }
 
 type paneEdges struct {
@@ -76,7 +85,7 @@ type context struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fatalf("usage: %s navigate <left|right|up|down>|focus-tab <label>|setup-workspace", filepath.Base(os.Args[0]))
+		fatalf("usage: %s navigate <left|right|up|down>|focus-tab <label>|new-workspace-picker [fuzzel]|setup-workspace", filepath.Base(os.Args[0]))
 	}
 
 	c, err := newClient()
@@ -99,6 +108,15 @@ func main() {
 			fatalf("usage: %s focus-tab <label>", filepath.Base(os.Args[0]))
 		}
 		must(c.focusTabLabel(os.Args[2]))
+	case "new-workspace-picker":
+		if len(os.Args) > 3 {
+			fatalf("usage: %s new-workspace-picker [fuzzel]", filepath.Base(os.Args[0]))
+		}
+		fuzzel := "fuzzel"
+		if len(os.Args) == 3 {
+			fuzzel = os.Args[2]
+		}
+		must(c.newWorkspacePicker(fuzzel))
 	case "setup-workspace":
 		must(c.setupWorkspace())
 	default:
@@ -225,6 +243,140 @@ func (c *client) focusTabLabel(label string) error {
 	}
 
 	return nil
+}
+
+func (c *client) newWorkspacePicker(fuzzel string) error {
+	home, err := homeDir()
+	if err != nil {
+		return err
+	}
+
+	choices, err := workspaceChoicesFor(home, []string{"personal", "dirac"})
+	if err != nil {
+		return err
+	}
+	if len(choices) == 0 {
+		return nil
+	}
+
+	selected, err := chooseWorkspace(fuzzel, choices)
+	if err != nil {
+		return err
+	}
+	if selected == nil {
+		return nil
+	}
+
+	return c.openOrFocusWorkspace(selected.Path, filepath.Base(selected.Path))
+}
+
+func (c *client) openOrFocusWorkspace(cwd string, label string) error {
+	workspaceID, err := c.workspaceIDForCWD(cwd)
+	if err != nil {
+		return err
+	}
+	if workspaceID != "" {
+		return c.call("workspace.focus", map[string]any{"workspace_id": workspaceID}, nil)
+	}
+
+	return c.call("workspace.create", map[string]any{
+		"cwd":   cwd,
+		"focus": true,
+		"label": label,
+	}, nil)
+}
+
+func (c *client) workspaceIDForCWD(cwd string) (string, error) {
+	var result struct {
+		Panes []paneInfo `json:"panes"`
+		Type  string     `json:"type"`
+	}
+	if err := c.call("pane.list", nil, &result); err != nil {
+		return "", err
+	}
+
+	wanted := filepath.Clean(cwd)
+	for _, pane := range result.Panes {
+		if pane.CWD != "" && filepath.Clean(pane.CWD) == wanted {
+			return pane.WorkspaceID, nil
+		}
+	}
+
+	return "", nil
+}
+
+func workspaceChoicesFor(home string, roots []string) ([]workspaceChoice, error) {
+	choices := make([]workspaceChoice, 0)
+	for _, rootName := range roots {
+		rootPath := filepath.Join(home, rootName)
+		entries, err := os.ReadDir(rootPath)
+		if errors.Is(err, os.ErrNotExist) {
+			continue
+		}
+		if err != nil {
+			return nil, fmt.Errorf("read %s: %w", rootPath, err)
+		}
+
+		for _, entry := range entries {
+			if !entry.IsDir() || strings.HasPrefix(entry.Name(), ".") {
+				continue
+			}
+
+			display := filepath.ToSlash(filepath.Join(rootName, entry.Name()))
+			choices = append(choices, workspaceChoice{
+				Display: display,
+				Path:    filepath.Join(rootPath, entry.Name()),
+			})
+		}
+	}
+
+	sort.Slice(choices, func(i, j int) bool {
+		return choices[i].Display < choices[j].Display
+	})
+
+	return choices, nil
+}
+
+func chooseWorkspace(fuzzel string, choices []workspaceChoice) (*workspaceChoice, error) {
+	byDisplay := make(map[string]*workspaceChoice, len(choices))
+	lines := make([]string, 0, len(choices))
+	for index := range choices {
+		choice := &choices[index]
+		byDisplay[choice.Display] = choice
+		lines = append(lines, choice.Display)
+	}
+
+	cmd := exec.Command(fuzzel, "--dmenu", "--prompt", "workspace> ")
+	cmd.Stdin = strings.NewReader(strings.Join(lines, "\n") + "\n")
+	var stdout bytes.Buffer
+	cmd.Stdout = &stdout
+
+	if err := cmd.Run(); err != nil {
+		var exitError *exec.ExitError
+		if errors.As(err, &exitError) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("run fuzzel: %w", err)
+	}
+
+	selected := strings.TrimRight(stdout.String(), "\r\n")
+	if selected == "" {
+		return nil, nil
+	}
+
+	choice, ok := byDisplay[selected]
+	if !ok {
+		return nil, nil
+	}
+
+	return choice, nil
+}
+
+func homeDir() (string, error) {
+	if home := os.Getenv("HOME"); home != "" {
+		return home, nil
+	}
+	return os.UserHomeDir()
 }
 
 func (c *client) setupWorkspace() error {
