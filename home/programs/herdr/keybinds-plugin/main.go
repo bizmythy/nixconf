@@ -1,3 +1,4 @@
+// Package main implements the herdr-keybinds helper CLI.
 package main
 
 import (
@@ -6,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net"
 	"os"
 	"os/exec"
@@ -13,8 +15,11 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
+// Direction identifies a directional navigation target.
 type Direction uint8
 
 const (
@@ -32,31 +37,37 @@ const (
 	stateFileName             = "state.json"
 )
 
+// client sends JSON RPC requests to the Herdr Unix socket.
 type client struct {
 	nextID     int
 	socketPath string
 }
 
+// apiError is the error object returned by Herdr RPC responses.
 type apiError struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 }
 
+// apiCallError wraps a Herdr API error as a Go error.
 type apiCallError struct {
 	Code    string
 	Message string
 }
 
+// Error returns the Herdr API error code and message.
 func (err *apiCallError) Error() string {
 	return fmt.Sprintf("%s: %s", err.Code, err.Message)
 }
 
+// response is the common envelope returned by Herdr RPC calls.
 type response struct {
 	ID     string          `json:"id"`
 	Result json.RawMessage `json:"result"`
 	Error  *apiError       `json:"error"`
 }
 
+// paneInfo is the subset of Herdr pane metadata needed by this helper.
 type paneInfo struct {
 	CWD           string `json:"cwd"`
 	Focused       bool   `json:"focused"`
@@ -68,6 +79,7 @@ type paneInfo struct {
 	WorkspaceID   string `json:"workspace_id"`
 }
 
+// tabInfo is the subset of Herdr tab metadata needed by this helper.
 type tabInfo struct {
 	Focused     bool   `json:"focused"`
 	Label       string `json:"label"`
@@ -77,6 +89,16 @@ type tabInfo struct {
 	WorkspaceID string `json:"workspace_id"`
 }
 
+// focusID returns the identifier used by tab.focus.
+func (tab tabInfo) focusID() string { return tab.TabID }
+
+// isFocused reports whether the tab is Herdr's current tab.
+func (tab tabInfo) isFocused() bool { return tab.Focused }
+
+// number returns the user-visible tab ordering number.
+func (tab tabInfo) number() int { return tab.Number }
+
+// workspaceInfo is the subset of Herdr workspace metadata needed here.
 type workspaceInfo struct {
 	Focused     bool   `json:"focused"`
 	Label       string `json:"label"`
@@ -84,26 +106,40 @@ type workspaceInfo struct {
 	WorkspaceID string `json:"workspace_id"`
 }
 
+// focusID returns the identifier used by workspace.focus.
+func (workspace workspaceInfo) focusID() string { return workspace.WorkspaceID }
+
+// isFocused reports whether the workspace is Herdr's current workspace.
+func (workspace workspaceInfo) isFocused() bool { return workspace.Focused }
+
+// number returns the user-visible workspace ordering number.
+func (workspace workspaceInfo) number() int { return workspace.Number }
+
+// workspaceChoice is one selectable workspace candidate for the picker.
 type workspaceChoice struct {
 	Display string
 	Path    string
 }
 
+// pluginPaneInfo describes a plugin pane returned by plugin.pane.open.
 type pluginPaneInfo struct {
 	Entrypoint string   `json:"entrypoint"`
 	Pane       paneInfo `json:"pane"`
 	PluginID   string   `json:"plugin_id"`
 }
 
+// pluginPaneOpenResult is the typed result for plugin.pane.open.
 type pluginPaneOpenResult struct {
 	PluginPane pluginPaneInfo `json:"plugin_pane"`
 	Type       string         `json:"type"`
 }
 
+// pluginState is persisted across invocations to track helper-owned panes.
 type pluginState struct {
 	LazygitPanes map[string]string `json:"lazygit_panes"`
 }
 
+// paneEdges reports which sides of a pane are at the edge of its tab layout.
 type paneEdges struct {
 	Down  bool `json:"down"`
 	Left  bool `json:"left"`
@@ -111,72 +147,135 @@ type paneEdges struct {
 	Up    bool `json:"up"`
 }
 
+// context stores the active Herdr IDs needed by navigation operations.
 type context struct {
 	PaneID      string
 	TabID       string
 	WorkspaceID string
 }
 
+// numberedFocusable is implemented by ordered Herdr objects that can be focused.
+type numberedFocusable interface {
+	focusID() string
+	isFocused() bool
+	number() int
+}
+
+var logger = slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+	ReplaceAttr: func(_ []string, attr slog.Attr) slog.Attr {
+		if attr.Key == slog.TimeKey {
+			return slog.Attr{}
+		}
+		return attr
+	},
+}))
+
+// main builds the CLI and logs any command failure in structured form.
 func main() {
-	if len(os.Args) < 2 {
-		fatalf("usage: %s navigate <left|right|up|down>|focus-tab <label>|toggle-lazygit|new-workspace-picker [fzf]|setup-workspace", filepath.Base(os.Args[0]))
-	}
-
-	c, err := newClient()
-	if err != nil {
-		fatalf("%v", err)
-	}
-
-	switch os.Args[1] {
-	case "navigate":
-		if len(os.Args) != 3 {
-			fatalf("usage: %s navigate <left|right|up|down>", filepath.Base(os.Args[0]))
-		}
-		dir, err := parseDirection(os.Args[2])
-		if err != nil {
-			fatalf("%v", err)
-		}
-		must(c.navigate(dir))
-	case "focus-tab":
-		if len(os.Args) != 3 {
-			fatalf("usage: %s focus-tab <label>", filepath.Base(os.Args[0]))
-		}
-		must(c.focusTabLabel(os.Args[2]))
-	case "toggle-lazygit":
-		if len(os.Args) != 2 {
-			fatalf("usage: %s toggle-lazygit", filepath.Base(os.Args[0]))
-		}
-		must(c.toggleLazygit())
-	case "new-workspace-picker":
-		if len(os.Args) > 3 {
-			fatalf("usage: %s new-workspace-picker [fzf]", filepath.Base(os.Args[0]))
-		}
-		fzf := "fzf"
-		if len(os.Args) == 3 {
-			fzf = os.Args[2]
-		}
-		if os.Getenv("HERDR_WORKSPACE_PICKER_PANE") == "1" {
-			must(c.newWorkspacePicker(fzf))
-			return
-		}
-		must(c.openWorkspacePicker())
-	case "setup-workspace":
-		must(c.setupWorkspace())
-	default:
-		fatalf("unknown subcommand %q", os.Args[1])
+	rootCmd := newRootCommand()
+	if err := rootCmd.Execute(); err != nil {
+		logger.Error("command failed", "error", err)
+		os.Exit(1)
 	}
 }
 
+// newRootCommand wires every keybinding action into the Cobra command tree.
+func newRootCommand() *cobra.Command {
+	rootCmd := &cobra.Command{
+		Use:           "herdr-keybinds",
+		Short:         "Herdr keybinding helper plugin",
+		Args:          cobra.NoArgs,
+		SilenceErrors: true,
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			cmd.SilenceUsage = true
+			if err := cmd.Help(); err != nil {
+				return err
+			}
+			return errors.New("missing command")
+		},
+	}
+
+	rootCmd.AddCommand(
+		&cobra.Command{
+			Use:       "navigate <left|right|up|down>",
+			Short:     "Navigate to a neighboring pane, tab, or workspace",
+			Args:      cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
+			ValidArgs: []string{"left", "right", "up", "down"},
+			RunE: func(_ *cobra.Command, args []string) error {
+				dir, _ := parseDirection(args[0])
+				return runWithClient(func(c *client) error {
+					return c.navigate(dir)
+				})
+			},
+		},
+		&cobra.Command{
+			Use:   "focus-tab <label>",
+			Short: "Focus the tab with the given label",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(_ *cobra.Command, args []string) error {
+				return runWithClient(func(c *client) error {
+					return c.focusTabLabel(args[0])
+				})
+			},
+		},
+		&cobra.Command{
+			Use:   "toggle-lazygit",
+			Short: "Toggle the lazygit overlay pane",
+			Args:  cobra.NoArgs,
+			RunE: func(_ *cobra.Command, _ []string) error {
+				return runWithClient(func(c *client) error {
+					return c.toggleLazygit()
+				})
+			},
+		},
+		&cobra.Command{
+			Use:   "new-workspace-picker [fzf]",
+			Short: "Open the workspace picker overlay or run it inside the picker pane",
+			Args:  cobra.MaximumNArgs(1),
+			RunE: func(_ *cobra.Command, args []string) error {
+				fzf := "fzf"
+				if len(args) == 1 {
+					fzf = args[0]
+				}
+				return runWithClient(func(c *client) error {
+					if os.Getenv("HERDR_WORKSPACE_PICKER_PANE") == "1" {
+						return c.newWorkspacePicker(fzf)
+					}
+					return c.openWorkspacePicker()
+				})
+			},
+		},
+		&cobra.Command{
+			Use:   "setup-workspace",
+			Short: "Initialize tabs for a newly-created workspace",
+			Args:  cobra.NoArgs,
+			RunE: func(_ *cobra.Command, _ []string) error {
+				return runWithClient(func(c *client) error {
+					return c.setupWorkspace()
+				})
+			},
+		},
+	)
+
+	return rootCmd
+}
+
+// runWithClient creates a Herdr client and runs one command action with it.
+func runWithClient(action func(*client) error) error {
+	c, err := newClient()
+	if err != nil {
+		return fmt.Errorf("create client: %w", err)
+	}
+	return action(c)
+}
+
+// newClient resolves the Herdr socket path and returns a ready RPC client.
 func newClient() (*client, error) {
 	socketPath := os.Getenv("HERDR_SOCKET_PATH")
 	if socketPath == "" {
-		configHome := os.Getenv("XDG_CONFIG_HOME")
-		if configHome == "" {
-			home := os.Getenv("HOME")
-			if home == "" {
-				return nil, errors.New("HERDR_SOCKET_PATH and HOME are both unset")
-			}
-			configHome = filepath.Join(home, ".config")
+		configHome, err := xdgBaseDir("XDG_CONFIG_HOME", ".config")
+		if err != nil {
+			return nil, err
 		}
 		socketPath = filepath.Join(configHome, "herdr", "herdr.sock")
 	}
@@ -184,6 +283,7 @@ func newClient() (*client, error) {
 	return &client{socketPath: socketPath}, nil
 }
 
+// call sends one JSON RPC request to Herdr and decodes its result into out.
 func (c *client) call(method string, params map[string]any, out any) error {
 	c.nextID++
 	id := fmt.Sprintf("herdr-keybinds-%d", c.nextID)
@@ -242,6 +342,7 @@ func (c *client) call(method string, params map[string]any, out any) error {
 	return nil
 }
 
+// navigate focuses a pane in dir, falling back to tabs or workspaces at edges.
 func (c *client) navigate(dir Direction) error {
 	ctx, err := c.resolveContext()
 	if err != nil {
@@ -276,6 +377,7 @@ func (c *client) navigate(dir Direction) error {
 	}
 }
 
+// focusTabLabel focuses the first tab in the current workspace with label.
 func (c *client) focusTabLabel(label string) error {
 	ctx, err := c.resolveContext()
 	if err != nil {
@@ -296,6 +398,7 @@ func (c *client) focusTabLabel(label string) error {
 	return nil
 }
 
+// toggleLazygit closes an existing workspace overlay or opens a new one.
 func (c *client) toggleLazygit() error {
 	pane, err := c.currentPane()
 	if err != nil {
@@ -325,20 +428,13 @@ func (c *client) toggleLazygit() error {
 		}
 	}
 
-	cwd := firstNonEmpty(pane.ForegroundCWD, pane.CWD, firstEnv("HERDR_ACTIVE_PANE_CWD"))
+	cwd := activePaneCWD(pane)
 	if cwd == "" {
 		return errors.New("could not resolve active pane cwd for lazygit overlay")
 	}
 
-	params := map[string]any{
-		"cwd":        cwd,
-		"entrypoint": lazygitEntrypoint,
-		"focus":      true,
-		"placement":  "overlay",
-		"plugin_id":  pluginID,
-	}
 	var result pluginPaneOpenResult
-	if err := c.call("plugin.pane.open", params, &result); err != nil {
+	if err := c.openPluginOverlay(lazygitEntrypoint, cwd, &result); err != nil {
 		return err
 	}
 
@@ -350,15 +446,24 @@ func (c *client) toggleLazygit() error {
 	return savePluginState(statePath, state)
 }
 
+// openWorkspacePicker opens the workspace picker plugin pane as an overlay.
 func (c *client) openWorkspacePicker() error {
 	pane, err := c.currentPane()
 	if err != nil {
 		return err
 	}
+	return c.openPluginOverlay(workspacePickerEntrypoint, activePaneCWD(pane), nil)
+}
 
-	cwd := firstNonEmpty(pane.ForegroundCWD, pane.CWD, firstEnv("HERDR_ACTIVE_PANE_CWD"))
+// activePaneCWD chooses the best cwd to pass to plugin overlays.
+func activePaneCWD(pane paneInfo) string {
+	return firstNonEmpty(pane.ForegroundCWD, pane.CWD, firstEnv("HERDR_ACTIVE_PANE_CWD"))
+}
+
+// openPluginOverlay opens a helper-owned plugin pane in overlay placement.
+func (c *client) openPluginOverlay(entrypoint string, cwd string, out any) error {
 	params := map[string]any{
-		"entrypoint": workspacePickerEntrypoint,
+		"entrypoint": entrypoint,
 		"focus":      true,
 		"placement":  "overlay",
 		"plugin_id":  pluginID,
@@ -367,9 +472,10 @@ func (c *client) openWorkspacePicker() error {
 		params["cwd"] = cwd
 	}
 
-	return c.call("plugin.pane.open", params, nil)
+	return c.call("plugin.pane.open", params, out)
 }
 
+// newWorkspacePicker runs fzf and opens or focuses the selected workspace.
 func (c *client) newWorkspacePicker(fzf string) error {
 	home, err := homeDir()
 	if err != nil {
@@ -395,6 +501,7 @@ func (c *client) newWorkspacePicker(fzf string) error {
 	return c.openOrFocusWorkspace(selected.Path, filepath.Base(selected.Path))
 }
 
+// openOrFocusWorkspace focuses an existing cwd workspace or creates it.
 func (c *client) openOrFocusWorkspace(cwd string, label string) error {
 	workspaceID, err := c.workspaceIDForCWD(cwd)
 	if err != nil {
@@ -411,6 +518,7 @@ func (c *client) openOrFocusWorkspace(cwd string, label string) error {
 	}, nil)
 }
 
+// workspaceIDForCWD returns the workspace that already contains cwd.
 func (c *client) workspaceIDForCWD(cwd string) (string, error) {
 	var result struct {
 		Panes []paneInfo `json:"panes"`
@@ -430,6 +538,7 @@ func (c *client) workspaceIDForCWD(cwd string) (string, error) {
 	return "", nil
 }
 
+// workspaceChoicesFor scans root directories under home for picker choices.
 func workspaceChoicesFor(home string, roots []string) ([]workspaceChoice, error) {
 	choices := make([]workspaceChoice, 0)
 	for _, rootName := range roots {
@@ -462,6 +571,7 @@ func workspaceChoicesFor(home string, roots []string) ([]workspaceChoice, error)
 	return choices, nil
 }
 
+// chooseWorkspace asks fzf to select one workspace choice.
 func chooseWorkspace(fzf string, choices []workspaceChoice) (*workspaceChoice, error) {
 	byDisplay := make(map[string]*workspaceChoice, len(choices))
 	lines := make([]string, 0, len(choices))
@@ -497,6 +607,7 @@ func chooseWorkspace(fzf string, choices []workspaceChoice) (*workspaceChoice, e
 	return choice, nil
 }
 
+// homeDir returns HOME when set and otherwise falls back to os.UserHomeDir.
 func homeDir() (string, error) {
 	if home := os.Getenv("HOME"); home != "" {
 		return home, nil
@@ -504,9 +615,27 @@ func homeDir() (string, error) {
 	return os.UserHomeDir()
 }
 
+// xdgBaseDir returns an XDG base directory or a path under home when unset.
+func xdgBaseDir(envName string, fallbackRel string) (string, error) {
+	if value := os.Getenv(envName); value != "" {
+		return value, nil
+	}
+	home, err := homeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(home, fallbackRel), nil
+}
+
+// currentPane returns the active pane, honoring caller pane env overrides.
 func (c *client) currentPane() (paneInfo, error) {
+	return c.currentPaneFor(firstEnv("HERDR_PANE_ID", "HERDR_ACTIVE_PANE_ID"))
+}
+
+// currentPaneFor returns the current pane from Herdr, optionally scoped to paneID.
+func (c *client) currentPaneFor(paneID string) (paneInfo, error) {
 	params := map[string]any{}
-	if paneID := firstEnv("HERDR_PANE_ID", "HERDR_ACTIVE_PANE_ID"); paneID != "" {
+	if paneID != "" {
 		params["caller_pane_id"] = paneID
 	}
 
@@ -521,6 +650,7 @@ func (c *client) currentPane() (paneInfo, error) {
 	return result.Pane, nil
 }
 
+// isActiveLazygitOverlay reports whether navigation should stay inside lazygit.
 func (c *client) isActiveLazygitOverlay(ctx context) (bool, error) {
 	if ctx.WorkspaceID == "" || ctx.PaneID == "" {
 		return false, nil
@@ -540,6 +670,7 @@ func (c *client) isActiveLazygitOverlay(ctx context) (bool, error) {
 	return pane.PaneID == ctx.PaneID && firstNonEmpty(pane.Label, pane.Title) == lazygitEntrypoint, nil
 }
 
+// loadPluginState reads persisted helper state, creating defaults if absent.
 func loadPluginState() (pluginState, string, error) {
 	statePath, err := pluginStatePath()
 	if err != nil {
@@ -567,6 +698,7 @@ func loadPluginState() (pluginState, string, error) {
 	return state, statePath, nil
 }
 
+// savePluginState atomically writes helper state to disk.
 func savePluginState(statePath string, state pluginState) error {
 	data, err := json.MarshalIndent(state, "", "  ")
 	if err != nil {
@@ -584,16 +716,13 @@ func savePluginState(statePath string, state pluginState) error {
 	return nil
 }
 
+// pluginStatePath resolves and creates the directory for persisted state.
 func pluginStatePath() (string, error) {
 	stateDir := os.Getenv("HERDR_PLUGIN_STATE_DIR")
 	if stateDir == "" {
-		stateHome := os.Getenv("XDG_STATE_HOME")
-		if stateHome == "" {
-			home, err := homeDir()
-			if err != nil {
-				return "", err
-			}
-			stateHome = filepath.Join(home, ".local", "state")
+		stateHome, err := xdgBaseDir("XDG_STATE_HOME", filepath.Join(".local", "state"))
+		if err != nil {
+			return "", err
 		}
 		stateDir = filepath.Join(stateHome, "herdr-keybinds")
 	}
@@ -603,6 +732,7 @@ func pluginStatePath() (string, error) {
 	return filepath.Join(stateDir, stateFileName), nil
 }
 
+// isMissingPluginPane recognizes close failures for already-gone plugin panes.
 func isMissingPluginPane(err error) bool {
 	var apiErr *apiCallError
 	if !errors.As(err, &apiErr) {
@@ -611,6 +741,7 @@ func isMissingPluginPane(err error) bool {
 	return apiErr.Code == "plugin_pane_not_found" || apiErr.Code == "pane_not_found" || apiErr.Code == "not_found"
 }
 
+// setupWorkspace renames the starter tab and creates the first work tab.
 func (c *client) setupWorkspace() error {
 	workspaceID, err := c.workspaceIDForSetup()
 	if err != nil {
@@ -647,75 +778,45 @@ func (c *client) setupWorkspace() error {
 	}, nil)
 }
 
+// fallbackTab moves left or right by tab number when pane navigation hits an edge.
 func (c *client) fallbackTab(ctx context, dir Direction) error {
 	tabs, err := c.tabs(ctx.WorkspaceID)
 	if err != nil {
 		return err
 	}
 
-	current, ok := currentTab(tabs, ctx.TabID)
+	current, ok := currentItem(tabs, ctx.TabID)
+	if !ok {
+		return nil
+	}
+	target, ok := adjacentByNumber(tabs, current, dir == directionRight)
 	if !ok {
 		return nil
 	}
 
-	var target *tabInfo
-	for index := range tabs {
-		tab := &tabs[index]
-		if dir == directionRight {
-			if tab.Number > current.Number && (target == nil || tab.Number < target.Number) {
-				target = tab
-			}
-			continue
-		}
-		if tab.Number < current.Number && (target == nil || tab.Number > target.Number) {
-			target = tab
-		}
-	}
-	if target == nil {
-		return nil
-	}
-
-	return c.call("tab.focus", map[string]any{"tab_id": target.TabID}, nil)
+	return c.call("tab.focus", map[string]any{"tab_id": target.focusID()}, nil)
 }
 
+// fallbackWorkspace moves up or down by workspace number at pane layout edges.
 func (c *client) fallbackWorkspace(ctx context, dir Direction) error {
-	var result struct {
-		Type       string          `json:"type"`
-		Workspaces []workspaceInfo `json:"workspaces"`
-	}
-	if err := c.call("workspace.list", nil, &result); err != nil {
+	workspaces, err := c.workspaces()
+	if err != nil {
 		return err
 	}
 
-	sort.Slice(result.Workspaces, func(i, j int) bool {
-		return result.Workspaces[i].Number < result.Workspaces[j].Number
-	})
-
-	current, ok := currentWorkspace(result.Workspaces, ctx.WorkspaceID)
+	current, ok := currentItem(workspaces, ctx.WorkspaceID)
+	if !ok {
+		return nil
+	}
+	target, ok := adjacentByNumber(workspaces, current, dir == directionDown)
 	if !ok {
 		return nil
 	}
 
-	var target *workspaceInfo
-	for index := range result.Workspaces {
-		workspace := &result.Workspaces[index]
-		if dir == directionUp {
-			if workspace.Number < current.Number && (target == nil || workspace.Number > target.Number) {
-				target = workspace
-			}
-			continue
-		}
-		if workspace.Number > current.Number && (target == nil || workspace.Number < target.Number) {
-			target = workspace
-		}
-	}
-	if target == nil {
-		return nil
-	}
-
-	return c.call("workspace.focus", map[string]any{"workspace_id": target.WorkspaceID}, nil)
+	return c.call("workspace.focus", map[string]any{"workspace_id": target.focusID()}, nil)
 }
 
+// resolveContext fills active pane, tab, and workspace IDs from env or Herdr.
 func (c *client) resolveContext() (context, error) {
 	ctx := context{
 		PaneID:      firstEnv("HERDR_PANE_ID", "HERDR_ACTIVE_PANE_ID"),
@@ -726,31 +827,25 @@ func (c *client) resolveContext() (context, error) {
 		return ctx, nil
 	}
 
-	var result struct {
-		Pane paneInfo `json:"pane"`
-		Type string   `json:"type"`
-	}
-	params := map[string]any{}
-	if ctx.PaneID != "" {
-		params["caller_pane_id"] = ctx.PaneID
-	}
-	if err := c.call("pane.current", params, &result); err != nil {
+	pane, err := c.currentPaneFor(ctx.PaneID)
+	if err != nil {
 		return ctx, err
 	}
 
 	if ctx.PaneID == "" {
-		ctx.PaneID = result.Pane.PaneID
+		ctx.PaneID = pane.PaneID
 	}
 	if ctx.TabID == "" {
-		ctx.TabID = result.Pane.TabID
+		ctx.TabID = pane.TabID
 	}
 	if ctx.WorkspaceID == "" {
-		ctx.WorkspaceID = result.Pane.WorkspaceID
+		ctx.WorkspaceID = pane.WorkspaceID
 	}
 
 	return ctx, nil
 }
 
+// workspaceIDForSetup finds the workspace from the Herdr event or context.
 func (c *client) workspaceIDForSetup() (string, error) {
 	if workspaceID := workspaceIDFromEvent(); workspaceID != "" {
 		return workspaceID, nil
@@ -763,6 +858,7 @@ func (c *client) workspaceIDForSetup() (string, error) {
 	return ctx.WorkspaceID, nil
 }
 
+// paneEdges asks Herdr which layout edges paneID touches.
 func (c *client) paneEdges(paneID string) (paneEdges, error) {
 	params := map[string]any{}
 	if paneID != "" {
@@ -780,6 +876,7 @@ func (c *client) paneEdges(paneID string) (paneEdges, error) {
 	return result.Edges, nil
 }
 
+// tabs lists tabs in a workspace sorted by tab number.
 func (c *client) tabs(workspaceID string) ([]tabInfo, error) {
 	params := map[string]any{}
 	if workspaceID != "" {
@@ -794,41 +891,68 @@ func (c *client) tabs(workspaceID string) ([]tabInfo, error) {
 		return nil, err
 	}
 
-	sort.Slice(result.Tabs, func(i, j int) bool {
-		return result.Tabs[i].Number < result.Tabs[j].Number
-	})
-
+	sortByNumber(result.Tabs)
 	return result.Tabs, nil
 }
 
-func currentTab(tabs []tabInfo, tabID string) (tabInfo, bool) {
-	for _, tab := range tabs {
-		if tab.Focused {
-			return tab, true
-		}
+// workspaces lists all workspaces sorted by workspace number.
+func (c *client) workspaces() ([]workspaceInfo, error) {
+	var result struct {
+		Type       string          `json:"type"`
+		Workspaces []workspaceInfo `json:"workspaces"`
 	}
-	for _, tab := range tabs {
-		if tabID != "" && tab.TabID == tabID {
-			return tab, true
-		}
+	if err := c.call("workspace.list", nil, &result); err != nil {
+		return nil, err
 	}
-	return tabInfo{}, false
+
+	sortByNumber(result.Workspaces)
+	return result.Workspaces, nil
 }
 
-func currentWorkspace(workspaces []workspaceInfo, workspaceID string) (workspaceInfo, bool) {
-	for _, workspace := range workspaces {
-		if workspace.Focused {
-			return workspace, true
-		}
-	}
-	for _, workspace := range workspaces {
-		if workspaceID != "" && workspace.WorkspaceID == workspaceID {
-			return workspace, true
-		}
-	}
-	return workspaceInfo{}, false
+// sortByNumber orders Herdr entities by their user-visible number.
+func sortByNumber[T numberedFocusable](items []T) {
+	sort.Slice(items, func(i, j int) bool {
+		return items[i].number() < items[j].number()
+	})
 }
 
+// currentItem returns the focused item, falling back to a matching ID.
+func currentItem[T numberedFocusable](items []T, id string) (T, bool) {
+	for _, item := range items {
+		if item.isFocused() {
+			return item, true
+		}
+	}
+	for _, item := range items {
+		if id != "" && item.focusID() == id {
+			return item, true
+		}
+	}
+	var zero T
+	return zero, false
+}
+
+// adjacentByNumber finds the closest item before or after current.
+func adjacentByNumber[T numberedFocusable](items []T, current T, forward bool) (T, bool) {
+	var target T
+	found := false
+	for _, item := range items {
+		if forward {
+			if item.number() > current.number() && (!found || item.number() < target.number()) {
+				target = item
+				found = true
+			}
+			continue
+		}
+		if item.number() < current.number() && (!found || item.number() > target.number()) {
+			target = item
+			found = true
+		}
+	}
+	return target, found
+}
+
+// workspaceIDFromEvent extracts the affected workspace ID from Herdr event JSON.
 func workspaceIDFromEvent() string {
 	raw := os.Getenv("HERDR_PLUGIN_EVENT_JSON")
 	if raw == "" {
@@ -843,6 +967,7 @@ func workspaceIDFromEvent() string {
 	return firstStringField(event, "workspace_id")
 }
 
+// firstStringField recursively finds the first non-empty string field named key.
 func firstStringField(value any, key string) string {
 	switch typed := value.(type) {
 	case map[string]any:
@@ -865,6 +990,7 @@ func firstStringField(value any, key string) string {
 	return ""
 }
 
+// firstEnv returns the first non-empty environment variable value.
 func firstEnv(names ...string) string {
 	for _, name := range names {
 		if value := os.Getenv(name); value != "" {
@@ -874,6 +1000,7 @@ func firstEnv(names ...string) string {
 	return ""
 }
 
+// firstNonEmpty returns the first non-empty string in values.
 func firstNonEmpty(values ...string) string {
 	for _, value := range values {
 		if value != "" {
@@ -883,6 +1010,7 @@ func firstNonEmpty(values ...string) string {
 	return ""
 }
 
+// edgeValue reports whether edges contains dir.
 func edgeValue(edges paneEdges, dir Direction) bool {
 	switch dir {
 	case directionLeft:
@@ -898,6 +1026,7 @@ func edgeValue(edges paneEdges, dir Direction) bool {
 	}
 }
 
+// parseDirection converts a CLI argument into a Direction.
 func parseDirection(value string) (Direction, error) {
 	switch value {
 	case "left":
@@ -913,6 +1042,7 @@ func parseDirection(value string) (Direction, error) {
 	}
 }
 
+// String returns the Herdr API string for dir.
 func (dir Direction) String() string {
 	switch dir {
 	case directionLeft:
@@ -926,16 +1056,4 @@ func (dir Direction) String() string {
 	default:
 		return "invalid"
 	}
-}
-
-func must(err error) {
-	if err != nil {
-		fatalf("%v", err)
-	}
-}
-
-func fatalf(format string, args ...any) {
-	message := fmt.Sprintf(format, args...)
-	fmt.Fprintln(os.Stderr, strings.TrimSpace(message))
-	os.Exit(1)
 }
