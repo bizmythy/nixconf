@@ -4,6 +4,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,6 +14,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -32,6 +34,8 @@ const (
 
 const (
 	pluginID                  = "drew.herdr-keybinds"
+	buildosEntrypoint         = "new-buildos"
+	buildosWorkspacePrefix    = "buildos-web-"
 	lazygitEntrypoint         = "lazygit"
 	workspacePickerEntrypoint = "new-workspace-picker"
 	stateFileName             = "state.json"
@@ -161,6 +165,9 @@ type numberedFocusable interface {
 	number() int
 }
 
+//go:embed buildos-setup.nu
+var buildosSetupScript string
+
 var logger = slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
 	ReplaceAttr: func(_ []string, attr slog.Attr) slog.Attr {
 		if attr.Key == slog.TimeKey {
@@ -242,6 +249,45 @@ func newRootCommand() *cobra.Command {
 						return c.newWorkspacePicker(fzf)
 					}
 					return c.openWorkspacePicker()
+				})
+			},
+		},
+		&cobra.Command{
+			Use:   "new-buildos [nu]",
+			Short: "Create a fresh buildos-web workspace",
+			Args:  cobra.MaximumNArgs(1),
+			RunE: func(_ *cobra.Command, args []string) error {
+				nu := "nu"
+				if len(args) == 1 {
+					nu = args[0]
+				}
+				return runWithClient(func(c *client) error {
+					if os.Getenv("HERDR_NEW_BUILDOS_PANE") == "1" {
+						return c.newBuildos(nu)
+					}
+					return c.openNewBuildos()
+				})
+			},
+		},
+		&cobra.Command{
+			Use:    "finish-buildos <workspace-id> <directory> <setup-tab-id>",
+			Short:  "Finish buildos workspace setup after repository creation",
+			Args:   cobra.ExactArgs(3),
+			Hidden: true,
+			RunE: func(_ *cobra.Command, args []string) error {
+				return runWithClient(func(c *client) error {
+					return c.finishBuildos(args[0], args[1], args[2])
+				})
+			},
+		},
+		&cobra.Command{
+			Use:    "notify-buildos-failed <workspace-name>",
+			Short:  "Notify that buildos workspace setup failed",
+			Args:   cobra.ExactArgs(1),
+			Hidden: true,
+			RunE: func(_ *cobra.Command, args []string) error {
+				return runWithClient(func(c *client) error {
+					return c.notifyBuildosFailed(args[0])
 				})
 			},
 		},
@@ -455,6 +501,15 @@ func (c *client) openWorkspacePicker() error {
 	return c.openPluginOverlay(workspacePickerEntrypoint, activePaneCWD(pane), nil)
 }
 
+// openNewBuildos opens the buildos workspace setup pane as an overlay.
+func (c *client) openNewBuildos() error {
+	pane, err := c.currentPane()
+	if err != nil {
+		return err
+	}
+	return c.openPluginOverlay(buildosEntrypoint, activePaneCWD(pane), nil)
+}
+
 // activePaneCWD chooses the best cwd to pass to plugin overlays.
 func activePaneCWD(pane paneInfo) string {
 	return firstNonEmpty(pane.ForegroundCWD, pane.CWD, firstEnv("HERDR_ACTIVE_PANE_CWD"))
@@ -501,6 +556,228 @@ func (c *client) newWorkspacePicker(fzf string) error {
 	return c.openOrFocusWorkspace(selected.Path, filepath.Base(selected.Path))
 }
 
+// newBuildos prompts for a suffix and schedules buildos setup in a new workspace.
+func (c *client) newBuildos(nu string) error {
+	suffix, err := promptBuildosName()
+	if err != nil {
+		return err
+	}
+	if suffix == "" {
+		return nil
+	}
+
+	home, err := homeDir()
+	if err != nil {
+		return err
+	}
+	diracDir := filepath.Join(home, "dirac")
+	workspaceName := buildosWorkspacePrefix + suffix
+	newDir := filepath.Join(diracDir, workspaceName)
+
+	setupScript, err := writeBuildosSetupScript()
+	if err != nil {
+		return err
+	}
+	exe, err := os.Executable()
+	if err != nil {
+		return fmt.Errorf("resolve helper executable: %w", err)
+	}
+
+	workspace, err := c.createWorkspace(diracDir, workspaceName)
+	if err != nil {
+		return err
+	}
+	if workspace.WorkspaceID == "" {
+		return errors.New("created buildos workspace did not have an id")
+	}
+
+	setupTab, setupPane, err := c.prepareBuildosSetupPane(workspace.WorkspaceID)
+	if err != nil {
+		return err
+	}
+	if setupPane.PaneID == "" {
+		return errors.New("created buildos setup pane did not have an id")
+	}
+
+	return c.runPane(setupPane.PaneID, buildosSetupCommand(
+		nu,
+		setupScript,
+		exe,
+		workspaceName,
+		workspace.WorkspaceID,
+		newDir,
+		setupTab.TabID,
+	))
+}
+
+// promptBuildosName asks for the user-entered buildos workspace suffix.
+func promptBuildosName() (string, error) {
+	fmt.Fprintf(os.Stdout, "\x1b[36menter workspace name:\x1b[0m %s", buildosWorkspacePrefix)
+
+	scanner := bufio.NewScanner(os.Stdin)
+	if !scanner.Scan() {
+		return "", scanner.Err()
+	}
+
+	suffix := strings.TrimSpace(scanner.Text())
+	suffix = strings.TrimPrefix(suffix, buildosWorkspacePrefix)
+	if suffix == "" {
+		return "", nil
+	}
+	if strings.ContainsAny(suffix, `/\\`) {
+		return "", fmt.Errorf("workspace suffix %q must not contain path separators", suffix)
+	}
+
+	return suffix, nil
+}
+
+// prepareBuildosSetupPane names the initial tab and returns its only pane.
+func (c *client) prepareBuildosSetupPane(workspaceID string) (tabInfo, paneInfo, error) {
+	tabs, err := c.tabs(workspaceID)
+	if err != nil {
+		return tabInfo{}, paneInfo{}, err
+	}
+	if len(tabs) == 0 {
+		return tabInfo{}, paneInfo{}, errors.New("created buildos workspace did not have a tab")
+	}
+
+	setupTab := focusedTab(tabs)
+	if setupTab.TabID == "" {
+		setupTab = tabs[0]
+	}
+	if setupTab.Label != "setup" {
+		if err := c.call("tab.rename", map[string]any{
+			"label":  "setup",
+			"tab_id": setupTab.TabID,
+		}, nil); err != nil {
+			return tabInfo{}, paneInfo{}, err
+		}
+		setupTab.Label = "setup"
+	}
+
+	panes, err := c.panes(workspaceID)
+	if err != nil {
+		return tabInfo{}, paneInfo{}, err
+	}
+	for _, pane := range panes {
+		if pane.TabID == setupTab.TabID {
+			return setupTab, pane, nil
+		}
+	}
+	if len(panes) > 0 {
+		return setupTab, panes[0], nil
+	}
+
+	return tabInfo{}, paneInfo{}, errors.New("created buildos workspace did not have a pane")
+}
+
+// buildosSetupCommand is the nushell command sent into the setup pane.
+func buildosSetupCommand(nu string, script string, exe string, workspaceName string, workspaceID string, newDir string, setupTabID string) string {
+	setup := nuExternalCommand(nu, script, workspaceName)
+	finish := nuExternalCommand(exe, "finish-buildos", workspaceID, newDir, setupTabID)
+	failed := nuExternalCommand(exe, "notify-buildos-failed", workspaceName)
+	return fmt.Sprintf(
+		"try { %s; %s } catch {|err| try { %s } catch {}; error make {msg: ($err.msg? | default ($err | to json --raw))} }",
+		setup,
+		finish,
+		failed,
+	)
+}
+
+// nuExternalCommand formats an external command invocation for nushell.
+func nuExternalCommand(command string, args ...string) string {
+	parts := []string{"^" + strconv.Quote(command)}
+	for _, arg := range args {
+		parts = append(parts, strconv.Quote(arg))
+	}
+	return strings.Join(parts, " ")
+}
+
+// writeBuildosSetupScript writes the embedded setup script into plugin state.
+func writeBuildosSetupScript() (string, error) {
+	stateDir, err := pluginStateDir()
+	if err != nil {
+		return "", err
+	}
+
+	scriptPath := filepath.Join(stateDir, "buildos-setup.nu")
+	if err := os.WriteFile(scriptPath, []byte(buildosSetupScript), 0o600); err != nil {
+		return "", fmt.Errorf("write buildos setup script: %w", err)
+	}
+	return scriptPath, nil
+}
+
+// finishBuildos opens normal tabs in the new repo and removes the setup tab.
+func (c *client) finishBuildos(workspaceID string, newDir string, setupTabID string) error {
+	if info, err := os.Stat(newDir); err != nil {
+		return fmt.Errorf("stat buildos workspace directory: %w", err)
+	} else if !info.IsDir() {
+		return fmt.Errorf("buildos workspace path is not a directory: %s", newDir)
+	}
+
+	if err := c.ensureWorkspaceTab(workspaceID, newDir, "ws", false); err != nil {
+		return err
+	}
+	if err := c.ensureWorkspaceTab(workspaceID, newDir, "1", true); err != nil {
+		return err
+	}
+	if setupTabID != "" {
+		if err := c.call("tab.close", map[string]any{"tab_id": setupTabID}, nil); err != nil && !isMissingObject(err) {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ensureWorkspaceTab creates a tab unless one with the same label already exists.
+func (c *client) ensureWorkspaceTab(workspaceID string, cwd string, label string, focus bool) error {
+	tabs, err := c.tabs(workspaceID)
+	if err != nil {
+		return err
+	}
+	for _, tab := range tabs {
+		if tab.Label == label {
+			if focus {
+				return c.call("tab.focus", map[string]any{"tab_id": tab.TabID}, nil)
+			}
+			return nil
+		}
+	}
+
+	return c.call("tab.create", map[string]any{
+		"cwd":          cwd,
+		"focus":        focus,
+		"label":        label,
+		"workspace_id": workspaceID,
+	}, nil)
+}
+
+// notifyBuildosFailed sends an in-app notification for a failed setup run.
+func (c *client) notifyBuildosFailed(workspaceName string) error {
+	return c.notify(
+		"buildos setup failed",
+		fmt.Sprintf("%s setup failed; leaving the setup tab open", workspaceName),
+	)
+}
+
+// notify sends a Herdr notification.
+func (c *client) notify(title string, body string) error {
+	return c.call("notification.show", map[string]any{
+		"body":  body,
+		"sound": "request",
+		"title": title,
+	}, nil)
+}
+
+// runPane starts a command in an existing pane.
+func (c *client) runPane(paneID string, command string) error {
+	return c.call("pane.run", map[string]any{
+		"command": command,
+		"pane_id": paneID,
+	}, nil)
+}
+
 // openOrFocusWorkspace focuses an existing cwd workspace or creates it.
 func (c *client) openOrFocusWorkspace(cwd string, label string) error {
 	workspaceID, err := c.workspaceIDForCWD(cwd)
@@ -511,11 +788,43 @@ func (c *client) openOrFocusWorkspace(cwd string, label string) error {
 		return c.call("workspace.focus", map[string]any{"workspace_id": workspaceID}, nil)
 	}
 
-	return c.call("workspace.create", map[string]any{
+	_, err = c.createWorkspace(cwd, label)
+	return err
+}
+
+// createWorkspace creates a focused Herdr workspace and returns its metadata.
+func (c *client) createWorkspace(cwd string, label string) (workspaceInfo, error) {
+	var result struct {
+		Type      string        `json:"type"`
+		Workspace workspaceInfo `json:"workspace"`
+	}
+	if err := c.call("workspace.create", map[string]any{
 		"cwd":   cwd,
 		"focus": true,
 		"label": label,
-	}, nil)
+	}, &result); err != nil {
+		return workspaceInfo{}, err
+	}
+	if result.Workspace.WorkspaceID != "" {
+		return result.Workspace, nil
+	}
+
+	workspaces, err := c.workspaces()
+	if err != nil {
+		return workspaceInfo{}, err
+	}
+	for _, workspace := range workspaces {
+		if workspace.Focused && workspace.Label == label {
+			return workspace, nil
+		}
+	}
+	for _, workspace := range workspaces {
+		if workspace.Label == label {
+			return workspace, nil
+		}
+	}
+
+	return workspaceInfo{}, nil
 }
 
 // workspaceIDForCWD returns the workspace that already contains cwd.
@@ -716,8 +1025,17 @@ func savePluginState(statePath string, state pluginState) error {
 	return nil
 }
 
-// pluginStatePath resolves and creates the directory for persisted state.
+// pluginStatePath resolves and creates the path for persisted state.
 func pluginStatePath() (string, error) {
+	stateDir, err := pluginStateDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(stateDir, stateFileName), nil
+}
+
+// pluginStateDir resolves and creates the directory for persisted helper state.
+func pluginStateDir() (string, error) {
 	stateDir := os.Getenv("HERDR_PLUGIN_STATE_DIR")
 	if stateDir == "" {
 		stateHome, err := xdgBaseDir("XDG_STATE_HOME", filepath.Join(".local", "state"))
@@ -729,7 +1047,7 @@ func pluginStatePath() (string, error) {
 	if err := os.MkdirAll(stateDir, 0o700); err != nil {
 		return "", fmt.Errorf("create plugin state dir: %w", err)
 	}
-	return filepath.Join(stateDir, stateFileName), nil
+	return stateDir, nil
 }
 
 // isMissingPluginPane recognizes close failures for already-gone plugin panes.
@@ -741,6 +1059,15 @@ func isMissingPluginPane(err error) bool {
 	return apiErr.Code == "plugin_pane_not_found" || apiErr.Code == "pane_not_found" || apiErr.Code == "not_found"
 }
 
+// isMissingObject recognizes failures for already-gone Herdr objects.
+func isMissingObject(err error) bool {
+	var apiErr *apiCallError
+	if !errors.As(err, &apiErr) {
+		return false
+	}
+	return apiErr.Code == "not_found" || strings.HasSuffix(apiErr.Code, "_not_found")
+}
+
 // setupWorkspace renames the starter tab and creates the first work tab.
 func (c *client) setupWorkspace() error {
 	workspaceID, err := c.workspaceIDForSetup()
@@ -748,6 +1075,14 @@ func (c *client) setupWorkspace() error {
 		return err
 	}
 	if workspaceID == "" {
+		return nil
+	}
+	if workspaceEventLooksBuildos() {
+		return nil
+	}
+	if label, err := c.workspaceLabel(workspaceID); err != nil {
+		return err
+	} else if strings.HasPrefix(label, buildosWorkspacePrefix) {
 		return nil
 	}
 
@@ -876,6 +1211,24 @@ func (c *client) paneEdges(paneID string) (paneEdges, error) {
 	return result.Edges, nil
 }
 
+// panes lists panes, optionally scoped to one workspace.
+func (c *client) panes(workspaceID string) ([]paneInfo, error) {
+	params := map[string]any{}
+	if workspaceID != "" {
+		params["workspace_id"] = workspaceID
+	}
+
+	var result struct {
+		Panes []paneInfo `json:"panes"`
+		Type  string     `json:"type"`
+	}
+	if err := c.call("pane.list", params, &result); err != nil {
+		return nil, err
+	}
+
+	return result.Panes, nil
+}
+
 // tabs lists tabs in a workspace sorted by tab number.
 func (c *client) tabs(workspaceID string) ([]tabInfo, error) {
 	params := map[string]any{}
@@ -909,6 +1262,20 @@ func (c *client) workspaces() ([]workspaceInfo, error) {
 	return result.Workspaces, nil
 }
 
+// workspaceLabel returns the label for a workspace ID, if present.
+func (c *client) workspaceLabel(workspaceID string) (string, error) {
+	workspaces, err := c.workspaces()
+	if err != nil {
+		return "", err
+	}
+	for _, workspace := range workspaces {
+		if workspace.WorkspaceID == workspaceID {
+			return workspace.Label, nil
+		}
+	}
+	return "", nil
+}
+
 // sortByNumber orders Herdr entities by their user-visible number.
 func sortByNumber[T numberedFocusable](items []T) {
 	sort.Slice(items, func(i, j int) bool {
@@ -930,6 +1297,16 @@ func currentItem[T numberedFocusable](items []T, id string) (T, bool) {
 	}
 	var zero T
 	return zero, false
+}
+
+// focusedTab returns the focused tab from a list, if present.
+func focusedTab(tabs []tabInfo) tabInfo {
+	for _, tab := range tabs {
+		if tab.Focused {
+			return tab
+		}
+	}
+	return tabInfo{}
 }
 
 // adjacentByNumber finds the closest item before or after current.
@@ -954,17 +1331,39 @@ func adjacentByNumber[T numberedFocusable](items []T, current T, forward bool) (
 
 // workspaceIDFromEvent extracts the affected workspace ID from Herdr event JSON.
 func workspaceIDFromEvent() string {
-	raw := os.Getenv("HERDR_PLUGIN_EVENT_JSON")
-	if raw == "" {
-		return ""
-	}
-
-	var event any
-	if err := json.Unmarshal([]byte(raw), &event); err != nil {
+	event, ok := pluginEventJSON()
+	if !ok {
 		return ""
 	}
 
 	return firstStringField(event, "workspace_id")
+}
+
+// workspaceEventLooksBuildos reports whether the event is for a buildos workspace.
+func workspaceEventLooksBuildos() bool {
+	event, ok := pluginEventJSON()
+	if !ok {
+		return false
+	}
+	if strings.HasPrefix(firstStringField(event, "label"), buildosWorkspacePrefix) {
+		return true
+	}
+	cwd := firstStringField(event, "cwd")
+	return strings.HasPrefix(filepath.Base(cwd), buildosWorkspacePrefix)
+}
+
+// pluginEventJSON decodes Herdr's current plugin event payload.
+func pluginEventJSON() (any, bool) {
+	raw := os.Getenv("HERDR_PLUGIN_EVENT_JSON")
+	if raw == "" {
+		return nil, false
+	}
+
+	var event any
+	if err := json.Unmarshal([]byte(raw), &event); err != nil {
+		return nil, false
+	}
+	return event, true
 }
 
 // firstStringField recursively finds the first non-empty string field named key.

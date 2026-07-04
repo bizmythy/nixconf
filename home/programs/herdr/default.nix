@@ -62,6 +62,12 @@ let
       title = "New workspace from directory picker";
       command = keybindsCommand "new-workspace-picker" [ ];
     }
+    {
+      id = "new-buildos";
+      key = "prefix+d";
+      title = "New buildos workspace";
+      command = keybindsCommand "new-buildos" [ ];
+    }
   ];
   keybindPluginActions = map (action: {
     inherit (action) id title command;
@@ -398,6 +404,18 @@ let
           (lib.getExe keybindsPlugin)
           "new-workspace-picker"
           (lib.getExe pkgs.fzf)
+        ];
+      }
+      {
+        id = "new-buildos";
+        title = "New buildos workspace";
+        placement = "overlay";
+        command = [
+          (lib.getExe' pkgs.coreutils "env")
+          "HERDR_NEW_BUILDOS_PANE=1"
+          (lib.getExe keybindsPlugin)
+          "new-buildos"
+          (lib.getExe pkgs.nushell)
         ];
       }
     ];
