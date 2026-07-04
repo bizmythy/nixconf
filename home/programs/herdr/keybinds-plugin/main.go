@@ -883,11 +883,51 @@ func workspaceChoicesFor(home string, roots []string) ([]workspaceChoice, error)
 		}
 	}
 
-	sort.Slice(choices, func(i, j int) bool {
-		return choices[i].Display < choices[j].Display
-	})
+	sortWorkspaceChoices(choices)
 
 	return choices, nil
+}
+
+// sortWorkspaceChoices orders choices by zoxide recency, then display name.
+func sortWorkspaceChoices(choices []workspaceChoice) {
+	ranks := zoxideDirectoryRanks()
+	sort.Slice(choices, func(i, j int) bool {
+		iRank, iRecent := ranks[filepath.Clean(choices[i].Path)]
+		jRank, jRecent := ranks[filepath.Clean(choices[j].Path)]
+		if iRecent != jRecent {
+			return iRecent
+		}
+		if iRecent && iRank != jRank {
+			return iRank < jRank
+		}
+		return choices[i].Display < choices[j].Display
+	})
+}
+
+// zoxideDirectoryRanks returns known directories in zoxide priority order.
+func zoxideDirectoryRanks() map[string]int {
+	cmd := exec.Command("zoxide", "query", "--list")
+	output, err := cmd.Output()
+	if err != nil {
+		return nil
+	}
+
+	ranks := make(map[string]int)
+	scanner := bufio.NewScanner(bytes.NewReader(output))
+	rank := 0
+	for scanner.Scan() {
+		path := filepath.Clean(strings.TrimSpace(scanner.Text()))
+		if path == "." || path == "" {
+			continue
+		}
+		if _, ok := ranks[path]; ok {
+			continue
+		}
+		ranks[path] = rank
+		rank++
+	}
+
+	return ranks
 }
 
 // chooseWorkspace asks fzf to select one workspace choice.
