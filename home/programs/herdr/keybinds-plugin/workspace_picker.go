@@ -14,7 +14,7 @@ import (
 
 const (
 	workspacePickerEntrypoint = "new-workspace-picker"
-	nixWorkspaceLabel         = " nixconf"
+	nixWorkspaceLabel         = " nixconf"
 )
 
 // workspaceChoice is one selectable workspace candidate for the picker.
@@ -39,12 +39,7 @@ func (c *client) newWorkspacePicker(fzf string) error {
 		return err
 	}
 
-	choices, err := workspaceChoicesFor(home, []string{"personal", "dirac"}, []workspaceChoice{
-		{
-			Display: "nixconf",
-			Path:    filepath.Join(home, "home", "nixconf"),
-		},
-	})
+	choices, err := workspaceChoicesFor(home, []string{"personal", "dirac"}, extraWorkspaceChoices(home))
 	if err != nil {
 		return err
 	}
@@ -61,6 +56,16 @@ func (c *client) newWorkspacePicker(fzf string) error {
 	}
 
 	return c.openOrFocusWorkspace(selected.Path, workspaceLabelForPath(selected.Path))
+}
+
+// extraWorkspaceChoices returns picker choices outside the standard workspace roots.
+func extraWorkspaceChoices(home string) []workspaceChoice {
+	return []workspaceChoice{
+		{
+			Display: "nixconf",
+			Path:    filepath.Join(home, "nixconf"),
+		},
+	}
 }
 
 // workspaceLabelForPath returns the compact label used for picker-created workspaces.
