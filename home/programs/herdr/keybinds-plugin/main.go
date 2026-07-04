@@ -25,6 +25,12 @@ const (
 	directionUp
 )
 
+const (
+	pluginID          = "drew.herdr-keybinds"
+	lazygitEntrypoint = "lazygit"
+	stateFileName     = "state.json"
+)
+
 type client struct {
 	nextID     int
 	socketPath string
@@ -35,6 +41,15 @@ type apiError struct {
 	Message string `json:"message"`
 }
 
+type apiCallError struct {
+	Code    string
+	Message string
+}
+
+func (err *apiCallError) Error() string {
+	return fmt.Sprintf("%s: %s", err.Code, err.Message)
+}
+
 type response struct {
 	ID     string          `json:"id"`
 	Result json.RawMessage `json:"result"`
@@ -42,11 +57,12 @@ type response struct {
 }
 
 type paneInfo struct {
-	CWD         string `json:"cwd"`
-	Focused     bool   `json:"focused"`
-	PaneID      string `json:"pane_id"`
-	TabID       string `json:"tab_id"`
-	WorkspaceID string `json:"workspace_id"`
+	CWD           string `json:"cwd"`
+	Focused       bool   `json:"focused"`
+	ForegroundCWD string `json:"foreground_cwd"`
+	PaneID        string `json:"pane_id"`
+	TabID         string `json:"tab_id"`
+	WorkspaceID   string `json:"workspace_id"`
 }
 
 type tabInfo struct {
@@ -70,6 +86,21 @@ type workspaceChoice struct {
 	Path    string
 }
 
+type pluginPaneInfo struct {
+	Entrypoint string   `json:"entrypoint"`
+	Pane       paneInfo `json:"pane"`
+	PluginID   string   `json:"plugin_id"`
+}
+
+type pluginPaneOpenResult struct {
+	PluginPane pluginPaneInfo `json:"plugin_pane"`
+	Type       string         `json:"type"`
+}
+
+type pluginState struct {
+	LazygitPanes map[string]string `json:"lazygit_panes"`
+}
+
 type paneEdges struct {
 	Down  bool `json:"down"`
 	Left  bool `json:"left"`
@@ -85,7 +116,7 @@ type context struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fatalf("usage: %s navigate <left|right|up|down>|focus-tab <label>|new-workspace-picker [fuzzel]|setup-workspace", filepath.Base(os.Args[0]))
+		fatalf("usage: %s navigate <left|right|up|down>|focus-tab <label>|toggle-lazygit|new-workspace-picker [fuzzel]|setup-workspace", filepath.Base(os.Args[0]))
 	}
 
 	c, err := newClient()
@@ -108,6 +139,11 @@ func main() {
 			fatalf("usage: %s focus-tab <label>", filepath.Base(os.Args[0]))
 		}
 		must(c.focusTabLabel(os.Args[2]))
+	case "toggle-lazygit":
+		if len(os.Args) != 2 {
+			fatalf("usage: %s toggle-lazygit", filepath.Base(os.Args[0]))
+		}
+		must(c.toggleLazygit())
 	case "new-workspace-picker":
 		if len(os.Args) > 3 {
 			fatalf("usage: %s new-workspace-picker [fuzzel]", filepath.Base(os.Args[0]))
@@ -181,7 +217,10 @@ func (c *client) call(method string, params map[string]any, out any) error {
 		return fmt.Errorf("decode %s response: %w", method, err)
 	}
 	if envelope.Error != nil {
-		return fmt.Errorf("%s: %s", envelope.Error.Code, envelope.Error.Message)
+		return &apiCallError{
+			Code:    envelope.Error.Code,
+			Message: envelope.Error.Message,
+		}
 	}
 	if envelope.ID != id {
 		return fmt.Errorf("unexpected response id %q for %q", envelope.ID, id)
@@ -243,6 +282,60 @@ func (c *client) focusTabLabel(label string) error {
 	}
 
 	return nil
+}
+
+func (c *client) toggleLazygit() error {
+	pane, err := c.currentPane()
+	if err != nil {
+		return err
+	}
+	if pane.WorkspaceID == "" {
+		return errors.New("could not resolve active workspace for lazygit overlay")
+	}
+
+	state, statePath, err := loadPluginState()
+	if err != nil {
+		return err
+	}
+
+	if paneID := state.LazygitPanes[pane.WorkspaceID]; paneID != "" {
+		closeErr := c.call("plugin.pane.close", map[string]any{"pane_id": paneID}, nil)
+		delete(state.LazygitPanes, pane.WorkspaceID)
+		saveErr := savePluginState(statePath, state)
+		if closeErr == nil {
+			return saveErr
+		}
+		if !isMissingPluginPane(closeErr) {
+			return closeErr
+		}
+		if saveErr != nil {
+			return saveErr
+		}
+	}
+
+	cwd := firstNonEmpty(pane.ForegroundCWD, pane.CWD, firstEnv("HERDR_ACTIVE_PANE_CWD"))
+	if cwd == "" {
+		return errors.New("could not resolve active pane cwd for lazygit overlay")
+	}
+
+	params := map[string]any{
+		"cwd":        cwd,
+		"entrypoint": lazygitEntrypoint,
+		"focus":      true,
+		"placement":  "overlay",
+		"plugin_id":  pluginID,
+	}
+	var result pluginPaneOpenResult
+	if err := c.call("plugin.pane.open", params, &result); err != nil {
+		return err
+	}
+
+	openedPane := result.PluginPane.Pane
+	if openedPane.PaneID == "" || openedPane.WorkspaceID == "" {
+		return nil
+	}
+	state.LazygitPanes[openedPane.WorkspaceID] = openedPane.PaneID
+	return savePluginState(statePath, state)
 }
 
 func (c *client) newWorkspacePicker(fuzzel string) error {
@@ -379,6 +472,94 @@ func homeDir() (string, error) {
 	return os.UserHomeDir()
 }
 
+func (c *client) currentPane() (paneInfo, error) {
+	params := map[string]any{}
+	if paneID := firstEnv("HERDR_PANE_ID", "HERDR_ACTIVE_PANE_ID"); paneID != "" {
+		params["caller_pane_id"] = paneID
+	}
+
+	var result struct {
+		Pane paneInfo `json:"pane"`
+		Type string   `json:"type"`
+	}
+	if err := c.call("pane.current", params, &result); err != nil {
+		return paneInfo{}, err
+	}
+
+	return result.Pane, nil
+}
+
+func loadPluginState() (pluginState, string, error) {
+	statePath, err := pluginStatePath()
+	if err != nil {
+		return pluginState{}, "", err
+	}
+
+	state := pluginState{LazygitPanes: make(map[string]string)}
+	data, err := os.ReadFile(statePath)
+	if errors.Is(err, os.ErrNotExist) {
+		return state, statePath, nil
+	}
+	if err != nil {
+		return pluginState{}, "", fmt.Errorf("read plugin state: %w", err)
+	}
+	if len(data) == 0 {
+		return state, statePath, nil
+	}
+	if err := json.Unmarshal(data, &state); err != nil {
+		return pluginState{}, "", fmt.Errorf("decode plugin state: %w", err)
+	}
+	if state.LazygitPanes == nil {
+		state.LazygitPanes = make(map[string]string)
+	}
+
+	return state, statePath, nil
+}
+
+func savePluginState(statePath string, state pluginState) error {
+	data, err := json.MarshalIndent(state, "", "  ")
+	if err != nil {
+		return fmt.Errorf("encode plugin state: %w", err)
+	}
+
+	tmpPath := statePath + ".tmp"
+	if err := os.WriteFile(tmpPath, append(data, '\n'), 0o600); err != nil {
+		return fmt.Errorf("write plugin state: %w", err)
+	}
+	if err := os.Rename(tmpPath, statePath); err != nil {
+		return fmt.Errorf("replace plugin state: %w", err)
+	}
+
+	return nil
+}
+
+func pluginStatePath() (string, error) {
+	stateDir := os.Getenv("HERDR_PLUGIN_STATE_DIR")
+	if stateDir == "" {
+		stateHome := os.Getenv("XDG_STATE_HOME")
+		if stateHome == "" {
+			home, err := homeDir()
+			if err != nil {
+				return "", err
+			}
+			stateHome = filepath.Join(home, ".local", "state")
+		}
+		stateDir = filepath.Join(stateHome, "herdr-keybinds")
+	}
+	if err := os.MkdirAll(stateDir, 0o700); err != nil {
+		return "", fmt.Errorf("create plugin state dir: %w", err)
+	}
+	return filepath.Join(stateDir, stateFileName), nil
+}
+
+func isMissingPluginPane(err error) bool {
+	var apiErr *apiCallError
+	if !errors.As(err, &apiErr) {
+		return false
+	}
+	return apiErr.Code == "plugin_pane_not_found" || apiErr.Code == "pane_not_found" || apiErr.Code == "not_found"
+}
+
 func (c *client) setupWorkspace() error {
 	workspaceID, err := c.workspaceIDForSetup()
 	if err != nil {
@@ -395,40 +576,16 @@ func (c *client) setupWorkspace() error {
 	if len(tabs) != 1 {
 		return nil
 	}
-	if tabs[0].Label == "git" {
+	if tabs[0].Label == "ws" {
 		return nil
 	}
 	if tabs[0].PaneCount != 1 {
 		return nil
 	}
 
-	var panesResult struct {
-		Panes []paneInfo `json:"panes"`
-		Type  string     `json:"type"`
-	}
-	if err := c.call("pane.list", map[string]any{"workspace_id": workspaceID}, &panesResult); err != nil {
-		return err
-	}
-	if len(panesResult.Panes) != 1 {
-		return nil
-	}
-
 	if err := c.call("tab.rename", map[string]any{
-		"label":  "git",
+		"label":  "ws",
 		"tab_id": tabs[0].TabID,
-	}, nil); err != nil {
-		return err
-	}
-	if err := c.call("pane.send_text", map[string]any{
-		"pane_id": panesResult.Panes[0].PaneID,
-		"text":    "lazygit\r",
-	}, nil); err != nil {
-		return err
-	}
-	if err := c.call("tab.create", map[string]any{
-		"focus":        false,
-		"label":        "ws",
-		"workspace_id": workspaceID,
 	}, nil); err != nil {
 		return err
 	}
@@ -660,6 +817,15 @@ func firstStringField(value any, key string) string {
 func firstEnv(names ...string) string {
 	for _, name := range names {
 		if value := os.Getenv(name); value != "" {
+			return value
+		}
+	}
+	return ""
+}
+
+func firstNonEmpty(values ...string) string {
+	for _, value := range values {
+		if value != "" {
 			return value
 		}
 	}

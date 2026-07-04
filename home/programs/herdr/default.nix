@@ -51,10 +51,10 @@ let
       command = actionCommand "navigate" "right";
     }
     {
-      id = "focus-git";
+      id = "toggle-lazygit";
       key = "alt+g";
-      title = "Focus git tab";
-      command = actionCommand "focus-tab" "git";
+      title = "Toggle lazygit overlay";
+      command = keybindsCommand "toggle-lazygit" [ ];
     }
     {
       id = "focus-ws";
@@ -366,6 +366,15 @@ let
         title = "Set up default workspace tabs";
         contexts = actionContexts;
         command = setupCommand;
+      }
+    ];
+
+    panes = [
+      {
+        id = "lazygit";
+        title = "lazygit";
+        placement = "overlay";
+        command = [ (lib.getExe pkgs.lazygit) ];
       }
     ];
 
