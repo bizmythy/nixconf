@@ -436,14 +436,12 @@ func (c *client) focusTabLabel(label string) error {
 	return nil
 }
 
-// toggleLazygit closes an existing workspace overlay or opens a new one.
+// toggleLazygit closes the active lazygit overlay, or replaces all other
+// lazygit overlays with one at the active pane.
 func (c *client) toggleLazygit() error {
 	pane, err := c.currentPane()
 	if err != nil {
 		return err
-	}
-	if pane.WorkspaceID == "" {
-		return errors.New("could not resolve active workspace for lazygit overlay")
 	}
 
 	state, statePath, err := loadPluginState()
@@ -451,19 +449,26 @@ func (c *client) toggleLazygit() error {
 		return err
 	}
 
-	if paneID := state.LazygitPanes[pane.WorkspaceID]; paneID != "" {
-		closeErr := c.call("plugin.pane.close", map[string]any{"pane_id": paneID}, nil)
-		delete(state.LazygitPanes, pane.WorkspaceID)
+	if isLazygitPane(pane) {
+		closeErr := c.closeTrackedLazygitPanes(state, []string{pane.PaneID})
 		saveErr := savePluginState(statePath, state)
-		if closeErr == nil {
-			return saveErr
-		}
-		if !isMissingPluginPane(closeErr) {
+		if closeErr != nil {
 			return closeErr
 		}
-		if saveErr != nil {
-			return saveErr
-		}
+		return saveErr
+	}
+
+	paneIDs, err := c.lazygitPaneIDs(state)
+	if err != nil {
+		return err
+	}
+	closeErr := c.closeTrackedLazygitPanes(state, paneIDs)
+	saveErr := savePluginState(statePath, state)
+	if closeErr != nil {
+		return closeErr
+	}
+	if saveErr != nil {
+		return saveErr
 	}
 
 	cwd := activePaneCWD(pane)
@@ -477,11 +482,65 @@ func (c *client) toggleLazygit() error {
 	}
 
 	openedPane := result.PluginPane.Pane
-	if openedPane.PaneID == "" || openedPane.WorkspaceID == "" {
-		return nil
+	if openedPane.PaneID == "" {
+		return savePluginState(statePath, state)
 	}
-	state.LazygitPanes[openedPane.WorkspaceID] = openedPane.PaneID
+	state.LazygitPanes = map[string]string{openedPane.PaneID: openedPane.PaneID}
 	return savePluginState(statePath, state)
+}
+
+func (c *client) lazygitPaneIDs(state pluginState) ([]string, error) {
+	ids := make(map[string]struct{}, len(state.LazygitPanes))
+	for _, paneID := range state.LazygitPanes {
+		if paneID != "" {
+			ids[paneID] = struct{}{}
+		}
+	}
+
+	panes, err := c.panes("")
+	if err != nil {
+		return nil, err
+	}
+	for _, pane := range panes {
+		if isLazygitPane(pane) && pane.PaneID != "" {
+			ids[pane.PaneID] = struct{}{}
+		}
+	}
+
+	paneIDs := make([]string, 0, len(ids))
+	for paneID := range ids {
+		paneIDs = append(paneIDs, paneID)
+	}
+	sort.Strings(paneIDs)
+	return paneIDs, nil
+}
+
+func (c *client) closeTrackedLazygitPanes(state pluginState, paneIDs []string) error {
+	var firstErr error
+	for _, paneID := range paneIDs {
+		if paneID == "" {
+			continue
+		}
+		if err := c.call("plugin.pane.close", map[string]any{"pane_id": paneID}, nil); err != nil {
+			if !isMissingPluginPane(err) && firstErr == nil {
+				firstErr = err
+			}
+		}
+		removeLazygitPaneID(state, paneID)
+	}
+	return firstErr
+}
+
+func removeLazygitPaneID(state pluginState, paneID string) {
+	for key, value := range state.LazygitPanes {
+		if key == paneID || value == paneID {
+			delete(state.LazygitPanes, key)
+		}
+	}
+}
+
+func isLazygitPane(pane paneInfo) bool {
+	return firstNonEmpty(pane.Label, pane.Title) == lazygitEntrypoint
 }
 
 // openWorkspacePicker opens the workspace picker plugin pane as an overlay.
@@ -1024,14 +1083,7 @@ func (c *client) currentPaneFor(paneID string) (paneInfo, error) {
 
 // isActiveLazygitOverlay reports whether navigation should stay inside lazygit.
 func (c *client) isActiveLazygitOverlay(ctx context) (bool, error) {
-	if ctx.WorkspaceID == "" || ctx.PaneID == "" {
-		return false, nil
-	}
-	state, _, err := loadPluginState()
-	if err != nil {
-		return false, err
-	}
-	if state.LazygitPanes[ctx.WorkspaceID] != ctx.PaneID {
+	if ctx.PaneID == "" {
 		return false, nil
 	}
 
@@ -1039,7 +1091,7 @@ func (c *client) isActiveLazygitOverlay(ctx context) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	return pane.PaneID == ctx.PaneID && firstNonEmpty(pane.Label, pane.Title) == lazygitEntrypoint, nil
+	return pane.PaneID == ctx.PaneID && isLazygitPane(pane), nil
 }
 
 // loadPluginState reads persisted helper state, creating defaults if absent.
