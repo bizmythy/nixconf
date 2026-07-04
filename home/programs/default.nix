@@ -19,6 +19,7 @@
     ./nvim.nix
     ./op.nix
     ./spotify-player.nix
+    ./tuicr
     ./vesktop.nix
     # keep-sorted end
   ];
