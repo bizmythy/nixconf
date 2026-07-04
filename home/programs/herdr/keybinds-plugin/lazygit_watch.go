@@ -49,7 +49,11 @@ func watchLazygit(lazygit string) error {
 
 	child, err := startLazygitProcess(lazygit, cwd)
 	if err != nil {
-		return err
+		showLazygitWatchError(cwd, err)
+	}
+	var childDone <-chan error
+	if child != nil {
+		childDone = child.done
 	}
 
 	ticker := time.NewTicker(1 * time.Second)
@@ -65,16 +69,31 @@ func watchLazygit(lazygit string) error {
 			var err error
 			child, cwd, err = restartLazygitIfCWDChanged(queryClient, child, lazygit, cwd)
 			if err != nil {
-				return err
+				showLazygitWatchError(cwd, err)
+				child = nil
+			}
+			childDone = nil
+			if child != nil {
+				childDone = child.done
 			}
 		case <-ticker.C:
 			var err error
 			child, cwd, err = restartLazygitIfCWDChanged(queryClient, child, lazygit, cwd)
 			if err != nil {
-				return err
+				showLazygitWatchError(cwd, err)
+				child = nil
 			}
-		case err := <-child.done:
-			return err
+			childDone = nil
+			if child != nil {
+				childDone = child.done
+			}
+		case err := <-childDone:
+			if err == nil {
+				return nil
+			}
+			showLazygitWatchError(cwd, err)
+			child = nil
+			childDone = nil
 		case err := <-subscribeDone:
 			_ = child.stop(2 * time.Second)
 			return err
@@ -94,9 +113,21 @@ func restartLazygitIfCWDChanged(c *client, child *lazygitProcess, lazygit string
 	}
 	nextChild, err := startLazygitProcess(lazygit, nextCWD)
 	if err != nil {
-		return child, cwd, err
+		return nil, nextCWD, err
 	}
 	return nextChild, nextCWD, nil
+}
+
+func showLazygitWatchError(cwd string, err error) {
+	fmt.Fprint(os.Stdout, "\x1b[2J\x1b[H")
+	fmt.Fprintln(os.Stdout, "lazygit exited with an error")
+	fmt.Fprintln(os.Stdout)
+	if cwd != "" {
+		fmt.Fprintf(os.Stdout, "workspace: %s\n", cwd)
+	}
+	fmt.Fprintf(os.Stdout, "error: %v\n", err)
+	fmt.Fprintln(os.Stdout)
+	fmt.Fprintln(os.Stdout, "lg-herdr-watch is still running; switch workspaces to retry.")
 }
 
 func (c *client) activeLazygitCWD() (string, error) {
