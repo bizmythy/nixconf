@@ -24,7 +24,6 @@ let
     ]
     ++ args;
   actionCommand = subcommand: arg: keybindsCommand subcommand [ arg ];
-  setupCommand = keybindsCommand "setup-workspace" [ ];
   keybindActions = [
     {
       id = "navigate-left";
@@ -378,14 +377,7 @@ let
     description = "Directional pane, tab, and workspace navigation for Herdr.";
     platforms = [ "linux" ];
 
-    actions = keybindPluginActions ++ [
-      {
-        id = "setup-workspace";
-        title = "Set up default workspace tabs";
-        contexts = actionContexts;
-        command = setupCommand;
-      }
-    ];
+    actions = keybindPluginActions;
 
     panes = [
       {
@@ -417,13 +409,6 @@ let
           "new-buildos"
           (lib.getExe pkgs.nushell)
         ];
-      }
-    ];
-
-    events = [
-      {
-        on = "workspace.created";
-        command = setupCommand;
       }
     ];
   };
