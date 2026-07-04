@@ -13,10 +13,19 @@ import (
 	"time"
 )
 
+type Direction uint8
+
+const (
+	directionInvalid Direction = iota
+	directionDown
+	directionLeft
+	directionRight
+	directionUp
+)
+
 type client struct {
-	conn   net.Conn
-	reader *bufio.Reader
-	nextID int
+	nextID     int
+	socketPath string
 }
 
 type apiError struct {
@@ -52,6 +61,13 @@ type workspaceInfo struct {
 	WorkspaceID string `json:"workspace_id"`
 }
 
+type paneEdges struct {
+	Down  bool `json:"down"`
+	Left  bool `json:"left"`
+	Right bool `json:"right"`
+	Up    bool `json:"up"`
+}
+
 type context struct {
 	PaneID      string
 	TabID       string
@@ -67,14 +83,17 @@ func main() {
 	if err != nil {
 		fatalf("%v", err)
 	}
-	defer c.conn.Close()
 
 	switch os.Args[1] {
 	case "navigate":
 		if len(os.Args) != 3 {
 			fatalf("usage: %s navigate <left|right|up|down>", filepath.Base(os.Args[0]))
 		}
-		must(c.navigate(os.Args[2]))
+		dir, err := parseDirection(os.Args[2])
+		if err != nil {
+			fatalf("%v", err)
+		}
+		must(c.navigate(dir))
 	case "focus-tab":
 		if len(os.Args) != 3 {
 			fatalf("usage: %s focus-tab <label>", filepath.Base(os.Args[0]))
@@ -101,13 +120,7 @@ func newClient() (*client, error) {
 		socketPath = filepath.Join(configHome, "herdr", "herdr.sock")
 	}
 
-	dialer := net.Dialer{Timeout: 150 * time.Millisecond}
-	conn, err := dialer.Dial("unix", socketPath)
-	if err != nil {
-		return nil, fmt.Errorf("dial Herdr socket %s: %w", socketPath, err)
-	}
-
-	return &client{conn: conn, reader: bufio.NewReader(conn)}, nil
+	return &client{socketPath: socketPath}, nil
 }
 
 func (c *client) call(method string, params map[string]any, out any) error {
@@ -129,11 +142,18 @@ func (c *client) call(method string, params map[string]any, out any) error {
 	}
 	payload = append(payload, '\n')
 
-	if _, err := c.conn.Write(payload); err != nil {
+	dialer := net.Dialer{Timeout: 150 * time.Millisecond}
+	conn, err := dialer.Dial("unix", c.socketPath)
+	if err != nil {
+		return fmt.Errorf("dial Herdr socket %s for %s: %w", c.socketPath, method, err)
+	}
+	defer conn.Close()
+
+	if _, err := conn.Write(payload); err != nil {
 		return fmt.Errorf("write %s request: %w", method, err)
 	}
 
-	line, err := c.reader.ReadBytes('\n')
+	line, err := bufio.NewReader(conn).ReadBytes('\n')
 	if err != nil {
 		return fmt.Errorf("read %s response: %w", method, err)
 	}
@@ -158,11 +178,7 @@ func (c *client) call(method string, params map[string]any, out any) error {
 	return nil
 }
 
-func (c *client) navigate(direction string) error {
-	if !validDirection(direction) {
-		return fmt.Errorf("invalid direction %q", direction)
-	}
-
+func (c *client) navigate(dir Direction) error {
 	ctx, err := c.resolveContext()
 	if err != nil {
 		return err
@@ -173,19 +189,19 @@ func (c *client) navigate(direction string) error {
 		return err
 	}
 
-	if !edgeValue(edges, direction) {
-		params := map[string]any{"direction": direction}
+	if !edgeValue(edges, dir) {
+		params := map[string]any{"direction": dir.String()}
 		if ctx.PaneID != "" {
-			params["pane_id"] = ctx.PaneID
+			params["caller_pane_id"] = ctx.PaneID
 		}
 		return c.call("pane.focus_direction", params, nil)
 	}
 
-	switch direction {
-	case "left", "right":
-		return c.fallbackTab(ctx, direction)
-	case "up", "down":
-		return c.fallbackWorkspace(ctx, direction)
+	switch dir {
+	case directionLeft, directionRight:
+		return c.fallbackTab(ctx, dir)
+	case directionUp, directionDown:
+		return c.fallbackWorkspace(ctx, dir)
 	default:
 		return nil
 	}
@@ -245,15 +261,15 @@ func (c *client) setupWorkspace() error {
 		return nil
 	}
 
-	if err := c.call("layout.apply", map[string]any{
-		"focus":        true,
-		"tab_id":       tabs[0].TabID,
-		"tab_label":    "git",
-		"workspace_id": workspaceID,
-		"root": map[string]any{
-			"type":    "pane",
-			"command": []string{"lazygit"},
-		},
+	if err := c.call("tab.rename", map[string]any{
+		"label":  "git",
+		"tab_id": tabs[0].TabID,
+	}, nil); err != nil {
+		return err
+	}
+	if err := c.call("pane.send_text", map[string]any{
+		"pane_id": panesResult.Panes[0].PaneID,
+		"text":    "lazygit\r",
 	}, nil); err != nil {
 		return err
 	}
@@ -271,7 +287,7 @@ func (c *client) setupWorkspace() error {
 	}, nil)
 }
 
-func (c *client) fallbackTab(ctx context, direction string) error {
+func (c *client) fallbackTab(ctx context, dir Direction) error {
 	tabs, err := c.tabs(ctx.WorkspaceID)
 	if err != nil {
 		return err
@@ -285,13 +301,13 @@ func (c *client) fallbackTab(ctx context, direction string) error {
 	var target *tabInfo
 	for index := range tabs {
 		tab := &tabs[index]
-		if direction == "right" {
-			if tab.Number < current.Number && (target == nil || tab.Number > target.Number) {
+		if dir == directionRight {
+			if tab.Number > current.Number && (target == nil || tab.Number < target.Number) {
 				target = tab
 			}
 			continue
 		}
-		if tab.Number > current.Number && (target == nil || tab.Number < target.Number) {
+		if tab.Number < current.Number && (target == nil || tab.Number > target.Number) {
 			target = tab
 		}
 	}
@@ -302,7 +318,7 @@ func (c *client) fallbackTab(ctx context, direction string) error {
 	return c.call("tab.focus", map[string]any{"tab_id": target.TabID}, nil)
 }
 
-func (c *client) fallbackWorkspace(ctx context, direction string) error {
+func (c *client) fallbackWorkspace(ctx context, dir Direction) error {
 	var result struct {
 		Type       string          `json:"type"`
 		Workspaces []workspaceInfo `json:"workspaces"`
@@ -323,7 +339,7 @@ func (c *client) fallbackWorkspace(ctx context, direction string) error {
 	var target *workspaceInfo
 	for index := range result.Workspaces {
 		workspace := &result.Workspaces[index]
-		if direction == "up" {
+		if dir == directionUp {
 			if workspace.Number < current.Number && (target == nil || workspace.Number > target.Number) {
 				target = workspace
 			}
@@ -342,9 +358,9 @@ func (c *client) fallbackWorkspace(ctx context, direction string) error {
 
 func (c *client) resolveContext() (context, error) {
 	ctx := context{
-		PaneID:      os.Getenv("HERDR_PANE_ID"),
-		TabID:       os.Getenv("HERDR_TAB_ID"),
-		WorkspaceID: os.Getenv("HERDR_WORKSPACE_ID"),
+		PaneID:      firstEnv("HERDR_PANE_ID", "HERDR_ACTIVE_PANE_ID"),
+		TabID:       firstEnv("HERDR_TAB_ID", "HERDR_ACTIVE_TAB_ID"),
+		WorkspaceID: firstEnv("HERDR_WORKSPACE_ID", "HERDR_ACTIVE_WORKSPACE_ID"),
 	}
 	if ctx.PaneID != "" && ctx.TabID != "" && ctx.WorkspaceID != "" {
 		return ctx, nil
@@ -387,18 +403,18 @@ func (c *client) workspaceIDForSetup() (string, error) {
 	return ctx.WorkspaceID, nil
 }
 
-func (c *client) paneEdges(paneID string) (map[string]bool, error) {
+func (c *client) paneEdges(paneID string) (paneEdges, error) {
 	params := map[string]any{}
 	if paneID != "" {
 		params["pane_id"] = paneID
 	}
 
 	var result struct {
-		Edges map[string]bool `json:"edges"`
-		Type  string          `json:"type"`
+		Edges paneEdges `json:"edges"`
+		Type  string    `json:"type"`
 	}
 	if err := c.call("pane.edges", params, &result); err != nil {
-		return nil, err
+		return paneEdges{}, err
 	}
 
 	return result.Edges, nil
@@ -427,12 +443,12 @@ func (c *client) tabs(workspaceID string) ([]tabInfo, error) {
 
 func currentTab(tabs []tabInfo, tabID string) (tabInfo, bool) {
 	for _, tab := range tabs {
-		if tabID != "" && tab.TabID == tabID {
+		if tab.Focused {
 			return tab, true
 		}
 	}
 	for _, tab := range tabs {
-		if tab.Focused {
+		if tabID != "" && tab.TabID == tabID {
 			return tab, true
 		}
 	}
@@ -441,12 +457,12 @@ func currentTab(tabs []tabInfo, tabID string) (tabInfo, bool) {
 
 func currentWorkspace(workspaces []workspaceInfo, workspaceID string) (workspaceInfo, bool) {
 	for _, workspace := range workspaces {
-		if workspaceID != "" && workspace.WorkspaceID == workspaceID {
+		if workspace.Focused {
 			return workspace, true
 		}
 	}
 	for _, workspace := range workspaces {
-		if workspace.Focused {
+		if workspaceID != "" && workspace.WorkspaceID == workspaceID {
 			return workspace, true
 		}
 	}
@@ -489,16 +505,57 @@ func firstStringField(value any, key string) string {
 	return ""
 }
 
-func edgeValue(edges map[string]bool, direction string) bool {
-	return edges[direction]
+func firstEnv(names ...string) string {
+	for _, name := range names {
+		if value := os.Getenv(name); value != "" {
+			return value
+		}
+	}
+	return ""
 }
 
-func validDirection(direction string) bool {
-	switch direction {
-	case "left", "right", "up", "down":
-		return true
+func edgeValue(edges paneEdges, dir Direction) bool {
+	switch dir {
+	case directionLeft:
+		return edges.Left
+	case directionRight:
+		return edges.Right
+	case directionUp:
+		return edges.Up
+	case directionDown:
+		return edges.Down
 	default:
 		return false
+	}
+}
+
+func parseDirection(value string) (Direction, error) {
+	switch value {
+	case "left":
+		return directionLeft, nil
+	case "right":
+		return directionRight, nil
+	case "up":
+		return directionUp, nil
+	case "down":
+		return directionDown, nil
+	default:
+		return directionInvalid, fmt.Errorf("invalid direction %q", value)
+	}
+}
+
+func (dir Direction) String() string {
+	switch dir {
+	case directionLeft:
+		return "left"
+	case directionRight:
+		return "right"
+	case directionUp:
+		return "up"
+	case directionDown:
+		return "down"
+	default:
+		return "invalid"
 	}
 }
 

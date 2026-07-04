@@ -72,19 +72,31 @@ let
       {
         id = "focus-git";
         title = "Focus git tab";
-        contexts = [ "workspace" ];
+        contexts = [
+          "pane"
+          "tab"
+          "workspace"
+        ];
         command = actionCommand "focus-tab" "git";
       }
       {
         id = "focus-ws";
         title = "Focus ws tab";
-        contexts = [ "workspace" ];
+        contexts = [
+          "pane"
+          "tab"
+          "workspace"
+        ];
         command = actionCommand "focus-tab" "ws";
       }
       {
         id = "setup-workspace";
         title = "Set up default workspace tabs";
-        contexts = [ "workspace" ];
+        contexts = [
+          "pane"
+          "tab"
+          "workspace"
+        ];
         command = setupCommand;
       }
     ];
@@ -92,10 +104,6 @@ let
     events = [
       {
         on = "workspace.created";
-        command = setupCommand;
-      }
-      {
-        on = "pane.created";
         command = setupCommand;
       }
     ];
