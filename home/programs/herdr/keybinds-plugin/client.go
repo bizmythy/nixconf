@@ -1,0 +1,258 @@
+package main
+
+import (
+	"bufio"
+	"encoding/json"
+	"fmt"
+	"net"
+	"os"
+	"path/filepath"
+	"time"
+)
+
+const pluginID = "drew.herdr-keybinds"
+
+// client sends JSON RPC requests to the Herdr Unix socket.
+type client struct {
+	nextID     int
+	socketPath string
+}
+
+// apiError is the error object returned by Herdr RPC responses.
+type apiError struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+// apiCallError wraps a Herdr API error as a Go error.
+type apiCallError struct {
+	Code    string
+	Message string
+}
+
+// Error returns the Herdr API error code and message.
+func (err *apiCallError) Error() string {
+	return fmt.Sprintf("%s: %s", err.Code, err.Message)
+}
+
+// response is the common envelope returned by Herdr RPC calls.
+type response struct {
+	ID     string          `json:"id"`
+	Result json.RawMessage `json:"result"`
+	Error  *apiError       `json:"error"`
+}
+
+// pluginPaneInfo describes a plugin pane returned by plugin.pane.open.
+type pluginPaneInfo struct {
+	Entrypoint string   `json:"entrypoint"`
+	Pane       paneInfo `json:"pane"`
+	PluginID   string   `json:"plugin_id"`
+}
+
+// pluginPaneOpenResult is the typed result for plugin.pane.open.
+type pluginPaneOpenResult struct {
+	PluginPane pluginPaneInfo `json:"plugin_pane"`
+	Type       string         `json:"type"`
+}
+
+// newClient resolves the Herdr socket path and returns a ready RPC client.
+func newClient() (*client, error) {
+	socketPath := os.Getenv("HERDR_SOCKET_PATH")
+	if socketPath == "" {
+		configHome, err := xdgBaseDir("XDG_CONFIG_HOME", ".config")
+		if err != nil {
+			return nil, err
+		}
+		socketPath = filepath.Join(configHome, "herdr", "herdr.sock")
+	}
+
+	return &client{socketPath: socketPath}, nil
+}
+
+// call sends one JSON RPC request to Herdr and decodes its result into out.
+func (c *client) call(method string, params map[string]any, out any) error {
+	c.nextID++
+	id := fmt.Sprintf("herdr-keybinds-%d", c.nextID)
+	if params == nil {
+		params = map[string]any{}
+	}
+
+	request := map[string]any{
+		"id":     id,
+		"method": method,
+		"params": params,
+	}
+
+	payload, err := json.Marshal(request)
+	if err != nil {
+		return fmt.Errorf("encode %s request: %w", method, err)
+	}
+	payload = append(payload, '\n')
+
+	dialer := net.Dialer{Timeout: 150 * time.Millisecond}
+	conn, err := dialer.Dial("unix", c.socketPath)
+	if err != nil {
+		return fmt.Errorf("dial Herdr socket %s for %s: %w", c.socketPath, method, err)
+	}
+	defer conn.Close()
+
+	if _, err := conn.Write(payload); err != nil {
+		return fmt.Errorf("write %s request: %w", method, err)
+	}
+
+	line, err := bufio.NewReader(conn).ReadBytes('\n')
+	if err != nil {
+		return fmt.Errorf("read %s response: %w", method, err)
+	}
+
+	var envelope response
+	if err := json.Unmarshal(line, &envelope); err != nil {
+		return fmt.Errorf("decode %s response: %w", method, err)
+	}
+	if envelope.Error != nil {
+		return &apiCallError{
+			Code:    envelope.Error.Code,
+			Message: envelope.Error.Message,
+		}
+	}
+	if envelope.ID != id {
+		return fmt.Errorf("unexpected response id %q for %q", envelope.ID, id)
+	}
+	if out == nil {
+		return nil
+	}
+	if err := json.Unmarshal(envelope.Result, out); err != nil {
+		return fmt.Errorf("decode %s result: %w", method, err)
+	}
+
+	return nil
+}
+
+// currentPane returns the active pane, honoring caller pane env overrides.
+func (c *client) currentPane() (paneInfo, error) {
+	return c.currentPaneFor(firstEnv("HERDR_PANE_ID", "HERDR_ACTIVE_PANE_ID"))
+}
+
+// currentPaneFor returns the current pane from Herdr, optionally scoped to paneID.
+func (c *client) currentPaneFor(paneID string) (paneInfo, error) {
+	params := map[string]any{}
+	if paneID != "" {
+		params["caller_pane_id"] = paneID
+	}
+
+	var result struct {
+		Pane paneInfo `json:"pane"`
+		Type string   `json:"type"`
+	}
+	if err := c.call("pane.current", params, &result); err != nil {
+		return paneInfo{}, err
+	}
+
+	return result.Pane, nil
+}
+
+// panes lists panes, optionally scoped to one workspace.
+func (c *client) panes(workspaceID string) ([]paneInfo, error) {
+	params := map[string]any{}
+	if workspaceID != "" {
+		params["workspace_id"] = workspaceID
+	}
+
+	var result struct {
+		Panes []paneInfo `json:"panes"`
+		Type  string     `json:"type"`
+	}
+	if err := c.call("pane.list", params, &result); err != nil {
+		return nil, err
+	}
+
+	return result.Panes, nil
+}
+
+// tabs lists tabs in a workspace sorted by tab number.
+func (c *client) tabs(workspaceID string) ([]tabInfo, error) {
+	params := map[string]any{}
+	if workspaceID != "" {
+		params["workspace_id"] = workspaceID
+	}
+
+	var result struct {
+		Tabs []tabInfo `json:"tabs"`
+		Type string    `json:"type"`
+	}
+	if err := c.call("tab.list", params, &result); err != nil {
+		return nil, err
+	}
+
+	sortByNumber(result.Tabs)
+	return result.Tabs, nil
+}
+
+// workspaces lists all workspaces sorted by workspace number.
+func (c *client) workspaces() ([]workspaceInfo, error) {
+	var result struct {
+		Type       string          `json:"type"`
+		Workspaces []workspaceInfo `json:"workspaces"`
+	}
+	if err := c.call("workspace.list", nil, &result); err != nil {
+		return nil, err
+	}
+
+	sortByNumber(result.Workspaces)
+	return result.Workspaces, nil
+}
+
+// createWorkspace creates a focused Herdr workspace and returns its metadata.
+func (c *client) createWorkspace(cwd string, label string) (workspaceInfo, error) {
+	var result struct {
+		Type      string        `json:"type"`
+		Workspace workspaceInfo `json:"workspace"`
+	}
+	if err := c.call("workspace.create", map[string]any{
+		"cwd":   cwd,
+		"focus": true,
+		"label": label,
+	}, &result); err != nil {
+		return workspaceInfo{}, err
+	}
+	if result.Workspace.WorkspaceID != "" {
+		return result.Workspace, nil
+	}
+
+	workspaces, err := c.workspaces()
+	if err != nil {
+		return workspaceInfo{}, err
+	}
+	for _, workspace := range workspaces {
+		if workspace.Focused && workspace.Label == label {
+			return workspace, nil
+		}
+	}
+	for _, workspace := range workspaces {
+		if workspace.Label == label {
+			return workspace, nil
+		}
+	}
+
+	return workspaceInfo{}, nil
+}
+
+// activePaneCWD chooses the best cwd to pass to plugin overlays.
+func activePaneCWD(pane paneInfo) string {
+	return firstNonEmpty(pane.ForegroundCWD, pane.CWD, firstEnv("HERDR_ACTIVE_PANE_CWD"))
+}
+
+// openPluginOverlay opens a helper-owned plugin pane in overlay placement.
+func (c *client) openPluginOverlay(entrypoint string, cwd string, out any) error {
+	params := map[string]any{
+		"entrypoint": entrypoint,
+		"focus":      true,
+		"placement":  "overlay",
+		"plugin_id":  pluginID,
+	}
+	if cwd != "" {
+		params["cwd"] = cwd
+	}
+
+	return c.call("plugin.pane.open", params, out)
+}
