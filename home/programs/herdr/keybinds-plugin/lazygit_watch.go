@@ -24,8 +24,8 @@ type lazygitProcess struct {
 	done chan error
 }
 
-// watchLazygit runs one lazygit process in the active Herdr cwd and restarts it
-// whenever Herdr focuses a workspace with a different active cwd.
+// watchLazygit runs one lazygit process in the active Herdr workspace root and
+// restarts it whenever Herdr focuses a workspace with a different root.
 func watchLazygit(lazygit string) error {
 	queryClient, err := newClient()
 	if err != nil {
@@ -108,13 +108,12 @@ func (c *client) activeLazygitCWD() (string, error) {
 		return "", errors.New("could not resolve active Herdr workspace")
 	}
 
-	pane, err := c.focusedWorkspacePane(workspace)
+	cwd, err := workspaceIdentityCWD(workspace.WorkspaceID)
 	if err != nil {
-		return "", fmt.Errorf("resolve active Herdr pane: %w", err)
+		return "", fmt.Errorf("resolve active Herdr workspace cwd: %w", err)
 	}
-	cwd := firstNonEmpty(pane.ForegroundCWD, pane.CWD)
 	if cwd == "" {
-		return "", errors.New("could not resolve active Herdr cwd")
+		return "", errors.New("could not resolve active Herdr workspace cwd")
 	}
 	return filepath.Clean(cwd), nil
 }
@@ -130,32 +129,6 @@ func (c *client) focusedWorkspace() (workspaceInfo, error) {
 		}
 	}
 	return workspaceInfo{}, nil
-}
-
-func (c *client) focusedWorkspacePane(workspace workspaceInfo) (paneInfo, error) {
-	panes, err := c.panes(workspace.WorkspaceID)
-	if err != nil {
-		return paneInfo{}, err
-	}
-	for _, pane := range panes {
-		if pane.Focused && pane.TabID == workspace.ActiveTabID {
-			return pane, nil
-		}
-	}
-	for _, pane := range panes {
-		if pane.TabID == workspace.ActiveTabID {
-			return pane, nil
-		}
-	}
-	for _, pane := range panes {
-		if pane.Focused {
-			return pane, nil
-		}
-	}
-	if len(panes) > 0 {
-		return panes[0], nil
-	}
-	return paneInfo{}, errors.New("focused Herdr workspace has no panes")
 }
 
 func (c *client) subscribeLazygitWatchEvents(events chan<- struct{}) error {

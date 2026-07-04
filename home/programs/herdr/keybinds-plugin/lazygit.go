@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"sort"
 )
 
@@ -42,9 +43,12 @@ func (c *client) toggleLazygit() error {
 		return saveErr
 	}
 
-	cwd := activePaneCWD(pane)
+	cwd, err := c.workspaceRootCWDForPane(pane)
+	if err != nil {
+		return fmt.Errorf("resolve workspace cwd for lazygit overlay: %w", err)
+	}
 	if cwd == "" {
-		return errors.New("could not resolve active pane cwd for lazygit overlay")
+		return errors.New("could not resolve workspace cwd for lazygit overlay")
 	}
 
 	var result pluginPaneOpenResult

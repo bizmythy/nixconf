@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -59,11 +60,11 @@ type pluginPaneOpenResult struct {
 func newClient() (*client, error) {
 	socketPath := os.Getenv("HERDR_SOCKET_PATH")
 	if socketPath == "" {
-		configHome, err := xdgBaseDir("XDG_CONFIG_HOME", ".config")
+		configDir, err := herdrConfigDir()
 		if err != nil {
 			return nil, err
 		}
-		socketPath = filepath.Join(configHome, "herdr", "herdr.sock")
+		socketPath = filepath.Join(configDir, "herdr.sock")
 	}
 
 	return &client{socketPath: socketPath}, nil
@@ -260,9 +261,77 @@ func (c *client) createWorkspace(cwd string, label string) (workspaceInfo, error
 	return workspaceInfo{}, nil
 }
 
-// activePaneCWD chooses the best cwd to pass to plugin overlays.
+// activePaneCWD chooses the best pane cwd to pass to plugin overlays.
 func activePaneCWD(pane paneInfo) string {
 	return firstNonEmpty(pane.ForegroundCWD, pane.CWD, firstEnv("HERDR_ACTIVE_PANE_CWD"))
+}
+
+func (c *client) workspaceRootCWDForPane(pane paneInfo) (string, error) {
+	if cwd := firstEnv("HERDR_WORKSPACE_CWD", "HERDR_ACTIVE_WORKSPACE_CWD"); cwd != "" {
+		return filepath.Clean(cwd), nil
+	}
+	if pane.WorkspaceID != "" {
+		cwd, err := workspaceIdentityCWD(pane.WorkspaceID)
+		if err != nil {
+			return "", err
+		}
+		if cwd != "" {
+			return filepath.Clean(cwd), nil
+		}
+	}
+	return "", nil
+}
+
+func workspaceIdentityCWD(workspaceID string) (string, error) {
+	sessionPath, err := herdrSessionPath()
+	if err != nil {
+		return "", err
+	}
+	data, err := os.ReadFile(sessionPath)
+	if errors.Is(err, os.ErrNotExist) {
+		return "", nil
+	}
+	if err != nil {
+		return "", fmt.Errorf("read Herdr session: %w", err)
+	}
+
+	var session struct {
+		Workspaces []struct {
+			ID          string `json:"id"`
+			IdentityCWD string `json:"identity_cwd"`
+		} `json:"workspaces"`
+	}
+	if err := json.Unmarshal(data, &session); err != nil {
+		return "", fmt.Errorf("decode Herdr session: %w", err)
+	}
+	for _, workspace := range session.Workspaces {
+		if workspace.ID == workspaceID {
+			return workspace.IdentityCWD, nil
+		}
+	}
+	return "", nil
+}
+
+func herdrSessionPath() (string, error) {
+	if socketPath := os.Getenv("HERDR_SOCKET_PATH"); socketPath != "" {
+		return filepath.Join(filepath.Dir(socketPath), "session.json"), nil
+	}
+	configDir, err := herdrConfigDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(configDir, "session.json"), nil
+}
+
+func herdrConfigDir() (string, error) {
+	if configPath := os.Getenv("HERDR_CONFIG_PATH"); configPath != "" {
+		return filepath.Dir(configPath), nil
+	}
+	configHome, err := xdgBaseDir("XDG_CONFIG_HOME", ".config")
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(configHome, "herdr"), nil
 }
 
 // openPluginOverlay opens a helper-owned plugin pane in overlay placement.
