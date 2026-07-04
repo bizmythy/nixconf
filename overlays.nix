@@ -84,6 +84,7 @@ in
         --prefix PATH : ${super.lib.makeBinPath [ super.wl-clipboard ]}
     '';
   });
+  tuicr = inputs.tuicr.packages.${super.stdenv.hostPlatform.system}.default;
   xhisper-local = super.callPackage ./pkgs/xhisper-local.nix {
     whisperCpp = super.whisper-cpp;
   };

@@ -52,6 +52,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # code review TUI fork with large PR diff fixes
+    tuicr = {
+      url = "github:bizmythy/tuicr/fix/large-pr-local-diff";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # database of nixpkgs for searching
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
