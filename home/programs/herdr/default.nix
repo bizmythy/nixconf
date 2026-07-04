@@ -171,7 +171,7 @@ let
       ];
       split_horizontal = [
         "prefix+minus"
-        "alt+h"
+        "alt+minus"
       ];
       close_pane = [
         "prefix+x"
