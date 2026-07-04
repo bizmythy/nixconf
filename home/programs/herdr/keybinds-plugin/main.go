@@ -33,12 +33,13 @@ const (
 )
 
 const (
-	pluginID                  = "drew.herdr-keybinds"
-	buildosEntrypoint         = "new-buildos"
-	buildosWorkspacePrefix    = "buildos-web-"
-	lazygitEntrypoint         = "lazygit"
-	workspacePickerEntrypoint = "new-workspace-picker"
-	stateFileName             = "state.json"
+	pluginID                    = "drew.herdr-keybinds"
+	buildosEntrypoint           = "new-buildos"
+	buildosWorkspacePrefix      = "buildos-web-"
+	buildosWorkspaceLabelPrefix = "🔩 "
+	lazygitEntrypoint           = "lazygit"
+	workspacePickerEntrypoint   = "new-workspace-picker"
+	stateFileName               = "state.json"
 )
 
 // client sends JSON RPC requests to the Herdr Unix socket.
@@ -553,7 +554,16 @@ func (c *client) newWorkspacePicker(fzf string) error {
 		return nil
 	}
 
-	return c.openOrFocusWorkspace(selected.Path, filepath.Base(selected.Path))
+	return c.openOrFocusWorkspace(selected.Path, workspaceLabelForPath(selected.Path))
+}
+
+// workspaceLabelForPath returns the compact label used for picker-created workspaces.
+func workspaceLabelForPath(path string) string {
+	label := filepath.Base(path)
+	if strings.HasPrefix(label, buildosWorkspacePrefix) {
+		return buildosWorkspaceLabelPrefix + strings.TrimPrefix(label, buildosWorkspacePrefix)
+	}
+	return label
 }
 
 // newBuildos prompts for a suffix and schedules buildos setup in a new workspace.
@@ -1339,17 +1349,13 @@ func workspaceIDFromEvent() string {
 	return firstStringField(event, "workspace_id")
 }
 
-// workspaceEventLooksBuildos reports whether the event is for a buildos workspace.
+// workspaceEventLooksBuildos reports whether the event is for the new-buildos setup flow.
 func workspaceEventLooksBuildos() bool {
 	event, ok := pluginEventJSON()
 	if !ok {
 		return false
 	}
-	if strings.HasPrefix(firstStringField(event, "label"), buildosWorkspacePrefix) {
-		return true
-	}
-	cwd := firstStringField(event, "cwd")
-	return strings.HasPrefix(filepath.Base(cwd), buildosWorkspacePrefix)
+	return strings.HasPrefix(firstStringField(event, "label"), buildosWorkspacePrefix)
 }
 
 // pluginEventJSON decodes Herdr's current plugin event payload.
