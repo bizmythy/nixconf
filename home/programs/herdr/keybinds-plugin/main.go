@@ -26,9 +26,10 @@ const (
 )
 
 const (
-	pluginID          = "drew.herdr-keybinds"
-	lazygitEntrypoint = "lazygit"
-	stateFileName     = "state.json"
+	pluginID                  = "drew.herdr-keybinds"
+	lazygitEntrypoint         = "lazygit"
+	workspacePickerEntrypoint = "new-workspace-picker"
+	stateFileName             = "state.json"
 )
 
 type client struct {
@@ -118,7 +119,7 @@ type context struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fatalf("usage: %s navigate <left|right|up|down>|focus-tab <label>|toggle-lazygit|new-workspace-picker [fuzzel]|setup-workspace", filepath.Base(os.Args[0]))
+		fatalf("usage: %s navigate <left|right|up|down>|focus-tab <label>|toggle-lazygit|new-workspace-picker [fzf]|setup-workspace", filepath.Base(os.Args[0]))
 	}
 
 	c, err := newClient()
@@ -148,13 +149,17 @@ func main() {
 		must(c.toggleLazygit())
 	case "new-workspace-picker":
 		if len(os.Args) > 3 {
-			fatalf("usage: %s new-workspace-picker [fuzzel]", filepath.Base(os.Args[0]))
+			fatalf("usage: %s new-workspace-picker [fzf]", filepath.Base(os.Args[0]))
 		}
-		fuzzel := "fuzzel"
+		fzf := "fzf"
 		if len(os.Args) == 3 {
-			fuzzel = os.Args[2]
+			fzf = os.Args[2]
 		}
-		must(c.newWorkspacePicker(fuzzel))
+		if os.Getenv("HERDR_WORKSPACE_PICKER_PANE") == "1" {
+			must(c.newWorkspacePicker(fzf))
+			return
+		}
+		must(c.openWorkspacePicker())
 	case "setup-workspace":
 		must(c.setupWorkspace())
 	default:
@@ -345,7 +350,27 @@ func (c *client) toggleLazygit() error {
 	return savePluginState(statePath, state)
 }
 
-func (c *client) newWorkspacePicker(fuzzel string) error {
+func (c *client) openWorkspacePicker() error {
+	pane, err := c.currentPane()
+	if err != nil {
+		return err
+	}
+
+	cwd := firstNonEmpty(pane.ForegroundCWD, pane.CWD, firstEnv("HERDR_ACTIVE_PANE_CWD"))
+	params := map[string]any{
+		"entrypoint": workspacePickerEntrypoint,
+		"focus":      true,
+		"placement":  "overlay",
+		"plugin_id":  pluginID,
+	}
+	if cwd != "" {
+		params["cwd"] = cwd
+	}
+
+	return c.call("plugin.pane.open", params, nil)
+}
+
+func (c *client) newWorkspacePicker(fzf string) error {
 	home, err := homeDir()
 	if err != nil {
 		return err
@@ -359,7 +384,7 @@ func (c *client) newWorkspacePicker(fuzzel string) error {
 		return nil
 	}
 
-	selected, err := chooseWorkspace(fuzzel, choices)
+	selected, err := chooseWorkspace(fzf, choices)
 	if err != nil {
 		return err
 	}
@@ -437,7 +462,7 @@ func workspaceChoicesFor(home string, roots []string) ([]workspaceChoice, error)
 	return choices, nil
 }
 
-func chooseWorkspace(fuzzel string, choices []workspaceChoice) (*workspaceChoice, error) {
+func chooseWorkspace(fzf string, choices []workspaceChoice) (*workspaceChoice, error) {
 	byDisplay := make(map[string]*workspaceChoice, len(choices))
 	lines := make([]string, 0, len(choices))
 	for index := range choices {
@@ -446,7 +471,7 @@ func chooseWorkspace(fuzzel string, choices []workspaceChoice) (*workspaceChoice
 		lines = append(lines, choice.Display)
 	}
 
-	cmd := exec.Command(fuzzel, "--dmenu", "--prompt", "workspace> ")
+	cmd := exec.Command(fzf, "--prompt=workspace> ")
 	cmd.Stdin = strings.NewReader(strings.Join(lines, "\n") + "\n")
 	var stdout bytes.Buffer
 	cmd.Stdout = &stdout
@@ -456,7 +481,7 @@ func chooseWorkspace(fuzzel string, choices []workspaceChoice) (*workspaceChoice
 		if errors.As(err, &exitError) {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("run fuzzel: %w", err)
+		return nil, fmt.Errorf("run fzf: %w", err)
 	}
 
 	selected := strings.TrimRight(stdout.String(), "\r\n")

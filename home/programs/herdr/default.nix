@@ -60,7 +60,7 @@ let
       id = "new-workspace-picker";
       key = "alt+n";
       title = "New workspace from directory picker";
-      command = keybindsCommand "new-workspace-picker" [ (lib.getExe pkgs.fuzzel) ];
+      command = keybindsCommand "new-workspace-picker" [ ];
     }
   ];
   keybindPluginActions = map (action: {
@@ -387,6 +387,18 @@ let
         title = "lazygit";
         placement = "overlay";
         command = [ (lib.getExe pkgs.lazygit) ];
+      }
+      {
+        id = "new-workspace-picker";
+        title = "New workspace picker";
+        placement = "overlay";
+        command = [
+          (lib.getExe' pkgs.coreutils "env")
+          "HERDR_WORKSPACE_PICKER_PANE=1"
+          (lib.getExe keybindsPlugin)
+          "new-workspace-picker"
+          (lib.getExe pkgs.fzf)
+        ];
       }
     ];
 
