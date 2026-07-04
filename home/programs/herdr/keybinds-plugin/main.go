@@ -292,16 +292,6 @@ func newRootCommand() *cobra.Command {
 				})
 			},
 		},
-		&cobra.Command{
-			Use:   "setup-workspace",
-			Short: "Initialize tabs for a newly-created workspace",
-			Args:  cobra.NoArgs,
-			RunE: func(_ *cobra.Command, _ []string) error {
-				return runWithClient(func(c *client) error {
-					return c.setupWorkspace()
-				})
-			},
-		},
 	)
 
 	return rootCmd
@@ -1118,51 +1108,6 @@ func isMissingObject(err error) bool {
 	return apiErr.Code == "not_found" || strings.HasSuffix(apiErr.Code, "_not_found")
 }
 
-// setupWorkspace renames the starter tab and creates the first work tab.
-func (c *client) setupWorkspace() error {
-	workspaceID, err := c.workspaceIDForSetup()
-	if err != nil {
-		return err
-	}
-	if workspaceID == "" {
-		return nil
-	}
-	if workspaceEventLooksBuildos() {
-		return nil
-	}
-	if label, err := c.workspaceLabel(workspaceID); err != nil {
-		return err
-	} else if strings.HasPrefix(label, buildosWorkspacePrefix) {
-		return nil
-	}
-
-	tabs, err := c.tabs(workspaceID)
-	if err != nil {
-		return err
-	}
-	if len(tabs) != 1 {
-		return nil
-	}
-	if tabs[0].Label == "ws" {
-		return nil
-	}
-	if tabs[0].PaneCount != 1 {
-		return nil
-	}
-
-	if err := c.call("tab.rename", map[string]any{
-		"label":  "ws",
-		"tab_id": tabs[0].TabID,
-	}, nil); err != nil {
-		return err
-	}
-	return c.call("tab.create", map[string]any{
-		"focus":        true,
-		"label":        "1",
-		"workspace_id": workspaceID,
-	}, nil)
-}
-
 // fallbackTab moves left or right by tab number when pane navigation hits an edge.
 func (c *client) fallbackTab(ctx context, dir Direction) error {
 	tabs, err := c.tabs(ctx.WorkspaceID)
@@ -1228,19 +1173,6 @@ func (c *client) resolveContext() (context, error) {
 	}
 
 	return ctx, nil
-}
-
-// workspaceIDForSetup finds the workspace from the Herdr event or context.
-func (c *client) workspaceIDForSetup() (string, error) {
-	if workspaceID := workspaceIDFromEvent(); workspaceID != "" {
-		return workspaceID, nil
-	}
-
-	ctx, err := c.resolveContext()
-	if err != nil {
-		return "", err
-	}
-	return ctx.WorkspaceID, nil
 }
 
 // paneEdges asks Herdr which layout edges paneID touches.
@@ -1312,20 +1244,6 @@ func (c *client) workspaces() ([]workspaceInfo, error) {
 	return result.Workspaces, nil
 }
 
-// workspaceLabel returns the label for a workspace ID, if present.
-func (c *client) workspaceLabel(workspaceID string) (string, error) {
-	workspaces, err := c.workspaces()
-	if err != nil {
-		return "", err
-	}
-	for _, workspace := range workspaces {
-		if workspace.WorkspaceID == workspaceID {
-			return workspace.Label, nil
-		}
-	}
-	return "", nil
-}
-
 // sortByNumber orders Herdr entities by their user-visible number.
 func sortByNumber[T numberedFocusable](items []T) {
 	sort.Slice(items, func(i, j int) bool {
@@ -1377,62 +1295,6 @@ func adjacentByNumber[T numberedFocusable](items []T, current T, forward bool) (
 		}
 	}
 	return target, found
-}
-
-// workspaceIDFromEvent extracts the affected workspace ID from Herdr event JSON.
-func workspaceIDFromEvent() string {
-	event, ok := pluginEventJSON()
-	if !ok {
-		return ""
-	}
-
-	return firstStringField(event, "workspace_id")
-}
-
-// workspaceEventLooksBuildos reports whether the event is for the new-buildos setup flow.
-func workspaceEventLooksBuildos() bool {
-	event, ok := pluginEventJSON()
-	if !ok {
-		return false
-	}
-	return strings.HasPrefix(firstStringField(event, "label"), buildosWorkspacePrefix)
-}
-
-// pluginEventJSON decodes Herdr's current plugin event payload.
-func pluginEventJSON() (any, bool) {
-	raw := os.Getenv("HERDR_PLUGIN_EVENT_JSON")
-	if raw == "" {
-		return nil, false
-	}
-
-	var event any
-	if err := json.Unmarshal([]byte(raw), &event); err != nil {
-		return nil, false
-	}
-	return event, true
-}
-
-// firstStringField recursively finds the first non-empty string field named key.
-func firstStringField(value any, key string) string {
-	switch typed := value.(type) {
-	case map[string]any:
-		if value, ok := typed[key].(string); ok && value != "" {
-			return value
-		}
-		for _, child := range typed {
-			if found := firstStringField(child, key); found != "" {
-				return found
-			}
-		}
-	case []any:
-		for _, child := range typed {
-			if found := firstStringField(child, key); found != "" {
-				return found
-			}
-		}
-	}
-
-	return ""
 }
 
 // firstEnv returns the first non-empty environment variable value.
