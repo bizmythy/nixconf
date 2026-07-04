@@ -13,7 +13,11 @@ import (
 	"time"
 )
 
-const workspaceFocusedEvent = "workspace.focused"
+var lazygitWatchEvents = []string{
+	"workspace.created",
+	"workspace.focused",
+	"pane.focused",
+}
 
 type lazygitProcess struct {
 	cmd  *exec.Cmd
@@ -40,13 +44,16 @@ func watchLazygit(lazygit string) error {
 	events := make(chan struct{}, 4)
 	subscribeDone := make(chan error, 1)
 	go func() {
-		subscribeDone <- eventClient.subscribeWorkspaceFocused(events)
+		subscribeDone <- eventClient.subscribeLazygitWatchEvents(events)
 	}()
 
 	child, err := startLazygitProcess(lazygit, cwd)
 	if err != nil {
 		return err
 	}
+
+	ticker := time.NewTicker(1 * time.Second)
+	defer ticker.Stop()
 
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM)
@@ -55,18 +62,17 @@ func watchLazygit(lazygit string) error {
 	for {
 		select {
 		case <-events:
-			nextCWD, err := queryClient.activeLazygitCWD()
-			if err != nil || samePath(cwd, nextCWD) {
-				continue
-			}
-			if err := child.stop(2 * time.Second); err != nil {
-				return err
-			}
-			child, err = startLazygitProcess(lazygit, nextCWD)
+			var err error
+			child, cwd, err = restartLazygitIfCWDChanged(queryClient, child, lazygit, cwd)
 			if err != nil {
 				return err
 			}
-			cwd = nextCWD
+		case <-ticker.C:
+			var err error
+			child, cwd, err = restartLazygitIfCWDChanged(queryClient, child, lazygit, cwd)
+			if err != nil {
+				return err
+			}
 		case err := <-child.done:
 			return err
 		case err := <-subscribeDone:
@@ -78,8 +84,31 @@ func watchLazygit(lazygit string) error {
 	}
 }
 
+func restartLazygitIfCWDChanged(c *client, child *lazygitProcess, lazygit string, cwd string) (*lazygitProcess, string, error) {
+	nextCWD, err := c.activeLazygitCWD()
+	if err != nil || samePath(cwd, nextCWD) {
+		return child, cwd, nil
+	}
+	if err := child.stop(2 * time.Second); err != nil {
+		return child, cwd, err
+	}
+	nextChild, err := startLazygitProcess(lazygit, nextCWD)
+	if err != nil {
+		return child, cwd, err
+	}
+	return nextChild, nextCWD, nil
+}
+
 func (c *client) activeLazygitCWD() (string, error) {
-	pane, err := c.currentPaneFor("")
+	workspace, err := c.focusedWorkspace()
+	if err != nil {
+		return "", fmt.Errorf("resolve active Herdr workspace: %w", err)
+	}
+	if workspace.WorkspaceID == "" {
+		return "", errors.New("could not resolve active Herdr workspace")
+	}
+
+	pane, err := c.focusedWorkspacePane(workspace)
 	if err != nil {
 		return "", fmt.Errorf("resolve active Herdr pane: %w", err)
 	}
@@ -90,12 +119,53 @@ func (c *client) activeLazygitCWD() (string, error) {
 	return filepath.Clean(cwd), nil
 }
 
-func (c *client) subscribeWorkspaceFocused(events chan<- struct{}) error {
+func (c *client) focusedWorkspace() (workspaceInfo, error) {
+	workspaces, err := c.workspaces()
+	if err != nil {
+		return workspaceInfo{}, err
+	}
+	for _, workspace := range workspaces {
+		if workspace.Focused {
+			return workspace, nil
+		}
+	}
+	return workspaceInfo{}, nil
+}
+
+func (c *client) focusedWorkspacePane(workspace workspaceInfo) (paneInfo, error) {
+	panes, err := c.panes(workspace.WorkspaceID)
+	if err != nil {
+		return paneInfo{}, err
+	}
+	for _, pane := range panes {
+		if pane.Focused && pane.TabID == workspace.ActiveTabID {
+			return pane, nil
+		}
+	}
+	for _, pane := range panes {
+		if pane.TabID == workspace.ActiveTabID {
+			return pane, nil
+		}
+	}
+	for _, pane := range panes {
+		if pane.Focused {
+			return pane, nil
+		}
+	}
+	if len(panes) > 0 {
+		return panes[0], nil
+	}
+	return paneInfo{}, errors.New("focused Herdr workspace has no panes")
+}
+
+func (c *client) subscribeLazygitWatchEvents(events chan<- struct{}) error {
 	const method = "events.subscribe"
+	subscriptions := make([]map[string]string, 0, len(lazygitWatchEvents))
+	for _, eventName := range lazygitWatchEvents {
+		subscriptions = append(subscriptions, map[string]string{"type": eventName})
+	}
 	payload, id, err := c.encodeRequest(method, map[string]any{
-		"subscriptions": []map[string]string{
-			{"type": workspaceFocusedEvent},
-		},
+		"subscriptions": subscriptions,
 	})
 	if err != nil {
 		return err
@@ -122,7 +192,7 @@ func (c *client) subscribeWorkspaceFocused(events chan<- struct{}) error {
 
 	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() {
-		if bytes.Contains(scanner.Bytes(), []byte(workspaceFocusedEvent)) {
+		if lazygitWatchEventLine(scanner.Bytes()) {
 			select {
 			case events <- struct{}{}:
 			default:
@@ -134,6 +204,15 @@ func (c *client) subscribeWorkspaceFocused(events chan<- struct{}) error {
 	}
 
 	return errors.New("Herdr event stream closed")
+}
+
+func lazygitWatchEventLine(line []byte) bool {
+	for _, eventName := range lazygitWatchEvents {
+		if bytes.Contains(line, []byte(eventName)) {
+			return true
+		}
+	}
+	return false
 }
 
 func startLazygitProcess(lazygit string, cwd string) (*lazygitProcess, error) {

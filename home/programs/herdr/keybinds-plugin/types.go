@@ -33,6 +33,7 @@ func (tab tabInfo) number() int { return tab.Number }
 
 // workspaceInfo is the subset of Herdr workspace metadata needed here.
 type workspaceInfo struct {
+	ActiveTabID string `json:"active_tab_id"`
 	Focused     bool   `json:"focused"`
 	Label       string `json:"label"`
 	Number      int    `json:"number"`
