@@ -37,6 +37,7 @@ const (
 	buildosEntrypoint           = "new-buildos"
 	buildosWorkspacePrefix      = "buildos-web-"
 	buildosWorkspaceLabelPrefix = "🔩 "
+	nixWorkspaceLabel           = " nixconf"
 	lazygitEntrypoint           = "lazygit"
 	workspacePickerEntrypoint   = "new-workspace-picker"
 	stateFileName               = "state.json"
@@ -528,7 +529,12 @@ func (c *client) newWorkspacePicker(fzf string) error {
 		return err
 	}
 
-	choices, err := workspaceChoicesFor(home, []string{"personal", "dirac"})
+	choices, err := workspaceChoicesFor(home, []string{"personal", "dirac"}, []workspaceChoice{
+		{
+			Display: "nixconf",
+			Path:    filepath.Join(home, "home", "nixconf"),
+		},
+	})
 	if err != nil {
 		return err
 	}
@@ -552,6 +558,9 @@ func workspaceLabelForPath(path string) string {
 	label := filepath.Base(path)
 	if strings.HasPrefix(label, buildosWorkspacePrefix) {
 		return buildosWorkspaceLabelPrefix + strings.TrimPrefix(label, buildosWorkspacePrefix)
+	}
+	if label == "nixconf" {
+		return nixWorkspaceLabel
 	}
 	return label
 }
@@ -848,7 +857,7 @@ func (c *client) workspaceIDForCWD(cwd string) (string, error) {
 }
 
 // workspaceChoicesFor scans root directories under home for picker choices.
-func workspaceChoicesFor(home string, roots []string) ([]workspaceChoice, error) {
+func workspaceChoicesFor(home string, roots []string, extraChoices []workspaceChoice) ([]workspaceChoice, error) {
 	choices := make([]workspaceChoice, 0)
 	for _, rootName := range roots {
 		rootPath := filepath.Join(home, rootName)
@@ -871,6 +880,20 @@ func workspaceChoicesFor(home string, roots []string) ([]workspaceChoice, error)
 				Path:    filepath.Join(rootPath, entry.Name()),
 			})
 		}
+	}
+
+	for _, choice := range extraChoices {
+		info, err := os.Stat(choice.Path)
+		if errors.Is(err, os.ErrNotExist) {
+			continue
+		}
+		if err != nil {
+			return nil, fmt.Errorf("stat %s: %w", choice.Path, err)
+		}
+		if !info.IsDir() {
+			continue
+		}
+		choices = append(choices, choice)
 	}
 
 	sortWorkspaceChoices(choices)
