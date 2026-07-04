@@ -126,7 +126,10 @@ let
       # detach = "prefix+q";
       # reload_config = "prefix+shift+r";
       # open_notification_target = "prefix+o";
-      # workspace_picker = "prefix+w";
+      workspace_picker = [
+        "prefix+w"
+        "alt+w"
+      ];
       # goto = "prefix+g";
       # new_workspace = "prefix+shift+n";
       # new_worktree = "prefix+shift+g";
@@ -137,16 +140,22 @@ let
       # previous_workspace = ""; # optional, unset by default
       # next_workspace = "";     # optional, unset by default
       # previous_agent = "";     # optional, unset by default
-      # next_agent = "";         # optional, unset by default
+      next_agent = "alt+a";
       # focus_agent = "";        # optional indexed binding, e.g. "prefix+alt+1..9"
       # remote_image_paste = "ctrl+v"; # only active in herdr --remote; empty disables raw-key image paste
-      # new_tab = "prefix+c";
+      new_tab = [
+        "prefix+c"
+        "alt+t"
+      ];
       # rename_tab = "prefix+shift+t";
       # previous_tab = "prefix+p";
       # next_tab = "prefix+n";
       # switch_tab = "prefix+1..9";
       # switch_workspace = "";   # optional indexed binding, e.g. "prefix+shift+1..9"
-      # close_tab = "prefix+shift+x";
+      close_tab = [
+        "prefix+shift+x"
+        "alt+q"
+      ];
       # rename_pane = "prefix+shift+p";
       # edit_scrollback = "prefix+e";
       # focus_pane_left = "prefix+h";
@@ -156,9 +165,18 @@ let
       # cycle_pane_next = "prefix+tab";
       # cycle_pane_previous = "prefix+shift+tab";
       # last_pane = "";          # optional, unset by default; bind e.g. "prefix+tab" for global back-and-forth
-      # split_vertical = "prefix+v";
-      # split_horizontal = "prefix+minus";
-      # close_pane = "prefix+x";
+      split_vertical = [
+        "prefix+v"
+        "alt+v"
+      ];
+      split_horizontal = [
+        "prefix+minus"
+        "alt+h"
+      ];
+      close_pane = [
+        "prefix+x"
+        "alt+x"
+      ];
       # zoom = "prefix+z";       # legacy alias: fullscreen
       # resize_mode = "prefix+r";
       # toggle_sidebar = "prefix+b";
