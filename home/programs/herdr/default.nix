@@ -413,6 +413,7 @@ let
     ];
   };
   manifest = toml.generate "herdr-keybinds-plugin.toml" manifestData;
+  pluginRegistryFile = json.generate "herdr-plugins.json" pluginRegistry;
   pluginRegistry = [
     {
       inherit (manifestData)
@@ -437,6 +438,9 @@ in
 
 {
   xdg.configFile."herdr/config.toml".source = toml.generate "herdr-config.toml" herdrConfig;
-  xdg.configFile."herdr/plugins.json".source = json.generate "herdr-plugins.json" pluginRegistry;
   xdg.configFile."${pluginDir}/herdr-plugin.toml".source = manifest;
+
+  home.activation.herdrPluginRegistry = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    run install -Dm0644 ${lib.escapeShellArg pluginRegistryFile} "$HOME/.config/herdr/plugins.json"
+  '';
 }
