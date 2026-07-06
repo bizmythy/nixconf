@@ -2240,16 +2240,16 @@
         "utils": "utils_2"
       },
       "locked": {
-        "lastModified": 1783009502,
-        "narHash": "sha256-GHbEUxSkv3o14/A4rbueZB2tCLP3avf8jq02asWxiEM=",
+        "lastModified": 1783355533,
+        "narHash": "sha256-ZfrVhmJYFavldFLUSPBaY8RXfBtyrxO+1SPr7A26xK0=",
         "owner": "bizmythy",
         "repo": "tuicr",
-        "rev": "2bdd27ed11f528f4893a1bf6b45b7b01bb7306cb",
+        "rev": "c1a817883810137ea1a8b3c2ccb3af7bd25d3682",
         "type": "github"
       },
       "original": {
         "owner": "bizmythy",
-        "ref": "fix/large-pr-local-diff",
+        "ref": "bizmythy-tweaks",
         "repo": "tuicr",
         "type": "github"
       }

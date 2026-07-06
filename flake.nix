@@ -54,7 +54,7 @@
 
     # code review TUI fork with large PR diff fixes
     tuicr = {
-      url = "github:bizmythy/tuicr/fix/large-pr-local-diff";
+      url = "github:bizmythy/tuicr/bizmythy-tweaks";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
