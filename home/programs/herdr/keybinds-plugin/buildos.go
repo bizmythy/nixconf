@@ -267,9 +267,10 @@ func (c *client) notify(title string, body string) error {
 
 // runPane starts a command in an existing pane.
 func (c *client) runPane(paneID string, command string) error {
-	return c.call("pane.run", map[string]any{
-		"command": command,
+	return c.call("pane.send_input", map[string]any{
+		"keys":    []string{"Enter"},
 		"pane_id": paneID,
+		"text":    command,
 	}, nil)
 }
 
