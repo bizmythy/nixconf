@@ -6,11 +6,11 @@
 }:
 
 let
+  json = pkgs.formats.json { };
   toml = pkgs.formats.toml { };
   keybindsPlugin = pkgs.herdr-keybinds;
   pluginId = "drew.herdr-keybinds";
   pluginDir = "herdr/plugins/${pluginId}";
-  manifestPath = "${config.xdg.configHome}/${pluginDir}/herdr-plugin.toml";
   actionContexts = [
     "pane"
     "tab"
@@ -369,7 +369,7 @@ let
       # scrollback_limit_bytes = 10000000;
     };
   };
-  manifest = toml.generate "herdr-keybinds-plugin.toml" {
+  manifestData = {
     id = pluginId;
     name = "Drew Herdr Keybinds";
     version = "0.1.0";
@@ -412,18 +412,31 @@ let
       }
     ];
   };
+  manifest = toml.generate "herdr-keybinds-plugin.toml" manifestData;
+  pluginRegistry = [
+    {
+      inherit (manifestData)
+        name
+        version
+        min_herdr_version
+        description
+        platforms
+        actions
+        panes
+        ;
+      plugin_id = pluginId;
+      manifest_path = toString manifest;
+      plugin_root = builtins.dirOf (toString manifest);
+      enabled = true;
+      source = {
+        kind = "local";
+      };
+    }
+  ];
 in
 
 {
   xdg.configFile."herdr/config.toml".source = toml.generate "herdr-config.toml" herdrConfig;
+  xdg.configFile."herdr/plugins.json".source = json.generate "herdr-plugins.json" pluginRegistry;
   xdg.configFile."${pluginDir}/herdr-plugin.toml".source = manifest;
-
-  home.activation.herdrKeybindsPlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    manifest=${lib.escapeShellArg manifestPath}
-    if [ -e "$manifest" ]; then
-      if ! ${lib.getExe pkgs.herdr} plugin link "$manifest" >/dev/null; then
-        echo "warning: failed to link Herdr keybinds plugin" >&2
-      fi
-    fi
-  '';
 }
