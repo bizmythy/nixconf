@@ -1,4 +1,5 @@
 {
+  inputs,
   pkgs,
   vars,
   ...
@@ -20,8 +21,60 @@ let
   publicKeyFiles = builtins.mapAttrs genKeyFile publicKeys;
 
   onePassPath = "${vars.home}/.1password/agent.sock";
+  weavePackage = inputs.weave.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  weaveExtensions = [
+    "ts"
+    "tsx"
+    "js"
+    "mjs"
+    "cjs"
+    "jsx"
+    "py"
+    "go"
+    "rs"
+    "java"
+    "c"
+    "h"
+    "cpp"
+    "cc"
+    "cxx"
+    "hpp"
+    "hh"
+    "hxx"
+    "rb"
+    "cs"
+    "php"
+    "swift"
+    "ex"
+    "exs"
+    "sh"
+    "f90"
+    "f95"
+    "f03"
+    "f08"
+    "xml"
+    "plist"
+    "svg"
+    "csproj"
+    "fsproj"
+    "vbproj"
+    "json"
+    "yaml"
+    "yml"
+    "toml"
+    "md"
+    "scala"
+    "sc"
+    "sbt"
+    "kojo"
+    "mill"
+    "dart"
+  ];
+  weaveAttributes = map (extension: "*.${extension} merge=weave") weaveExtensions;
 in
 {
+  home.packages = [ weavePackage ];
+
   # -------SSH CONFIGURATION-------
   # home manager version adds several extra options i do not want
   # set github.com to be dirac key by default to get private flake inputs working
@@ -98,6 +151,7 @@ in
     in
     {
       enable = true;
+      attributes = weaveAttributes;
       lfs.enable = true;
       signing = {
         format = "ssh";
@@ -108,6 +162,10 @@ in
         # preferences
         init.defaultBranch = "main";
         push.autoSetupRemote = true;
+        merge.weave = {
+          name = "Entity-level semantic merge";
+          driver = "weave-driver %O %A %B %L %P";
+        };
         core.hooksPath = ".githooks";
         core.editor = vars.defaults.termEditor;
 

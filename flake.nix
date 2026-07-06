@@ -32,6 +32,13 @@
     # precompiled AI tools
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    # semantic git merge driver
+    weave = {
+      url = "github:Ataraxy-Labs/weave";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # my t3code fork with a nix build output flake
     t3code = {
       url = "github:bizmythy/t3code";
