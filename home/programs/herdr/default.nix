@@ -442,5 +442,6 @@ in
 
   home.activation.herdrPluginRegistry = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
     run install -Dm0644 ${lib.escapeShellArg pluginRegistryFile} "$HOME/.config/herdr/plugins.json"
+    run ${lib.escapeShellArg (lib.getExe pkgs.herdr)} plugin link ${lib.escapeShellArg (toString manifest)}
   '';
 }
