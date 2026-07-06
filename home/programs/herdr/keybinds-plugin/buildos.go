@@ -9,12 +9,15 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
 	buildosEntrypoint           = "new-buildos"
 	buildosWorkspacePrefix      = "buildos-web-"
 	buildosWorkspaceLabelPrefix = "🔩 "
+	buildosSetupPaneWait        = 2 * time.Second
+	buildosSetupPanePoll        = 50 * time.Millisecond
 )
 
 //go:embed buildos-setup.nu
@@ -128,20 +131,39 @@ func (c *client) prepareBuildosSetupPane(workspaceID string) (tabInfo, paneInfo,
 		setupTab.Label = "setup"
 	}
 
-	panes, err := c.panes(workspaceID)
+	pane, err := c.waitForPaneInTab(workspaceID, setupTab.TabID)
 	if err != nil {
 		return tabInfo{}, paneInfo{}, err
 	}
-	for _, pane := range panes {
-		if pane.TabID == setupTab.TabID {
-			return setupTab, pane, nil
-		}
-	}
-	if len(panes) > 0 {
-		return setupTab, panes[0], nil
-	}
+	return setupTab, pane, nil
+}
 
-	return tabInfo{}, paneInfo{}, errors.New("created buildos workspace did not have a pane")
+// waitForPaneInTab waits for Herdr to publish the freshly-created workspace pane.
+func (c *client) waitForPaneInTab(workspaceID string, tabID string) (paneInfo, error) {
+	deadline := time.Now().Add(buildosSetupPaneWait)
+	var fallback paneInfo
+
+	for {
+		panes, err := c.panes(workspaceID)
+		if err != nil {
+			return paneInfo{}, err
+		}
+		for _, pane := range panes {
+			if pane.TabID == tabID {
+				return pane, nil
+			}
+		}
+		if len(panes) > 0 && fallback.PaneID == "" {
+			fallback = panes[0]
+		}
+		if time.Now().After(deadline) {
+			if fallback.PaneID != "" {
+				return fallback, nil
+			}
+			return paneInfo{}, errors.New("created buildos workspace did not have a pane")
+		}
+		time.Sleep(buildosSetupPanePoll)
+	}
 }
 
 // buildosSetupCommand is the nushell command sent into the setup pane.
