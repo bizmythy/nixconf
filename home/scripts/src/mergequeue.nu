@@ -128,6 +128,25 @@ def ensure-gh-ready [host: string] {
   }
 }
 
+def resolve-pr-url [pr_url?: string] {
+  if ($pr_url != null) {
+    return $pr_url
+  }
+
+  if ((which gh) | is-empty) {
+    fail "USAGE" "`gh` is required but was not found in PATH."
+  }
+
+  let result = (^gh pr view --json url --jq .url | complete)
+  let url = ($result.stdout | default "" | str trim)
+
+  if ($result.exit_code != 0) or ($url | is-empty) {
+    fail "USAGE" (command-error-message "No PR URL was provided, and no active PR was found for the current branch." $result)
+  }
+
+  $url
+}
+
 def fetch-pr-state [pr: record] {
   let result = (
     ^gh api graphql
@@ -339,7 +358,7 @@ def is-retryable-removal-reason [reason: string] {
 }
 
 def main [
-  pr_url: string
+  pr_url?: string
   --poll-seconds: int = 30
   --retry-delay-seconds: int = 10
 ] {
@@ -352,7 +371,8 @@ def main [
       fail "USAGE" "--retry-delay-seconds must be at least 1."
     }
 
-    let pr = (parse-pr-url $pr_url)
+    let resolved_pr_url = (resolve-pr-url $pr_url)
+    let pr = (parse-pr-url $resolved_pr_url)
     ensure-gh-ready $pr.host
 
     mut state = (fetch-pr-state $pr)
