@@ -45,17 +45,71 @@ def main [count: int = 30 --noslop] {
   )
 }
 
+def normalize_pr_ref [raw: string] {
+  let ref = ($raw | str replace --regex '#.*$' '' | str trim)
+
+  if ($ref | is-empty) {
+    return null
+  }
+
+  if ($ref =~ `^(www\.)?github\.com/`) {
+    return $"https://($ref)"
+  }
+
+  $ref
+}
+
+def load_pr [ref: string] {
+  let result = (^gh pr view $ref $JSON_FLAG | complete)
+
+  if $result.exit_code == 0 {
+    return {
+      ok: true
+      input: $ref
+      pr: ($result.stdout | from json)
+    }
+  }
+
+  {
+    ok: false
+    input: $ref
+    error: ($result.stderr | str trim)
+  }
+}
+
 def "main urls" [] {
   cd ~/dirac/buildos-web
 
   let tempfile = (mktemp --suffix .txt)
   nvim $tempfile
-  let urls = (open $tempfile | lines)
+  let refs = (
+    open $tempfile
+    | lines
+    | each {|line| normalize_pr_ref $line }
+    | where {|ref| $ref != null }
+    | uniq
+  )
   rm $tempfile
 
-  (
-    $urls | par-each {|url|
-      gh pr view $url $JSON_FLAG | from json
-    } | open_prs
-  )
+  if ($refs | is-empty) {
+    print -e "no pull request urls entered"
+    exit 1
+  }
+
+  let results = ($refs | par-each {|ref| load_pr $ref })
+  let failures = ($results | where {|result| not $result.ok })
+  let prs = ($results | where {|result| $result.ok } | get pr)
+
+  if (not ($failures | is-empty)) {
+    print -e "failed to load some pull requests:"
+    $failures | each {|failure|
+      print -e $"  ($failure.input): ($failure.error)"
+    }
+  }
+
+  if ($prs | is-empty) {
+    exit 1
+  }
+
+  $prs | open_prs
 }
