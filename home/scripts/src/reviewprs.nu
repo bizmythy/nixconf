@@ -2,10 +2,16 @@
 
 const JSON_FLAG = "--json=number,title,url,author"
 
-def open_prs [] {
-  # open each pr in a new kitty tab in reverse order so that first element is on top
-  reverse | each {|pr|
-    kitty @ launch --type=tab --title $pr.title nvim -c $"Octo ($pr.url)"
+def open_prs []: list<any> -> nothing {
+  if (($env.HERDR_ENV? | default "0") != "1") {
+    error make {msg: "reviewprs.nu must be run inside Herdr (HERDR_ENV=1)"}
+  }
+
+  # Open each PR in a new Herdr tab in reverse order so that first element is on top.
+  $in | reverse | each {|pr|
+    let tab = (herdr tab create --label $pr.title --no-focus | from json)
+    let pane_id = $tab.result.root_pane.pane_id
+    herdr pane run $pane_id $"tuicr pr ($pr.url)"
   }
 }
 
