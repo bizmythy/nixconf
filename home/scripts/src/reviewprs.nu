@@ -7,8 +7,8 @@ def open_prs []: list<any> -> nothing {
     error make {msg: "reviewprs.nu must be run inside Herdr (HERDR_ENV=1)"}
   }
 
-  # Open each PR in a new Herdr tab in reverse order so that first element is on top.
-  $in | reverse | each {|pr|
+  # Open each PR in a new Herdr tab.
+  $in | each {|pr|
     let tab = (herdr tab create --label $pr.title --no-focus | from json)
     let pane_id = $tab.result.root_pane.pane_id
     herdr pane run $pane_id $"tuicr pr ($pr.url)"
@@ -41,7 +41,7 @@ def main [count: int = 30 --noslop] {
       $"@($pr.author.login | fill --alignment left --width 20)($pr.title)"
     } |
     # get user selection ("a" for all)
-    input list --multi --display "display" | open_prs
+    input list --multi --display "display" | reverse | open_prs
   )
 }
 
