@@ -14,20 +14,20 @@ let
 
   launchworkDirectives = [
     {
-      command = vars.defaults.tty;
-      workspace = 1;
+      command = "${vars.defaults.tty} -e herdr";
+      workspace = 2;
+    }
+    {
+      command = vars.defaults.browser;
+      workspace = 3;
     }
     {
       command = "slack";
       workspace = 8;
     }
     {
-      command = "${vars.defaults.editor} ${vars.home}/dirac/buildos-web";
-      workspace = 2;
-    }
-    {
-      command = vars.defaults.browser;
-      workspace = 3;
+      command = "${vars.defaults.tty} -e btop";
+      workspace = 10;
     }
   ];
 
