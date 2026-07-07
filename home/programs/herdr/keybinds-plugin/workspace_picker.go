@@ -12,10 +12,7 @@ import (
 	"strings"
 )
 
-const (
-	workspacePickerEntrypoint = "new-workspace-picker"
-	nixWorkspaceLabel         = " nixconf"
-)
+const workspacePickerEntrypoint = "new-workspace-picker"
 
 // workspaceChoice is one selectable workspace candidate for the picker.
 type workspaceChoice struct {
@@ -60,12 +57,14 @@ func (c *client) newWorkspacePicker(fzf string) error {
 
 // extraWorkspaceChoices returns picker choices outside the standard workspace roots.
 func extraWorkspaceChoices(home string) []workspaceChoice {
-	return []workspaceChoice{
-		{
-			Display: "nixconf",
-			Path:    filepath.Join(home, "nixconf"),
-		},
+	choices := make([]workspaceChoice, 0, len(extraWorkspaceDefinitions))
+	for _, workspace := range extraWorkspaceDefinitions {
+		choices = append(choices, workspaceChoice{
+			Display: workspace.RelativePath,
+			Path:    filepath.Join(home, workspace.RelativePath),
+		})
 	}
+	return choices
 }
 
 // workspaceLabelForPath returns the compact label used for picker-created workspaces.
@@ -74,8 +73,10 @@ func workspaceLabelForPath(path string) string {
 	if strings.HasPrefix(label, buildosWorkspacePrefix) {
 		return buildosWorkspaceLabelPrefix + strings.TrimPrefix(label, buildosWorkspacePrefix)
 	}
-	if label == "nixconf" {
-		return nixWorkspaceLabel
+	for _, workspace := range extraWorkspaceDefinitions {
+		if label == filepath.Base(workspace.RelativePath) {
+			return workspace.LabelPrefix + " " + workspace.RelativePath
+		}
 	}
 	return label
 }

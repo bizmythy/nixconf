@@ -6,17 +6,26 @@ import (
 	"testing"
 )
 
-func TestExtraWorkspaceChoicesUsesTopLevelNixconf(t *testing.T) {
+func TestExtraWorkspaceChoicesUsesConfiguredExtraWorkspaces(t *testing.T) {
 	home := t.TempDir()
 
 	choices := extraWorkspaceChoices(home)
-	if len(choices) != 1 {
-		t.Fatalf("expected one extra workspace choice, got %d", len(choices))
+	want := map[string]string{
+		"nixconf": filepath.Join(home, "nixconf"),
+		".pi":     filepath.Join(home, ".pi"),
+	}
+	if len(choices) != len(want) {
+		t.Fatalf("expected %d extra workspace choices, got %d", len(want), len(choices))
 	}
 
-	wantPath := filepath.Join(home, "nixconf")
-	if choices[0].Display != "nixconf" || choices[0].Path != wantPath {
-		t.Fatalf("unexpected nixconf choice: %#v, want display nixconf path %s", choices[0], wantPath)
+	for _, choice := range choices {
+		wantPath, ok := want[choice.Display]
+		if !ok {
+			t.Fatalf("unexpected extra workspace choice: %#v", choice)
+		}
+		if choice.Path != wantPath {
+			t.Fatalf("workspace %s path = %q, want %q", choice.Display, choice.Path, wantPath)
+		}
 	}
 }
 
@@ -41,8 +50,16 @@ func TestWorkspaceChoicesForIncludesExistingNixconfExtraChoice(t *testing.T) {
 	t.Fatalf("nixconf workspace choice not found in %#v", choices)
 }
 
-func TestWorkspaceLabelForNixconfUsesNixIcon(t *testing.T) {
-	if got := workspaceLabelForPath(filepath.Join(t.TempDir(), "nixconf")); got != " nixconf" {
-		t.Fatalf("workspaceLabelForPath(nixconf) = %q", got)
+func TestWorkspaceLabelForExtraWorkspacesUsesConfiguredPrefix(t *testing.T) {
+	home := t.TempDir()
+	tests := map[string]string{
+		"nixconf": " nixconf",
+		".pi":     "π .pi",
+	}
+
+	for name, want := range tests {
+		if got := workspaceLabelForPath(filepath.Join(home, name)); got != want {
+			t.Fatalf("workspaceLabelForPath(%s) = %q, want %q", name, got, want)
+		}
 	}
 }
