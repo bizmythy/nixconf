@@ -27,25 +27,37 @@ let
   keybindActions = [
     {
       id = "navigate-left";
-      key = "alt+h";
+      keys = [
+        "alt+h"
+        "alt+left"
+      ];
       title = "Navigate left";
       command = actionCommand "navigate" "left";
     }
     {
       id = "navigate-down";
-      key = "alt+j";
+      keys = [
+        "alt+j"
+        "alt+down"
+      ];
       title = "Navigate down";
       command = actionCommand "navigate" "down";
     }
     {
       id = "navigate-up";
-      key = "alt+k";
+      keys = [
+        "alt+k"
+        "alt+up"
+      ];
       title = "Navigate up";
       command = actionCommand "navigate" "up";
     }
     {
       id = "navigate-right";
-      key = "alt+l";
+      keys = [
+        "alt+l"
+        "alt+right"
+      ];
       title = "Navigate right";
       command = actionCommand "navigate" "right";
     }
@@ -72,11 +84,14 @@ let
     inherit (action) id title command;
     contexts = actionContexts;
   }) keybindActions;
-  keybindCommandBindings = map (action: {
-    inherit (action) key;
-    type = "plugin_action";
-    command = "${pluginId}.${action.id}";
-  }) keybindActions;
+  keybindCommandBindings = lib.concatMap (
+    action:
+    map (key: {
+      inherit key;
+      type = "plugin_action";
+      command = "${pluginId}.${action.id}";
+    }) (action.keys or [ action.key ])
+  ) keybindActions;
   # herdr configuration
   # Generates ~/.config/herdr/config.toml.
   herdrConfig = {
