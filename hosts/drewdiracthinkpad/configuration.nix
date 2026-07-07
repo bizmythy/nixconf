@@ -18,8 +18,18 @@
   boot.blacklistedKernelModules = [ "raydium_i2c_ts" ];
   boot.kernelModules = [ "hid_multitouch" ];
 
-  boot.initrd.luks.devices."luks-30ead0c5-44cb-4dae-9620-f72db25f725b".device =
-    "/dev/disk/by-uuid/30ead0c5-44cb-4dae-9620-f72db25f725b";
+  # Keep encrypted SSDs fast under Docker/build churn: pass TRIM and skip dm-crypt queues.
+  boot.initrd.luks.devices = {
+    "luks-ed637bcd-d84d-4287-83d1-4d0620219a97" = {
+      allowDiscards = true;
+      bypassWorkqueues = true;
+    };
+    "luks-30ead0c5-44cb-4dae-9620-f72db25f725b" = {
+      device = "/dev/disk/by-uuid/30ead0c5-44cb-4dae-9620-f72db25f725b";
+      allowDiscards = true;
+      bypassWorkqueues = true;
+    };
+  };
 
   hardware = {
     graphics.extraPackages = with pkgs; [

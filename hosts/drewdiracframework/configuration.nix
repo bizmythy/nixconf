@@ -20,6 +20,12 @@
 
   services.fwupd.enable = true;
 
+  # Keep encrypted SSDs fast under Docker/build churn: pass TRIM and skip dm-crypt queues.
+  boot.initrd.luks.devices."luks-50172681-d606-4c2f-935f-bbd3dbfba257" = {
+    allowDiscards = true;
+    bypassWorkqueues = true;
+  };
+
   hardware.graphics.extraPackages = with pkgs; [
     rocmPackages.clr.icd
   ];
