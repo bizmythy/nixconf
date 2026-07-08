@@ -26,6 +26,23 @@ export def pjp [] {
   $in | to json | bat -l json
 }
 
+# Copy pipeline input to the Wayland clipboard, or paste clipboard contents with no input.
+export def clip []: [nothing -> any any -> nothing] {
+  let input = $in
+
+  if ($input == null) {
+    ^wl-paste
+  } else {
+    let input_type = ($input | describe)
+
+    if (($input_type == "string") or ($input_type == "binary")) {
+      $input | ^wl-copy
+    } else {
+      $input | to json | ^wl-copy
+    }
+  }
+}
+
 # Copy the previous shell command to the system clipboard.
 export def copy-last-command [] {
   let command = (
