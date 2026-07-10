@@ -210,10 +210,12 @@ func (c *client) finishBuildos(workspaceID string, newDir string, setupTabID str
 		return fmt.Errorf("buildos workspace path is not a directory: %s", newDir)
 	}
 
+	// Open tabs without focus so a long-running setup does not yank the user
+	// away if they already switched back to another workspace.
 	if err := c.ensureWorkspaceTab(workspaceID, newDir, "ws", false); err != nil {
 		return err
 	}
-	if err := c.ensureWorkspaceTab(workspaceID, newDir, "1", true); err != nil {
+	if err := c.ensureWorkspaceTab(workspaceID, newDir, "1", false); err != nil {
 		return err
 	}
 	if setupTabID != "" {
