@@ -3,13 +3,7 @@
   ...
 }:
 
-let
-  # Catppuccin Mocha green/yellow/peach/red for the usage-state colors
-  usageColors = "--color-low '#a6e3a1' --color-mid '#f9e2af' --color-high '#fab387' --color-critical '#f38ba8'";
-in
 {
-  imports = [ ./ai-usage ];
-
   catppuccin.waybar = {
     enable = true;
     mode = "createLink";
@@ -52,7 +46,6 @@ in
         "pulseaudio"
         "battery"
         "battery#bat2"
-        "custom/ai-usage"
         "tray"
         "custom/notification"
         "clock"
@@ -262,14 +255,6 @@ in
         escape = true;
         # exec = "$HOME/.config/waybar/mediaplayer.py 2> /dev/null";
         # exec = "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null"; # Filter player based on name
-      };
-
-      "custom/ai-usage" = {
-        exec = "ai-usagebar ${usageColors}";
-        return-type = "json";
-        interval = 300; # upstream minimum — Anthropic rate-limits its endpoint
-        signal = 13; # pkill -SIGRTMIN+13 waybar to force a re-run
-        tooltip = true;
       };
 
       "custom/notification" = {
