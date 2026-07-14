@@ -455,8 +455,12 @@ in
   xdg.configFile."herdr/config.toml".source = toml.generate "herdr-config.toml" herdrConfig;
   xdg.configFile."${pluginDir}/herdr-plugin.toml".source = manifest;
 
-  home.activation.herdrPluginRegistry = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    run install -Dm0644 ${lib.escapeShellArg pluginRegistryFile} "$HOME/.config/herdr/plugins.json"
-    run ${lib.escapeShellArg (lib.getExe pkgs.herdr)} plugin link ${lib.escapeShellArg (toString manifest)}
-  '';
+  # Register before installPackages: a failed package profile activation must not
+  # leave Herdr's plugin unavailable when the generated config is already linked.
+  home.activation.herdrPluginRegistry =
+    lib.hm.dag.entryBetween [ "linkGeneration" ] [ "installPackages" ]
+      ''
+        run install -Dm0644 ${lib.escapeShellArg pluginRegistryFile} "$HOME/.config/herdr/plugins.json"
+        run ${lib.escapeShellArg (lib.getExe pkgs.herdr)} plugin link ${lib.escapeShellArg (toString manifest)}
+      '';
 }
