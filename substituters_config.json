@@ -1,11 +1,13 @@
 {
   "extra-substituters": [
+    "https://bizmythy-nixconf.cachix.org",
     "https://cache.numtide.com",
     "https://hyprland.cachix.org",
     "https://cache.nixos.org",
     "https://install.determinate.systems"
   ],
   "extra-trusted-substituters": [
+    "https://bizmythy-nixconf.cachix.org",
     "https://numtide.cachix.org",
     "https://hyprland.cachix.org",
     "https://cache.nixos.org",
@@ -13,6 +15,7 @@
     "http://192.168.1.244:8501"
   ],
   "extra-trusted-public-keys": [
+    "bizmythy-nixconf.cachix.org-1:+CIm7d+4Lg8akbwLi1wm6Pc4y/y/rtFY8JT8Xl8nJDo=",
     "buildos-web:br3Fxm43hseV0czV1voottug4KzqC3O6AXj8q4e0Vq4=",
     "192.168.1.244:h8wg9T+8ykiw1D7ZT6toe/cYEf2Ue76pXQ+6C1GTvFo=",
     "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=",
