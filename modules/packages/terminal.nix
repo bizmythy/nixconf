@@ -130,7 +130,8 @@
         shellcheck
         protobuf-language-server
         buf
-        zig_0_15
+        zig
+        odin
         rustc
         cargo
         rustfmt
