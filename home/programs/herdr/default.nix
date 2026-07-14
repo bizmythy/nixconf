@@ -24,6 +24,27 @@ let
     ]
     ++ args;
   actionCommand = subcommand: arg: keybindsCommand subcommand [ arg ];
+  # Add popup applications here. Each entry gets its toggle action, keybinding,
+  # and overlay pane automatically.
+  popupApps = [
+    {
+      id = "lazygit";
+      key = "alt+g";
+      title = "Toggle lazygit overlay";
+      package = pkgs.lazygit;
+    }
+    {
+      id = "btop";
+      key = "alt+b";
+      title = "Toggle btop overlay";
+      package = pkgs.btop;
+    }
+  ];
+  popupActions = map (popup: {
+    id = "toggle-${popup.id}";
+    inherit (popup) key title;
+    command = keybindsCommand "toggle-popup" [ popup.id ];
+  }) popupApps;
   keybindActions = [
     {
       id = "navigate-left";
@@ -61,12 +82,9 @@ let
       title = "Navigate right";
       command = actionCommand "navigate" "right";
     }
-    {
-      id = "toggle-lazygit";
-      key = "alt+g";
-      title = "Toggle lazygit overlay";
-      command = keybindsCommand "toggle-lazygit" [ ];
-    }
+  ]
+  ++ popupActions
+  ++ [
     {
       id = "new-workspace-picker";
       key = "alt+n";
@@ -394,38 +412,39 @@ let
 
     actions = keybindPluginActions;
 
-    panes = [
-      {
-        id = "lazygit";
-        title = "lazygit";
+    panes =
+      map (popup: {
+        inherit (popup) id;
+        title = popup.id;
         placement = "overlay";
-        command = [ (lib.getExe pkgs.lazygit) ];
-      }
-      {
-        id = "new-workspace-picker";
-        title = "New workspace picker";
-        placement = "overlay";
-        command = [
-          (lib.getExe' pkgs.coreutils "env")
-          "HERDR_WORKSPACE_PICKER_PANE=1"
-          (lib.getExe keybindsPlugin)
-          "new-workspace-picker"
-          (lib.getExe pkgs.fzf)
-        ];
-      }
-      {
-        id = "new-buildos";
-        title = "New buildos workspace";
-        placement = "overlay";
-        command = [
-          (lib.getExe' pkgs.coreutils "env")
-          "HERDR_NEW_BUILDOS_PANE=1"
-          (lib.getExe keybindsPlugin)
-          "new-buildos"
-          (lib.getExe pkgs.nushell)
-        ];
-      }
-    ];
+        command = [ (lib.getExe popup.package) ];
+      }) popupApps
+      ++ [
+        {
+          id = "new-workspace-picker";
+          title = "New workspace picker";
+          placement = "overlay";
+          command = [
+            (lib.getExe' pkgs.coreutils "env")
+            "HERDR_WORKSPACE_PICKER_PANE=1"
+            (lib.getExe keybindsPlugin)
+            "new-workspace-picker"
+            (lib.getExe pkgs.fzf)
+          ];
+        }
+        {
+          id = "new-buildos";
+          title = "New buildos workspace";
+          placement = "overlay";
+          command = [
+            (lib.getExe' pkgs.coreutils "env")
+            "HERDR_NEW_BUILDOS_PANE=1"
+            (lib.getExe keybindsPlugin)
+            "new-buildos"
+            (lib.getExe pkgs.nushell)
+          ];
+        }
+      ];
   };
   manifest = toml.generate "herdr-keybinds-plugin.toml" manifestData;
   pluginRegistryFile = json.generate "herdr-plugins.json" pluginRegistry;

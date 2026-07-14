@@ -68,12 +68,23 @@ func newRootCommand() *cobra.Command {
 			},
 		},
 		&cobra.Command{
-			Use:   "toggle-lazygit",
-			Short: "Toggle the lazygit overlay pane",
-			Args:  cobra.NoArgs,
+			Use:   "toggle-popup <name>",
+			Short: "Toggle a configured popup overlay pane",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(_ *cobra.Command, args []string) error {
+				return runWithClient(func(c *client) error {
+					return c.togglePopup(args[0])
+				})
+			},
+		},
+		&cobra.Command{
+			Use:    "toggle-lazygit",
+			Short:  "Toggle the lazygit overlay pane",
+			Args:   cobra.NoArgs,
+			Hidden: true,
 			RunE: func(_ *cobra.Command, _ []string) error {
 				return runWithClient(func(c *client) error {
-					return c.toggleLazygit()
+					return c.togglePopup("lazygit")
 				})
 			},
 		},

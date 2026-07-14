@@ -34,7 +34,7 @@ func (c *client) navigate(dir Direction) error {
 	if err != nil {
 		return err
 	}
-	if active, err := c.isActiveLazygitOverlay(ctx); err != nil {
+	if active, err := c.isActivePopupOverlay(ctx); err != nil {
 		return err
 	} else if active {
 		return nil

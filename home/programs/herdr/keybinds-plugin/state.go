@@ -12,7 +12,7 @@ const stateFileName = "state.json"
 
 // pluginState is persisted across invocations to track helper-owned panes.
 type pluginState struct {
-	LazygitPanes map[string]string `json:"lazygit_panes"`
+	PopupPanes map[string]map[string]string `json:"popup_panes"`
 }
 
 // loadPluginState reads persisted helper state, creating defaults if absent.
@@ -22,7 +22,7 @@ func loadPluginState() (pluginState, string, error) {
 		return pluginState{}, "", err
 	}
 
-	state := pluginState{LazygitPanes: make(map[string]string)}
+	state := pluginState{PopupPanes: make(map[string]map[string]string)}
 	data, err := os.ReadFile(statePath)
 	if errors.Is(err, os.ErrNotExist) {
 		return state, statePath, nil
@@ -36,8 +36,15 @@ func loadPluginState() (pluginState, string, error) {
 	if err := json.Unmarshal(data, &state); err != nil {
 		return pluginState{}, "", fmt.Errorf("decode plugin state: %w", err)
 	}
-	if state.LazygitPanes == nil {
-		state.LazygitPanes = make(map[string]string)
+	if state.PopupPanes == nil {
+		state.PopupPanes = make(map[string]map[string]string)
+	}
+	// Migrate state written by older versions, without losing existing overlays.
+	var legacy struct {
+		LazygitPanes map[string]string `json:"lazygit_panes"`
+	}
+	if err := json.Unmarshal(data, &legacy); err == nil && len(legacy.LazygitPanes) > 0 {
+		state.PopupPanes["lazygit"] = legacy.LazygitPanes
 	}
 
 	return state, statePath, nil
