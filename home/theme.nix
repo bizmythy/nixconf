@@ -26,7 +26,9 @@ in
     mako.enable = false;
   };
 
-  home.pointerCursor = cursor;
+  home.pointerCursor = cursor // {
+    enable = true;
+  };
 
   gtk = {
     enable = true;
