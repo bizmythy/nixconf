@@ -160,13 +160,11 @@
       ];
 
       aiTools =
-        # claude-code and codex come from overlays.nix. Claude is bumped ahead
-        # of llm-agents, while Codex is supplied with its code-mode host.
-        [
-          pkgs.claude-code
-          pkgs.codex
-        ]
+        # claude-code comes from the overlay (overlays.nix), which bumps it
+        # ahead of the version pinned in the llm-agents.nix input.
+        [ pkgs.claude-code ]
         ++ (with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
+          codex
           pi
           # gemini-cli
         ]);

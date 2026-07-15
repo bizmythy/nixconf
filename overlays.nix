@@ -57,57 +57,6 @@ in
       })
     );
 
-  # Codex 0.144.0 requires a separate code-mode host, but the llm-agents
-  # package only builds codex-cli. Add the host from the matching upstream
-  # release and point Codex at it until llm-agents includes the companion
-  # binary itself.
-  #
-  # hiPrio: the dirac module also installs the unpatched Codex package, so this
-  # wrapper must win the /bin/codex collision in environment.systemPackages.
-  codex =
-    let
-      upstream = inputs.llm-agents.packages.${super.stdenv.hostPlatform.system}.codex;
-      platform =
-        {
-          x86_64-linux = "x86_64-unknown-linux-musl";
-          aarch64-linux = "aarch64-unknown-linux-musl";
-          x86_64-darwin = "x86_64-apple-darwin";
-          aarch64-darwin = "aarch64-apple-darwin";
-        }
-        .${super.stdenv.hostPlatform.system};
-      hostArchive = super.fetchurl {
-        url = "https://github.com/openai/codex/releases/download/rust-v${upstream.version}/codex-code-mode-host-${platform}.tar.gz";
-        hash =
-          {
-            x86_64-linux = "sha256-JtnGXFqUfCv0iVE+9/geAnsMltwV4ngd5u7V4CoYmT0=";
-            aarch64-linux = "sha256-KrJWlfYawjpx5GdCUyKh8ZfqUunamqjgy8M51mHG0Wo=";
-            x86_64-darwin = "sha256-b9KyHZc3+Q2c0EfacX03jlgAnAwGm17NT7huvP71LR8=";
-            aarch64-darwin = "sha256-bPkoJDC+/lQTacfLKARgSn8N2UFvOjJB42dtsiAiokY=";
-          }
-          .${super.stdenv.hostPlatform.system};
-      };
-      wrapped =
-        super.runCommand "codex-${upstream.version}"
-          {
-            inherit (upstream) meta version;
-            nativeBuildInputs = [ super.makeWrapper ];
-            passthru = (upstream.passthru or { }) // {
-              unwrapped = upstream;
-            };
-          }
-          ''
-            mkdir -p "$out/bin"
-            tar -xzf ${hostArchive}
-            install -m755 codex-code-mode-host-${platform} \
-              "$out/bin/codex-code-mode-host"
-            makeWrapper ${super.lib.getExe upstream} "$out/bin/codex" \
-              --set-default CODEX_CODE_MODE_HOST_PATH \
-              "$out/bin/codex-code-mode-host"
-            ln -s ${upstream}/share "$out/share"
-          '';
-    in
-    super.lib.hiPrio wrapped;
-
   protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
   herdr-keybinds = super.callPackage ./home/programs/herdr/keybinds-plugin/package.nix { };
   lg-herdr-watch =
