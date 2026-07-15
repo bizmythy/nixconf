@@ -92,6 +92,7 @@
       url = "ssh://git@dirac-github/drew-dirac/dirac-workspaces.git";
       ref = "main";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.inputs.systems.follows = "systems";
     };
 
     systems.url = "github:nix-systems/x86_64-linux";
