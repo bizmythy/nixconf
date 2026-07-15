@@ -174,6 +174,7 @@
   # https://github.com/viperML/nh
   programs.nh = {
     enable = true;
+    package = pkgs.nh-cachix;
     clean.enable = true;
     clean.extraArgs = "--keep-since 10d";
     flake = vars.flakePath;

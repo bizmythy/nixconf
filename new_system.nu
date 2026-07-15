@@ -120,6 +120,11 @@ def "main configure" [] {
     atuin sync
   }
 
+  say "setting up cachix"
+  do {
+    ^op --account L23KMYOBNVHLPGSIPDX7BAQ5LA read "op://Private/cachix-personal/credential" | cachix authtoken --stdin
+  }
+
   say "setting up zed"
   cd ~/.config
   git clone git@github.com:bizmythy/zed.git
