@@ -6,12 +6,12 @@ let
     drewdiracframework = {
       monitors = {
         main = {
-          desc = "Samsung Electric Company U32J59x HCJXA01635";
+          desc = "Samsung Electric Company Odyssey G5 HNBL300886";
           workspace = 2;
           settings = {
-            mode = "3840x2160";
+            mode = "2560x1440@59.95";
             position = "0x0";
-            scale = scaleHiDPI;
+            scale = 1.0;
           };
         };
         right = {
