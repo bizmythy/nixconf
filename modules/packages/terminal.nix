@@ -132,6 +132,7 @@
         buf
         zig
         odin
+        ols # odin language server
         rustc
         cargo
         rustfmt
