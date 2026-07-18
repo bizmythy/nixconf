@@ -92,6 +92,7 @@ button:hover {
 #network,
 #pulseaudio,
 #wireplumber,
+#custom-launcher,
 #custom-monitor,
 #custom-media,
 #tray,
@@ -104,6 +105,14 @@ button:hover {
   padding-right: 4px;
   background: transparent;
   color: @text;
+}
+
+#custom-launcher {
+  margin-left: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  color: @blue;
+  font-size: 16px;
 }
 
 /* If workspaces is the leftmost module, omit left margin */

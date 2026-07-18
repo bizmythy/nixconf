@@ -35,6 +35,7 @@
       spacing = 4; # Gaps between modules (4px)
       # Choose the order of the modules
       modules-left = [
+        "custom/launcher"
         "hyprland/workspaces"
         # "custom/media"
       ];
@@ -53,6 +54,12 @@
         "custom/power"
       ];
       # Modules configuration
+      "custom/launcher" = {
+        format = "";
+        tooltip-format = "Open application launcher";
+        on-click = "fuzzel";
+      };
+
       "hyprland/workspaces" = {
         disable-scroll = true;
         all-outputs = true;
