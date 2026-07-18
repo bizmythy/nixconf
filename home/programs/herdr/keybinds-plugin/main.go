@@ -31,8 +31,8 @@ func main() {
 // newRootCommand wires every keybinding action into the Cobra command tree.
 func newRootCommand() *cobra.Command {
 	rootCmd := &cobra.Command{
-		Use:           "herdr-keybinds",
-		Short:         "Herdr keybinding helper plugin",
+		Use:           "herdrctl",
+		Short:         "Control Herdr extensions from the command line",
 		Args:          cobra.NoArgs,
 		SilenceErrors: true,
 		RunE: func(cmd *cobra.Command, _ []string) error {
@@ -101,8 +101,8 @@ func newRootCommand() *cobra.Command {
 			},
 		},
 		&cobra.Command{
-			Use:   "new-workspace-picker [fzf]",
-			Short: "Open the workspace picker overlay or run it inside the picker pane",
+			Use:   "open-workspace [fzf]",
+			Short: "Choose a directory and open or focus its workspace",
 			Args:  cobra.MaximumNArgs(1),
 			RunE: func(_ *cobra.Command, args []string) error {
 				fzf := "fzf"
@@ -110,16 +110,13 @@ func newRootCommand() *cobra.Command {
 					fzf = args[0]
 				}
 				return runWithClient(func(c *client) error {
-					if os.Getenv("HERDR_WORKSPACE_PICKER_PANE") == "1" {
-						return c.newWorkspacePicker(fzf)
-					}
-					return c.openWorkspacePicker()
+					return c.newWorkspacePicker(fzf)
 				})
 			},
 		},
 		&cobra.Command{
-			Use:   "new-buildos [nu]",
-			Short: "Create a fresh buildos-web workspace",
+			Use:   "new-workspace [nu]",
+			Short: "Prompt for and create a fresh buildos-web workspace",
 			Args:  cobra.MaximumNArgs(1),
 			RunE: func(_ *cobra.Command, args []string) error {
 				nu := "nu"
@@ -127,9 +124,28 @@ func newRootCommand() *cobra.Command {
 					nu = args[0]
 				}
 				return runWithClient(func(c *client) error {
-					if os.Getenv("HERDR_NEW_BUILDOS_PANE") == "1" {
-						return c.newBuildos(nu)
-					}
+					return c.newBuildos(nu)
+				})
+			},
+		},
+		&cobra.Command{
+			Use:    "open-workspace-popup",
+			Short:  "Open the workspace picker in a popup pane",
+			Args:   cobra.NoArgs,
+			Hidden: true,
+			RunE: func(_ *cobra.Command, _ []string) error {
+				return runWithClient(func(c *client) error {
+					return c.openWorkspacePicker()
+				})
+			},
+		},
+		&cobra.Command{
+			Use:    "new-workspace-popup",
+			Short:  "Open workspace creation in a popup pane",
+			Args:   cobra.NoArgs,
+			Hidden: true,
+			RunE: func(_ *cobra.Command, _ []string) error {
+				return runWithClient(func(c *client) error {
 					return c.openNewBuildos()
 				})
 			},

@@ -4,7 +4,7 @@
 }:
 
 pkgs.buildGo126Module {
-  pname = "herdr-keybinds";
+  pname = "herdrctl";
   version = "0.1.0";
 
   src = ./.;
@@ -13,15 +13,25 @@ pkgs.buildGo126Module {
   nativeBuildInputs = [ pkgs.makeWrapper ];
 
   postInstall = ''
-    makeWrapper "$out/bin/herdr-keybinds" "$out/bin/lg-herdr-watch" \
+    mv "$out/bin/herdr-keybinds" "$out/bin/herdrctl"
+    wrapProgram "$out/bin/herdrctl" \
+      --prefix PATH : "${
+        lib.makeBinPath [
+          pkgs.fzf
+          pkgs.nushell
+          pkgs.zoxide
+        ]
+      }"
+
+    makeWrapper "$out/bin/herdrctl" "$out/bin/lg-herdr-watch" \
       --add-flags watch-lazygit \
       --prefix PATH : "${lib.makeBinPath [ pkgs.lazygit ]}"
   '';
 
   meta = with lib; {
-    description = "Herdr keybinding helper plugin";
+    description = "Control Herdr extensions from the command line";
     license = licenses.mit;
     platforms = platforms.linux;
-    mainProgram = "herdr-keybinds";
+    mainProgram = "herdrctl";
   };
 }

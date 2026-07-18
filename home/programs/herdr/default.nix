@@ -86,16 +86,16 @@ let
   ++ popupActions
   ++ [
     {
-      id = "new-workspace-picker";
+      id = "open-workspace";
       key = "alt+n";
-      title = "New workspace from directory picker";
-      command = keybindsCommand "new-workspace-picker" [ ];
+      title = "Open workspace from directory picker";
+      command = keybindsCommand "open-workspace-popup" [ ];
     }
     {
-      id = "new-buildos";
+      id = "new-workspace";
       key = "prefix+d";
       title = "New buildos workspace";
-      command = keybindsCommand "new-buildos" [ ];
+      command = keybindsCommand "new-workspace-popup" [ ];
     }
   ];
   keybindPluginActions = map (action: {
@@ -425,10 +425,8 @@ let
           title = "New workspace picker";
           placement = "overlay";
           command = [
-            (lib.getExe' pkgs.coreutils "env")
-            "HERDR_WORKSPACE_PICKER_PANE=1"
             (lib.getExe keybindsPlugin)
-            "new-workspace-picker"
+            "open-workspace"
             (lib.getExe pkgs.fzf)
           ];
         }
@@ -437,10 +435,8 @@ let
           title = "New buildos workspace";
           placement = "overlay";
           command = [
-            (lib.getExe' pkgs.coreutils "env")
-            "HERDR_NEW_BUILDOS_PANE=1"
             (lib.getExe keybindsPlugin)
-            "new-buildos"
+            "new-workspace"
             (lib.getExe pkgs.nushell)
           ];
         }
@@ -471,6 +467,8 @@ let
 in
 
 {
+  home.packages = [ keybindsPlugin ];
+
   xdg.configFile."herdr/config.toml".source = toml.generate "herdr-config.toml" herdrConfig;
   xdg.configFile."${pluginDir}/herdr-plugin.toml".source = manifest;
 
