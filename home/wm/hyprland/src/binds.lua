@@ -33,6 +33,21 @@ local function bind_exec(keys, command, opts)
 	hl.bind(keys, hl.dsp.exec_cmd(command), opts)
 end
 
+local function workspace_is_empty(workspace)
+	return workspace == nil or #workspace:get_windows() == 0
+end
+
+local function open_launcher_on_empty_desktop()
+	local monitor = hl.get_monitor_at_cursor()
+	if monitor == nil then
+		return
+	end
+
+	if workspace_is_empty(monitor.active_workspace) and workspace_is_empty(monitor.active_special_workspace) then
+		hl.dispatch(hl.dsp.exec_cmd("fuzzel"))
+	end
+end
+
 local function run_workspace_launcher(directives, opts)
 	opts = opts or {}
 	local index = 1
@@ -109,6 +124,7 @@ bind_exec(mod .. " + N", defaults.editor .. " " .. defaults.home .. "/nixconf")
 navigate(mod .. " + T", NavAction.NewTab)
 
 bind_exec(mod .. " + SUPER_L", "fuzzel")
+hl.bind("mouse:273", open_launcher_on_empty_desktop, { click = true, non_consuming = true })
 bind_exec(mod .. " + V", "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy")
 bind_exec(mod .. " + SLASH", "bemoji -t")
 
