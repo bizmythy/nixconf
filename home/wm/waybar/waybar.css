@@ -90,6 +90,7 @@ button:hover {
 #temperature,
 #backlight,
 #network,
+#custom-tailscale,
 #pulseaudio,
 #wireplumber,
 #custom-launcher,
@@ -167,6 +168,10 @@ label:focus {
 
 #network.disconnected {
   background-color: @red;
+}
+
+#custom-tailscale.connected {
+  color: @green;
 }
 
 #temperature.critical {

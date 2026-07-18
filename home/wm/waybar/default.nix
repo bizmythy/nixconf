@@ -3,6 +3,35 @@
   ...
 }:
 
+let
+  tailscaleStatus = pkgs.writeShellApplication {
+    name = "waybar-tailscale-status";
+    runtimeInputs = [
+      pkgs.jq
+      pkgs.tailscale
+    ];
+    text = ''
+      status="$(tailscale status --json 2>/dev/null)" || exit 0
+
+      if [[ "$(jq -r '.BackendState == "Running" and .Self.Online' <<< "$status")" != "true" ]]; then
+        exit 0
+      fi
+
+      jq -c '
+        {
+          text: "󰖂",
+          tooltip: (
+            "Tailscale connected\n" +
+            (.Self.DNSName // .Self.HostName) + "\n" +
+            "IP: " + ((.TailscaleIPs | map(select(contains(":") | not)) | first) // "unknown") + "\n" +
+            "Online peers: " + ([ (.Peer // {})[] | select(.Online) ] | length | tostring)
+          ),
+          class: "connected"
+        }
+      ' <<< "$status"
+    '';
+  };
+in
 {
   catppuccin.waybar = {
     enable = true;
@@ -46,6 +75,8 @@
         "mpd"
         "custom/monitor"
         "pulseaudio"
+        "network"
+        "custom/tailscale"
         "battery"
         "battery#bat2"
         "tray"
@@ -206,6 +237,12 @@
           balanced = "";
           power-saver = "";
         };
+      };
+
+      "custom/tailscale" = {
+        exec = "${tailscaleStatus}/bin/waybar-tailscale-status";
+        interval = 5;
+        return-type = "json";
       };
 
       network = {
