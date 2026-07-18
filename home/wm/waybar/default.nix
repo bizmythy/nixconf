@@ -43,6 +43,7 @@
       ];
       modules-right = [
         "mpd"
+        "custom/monitor"
         "pulseaudio"
         "battery"
         "battery#bat2"
@@ -219,6 +220,12 @@
         tooltip-format-connected = " {device_enumerate}";
         tooltip-format-enumerate-connected = "{device_alias}";
         on-click = "blueman-manager";
+      };
+
+      "custom/monitor" = {
+        format = "󰍹";
+        tooltip-format = "Switch monitor profile";
+        on-click = "hypr-monitor-profile";
       };
 
       pulseaudio = {
