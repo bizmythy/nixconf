@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  vars,
   ...
 }:
 
@@ -40,6 +41,22 @@
 
   networking.firewall.allowedTCPPorts = [
     41707 # pi remote-control
+  ];
+
+  services.openssh = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      AuthenticationMethods = "publickey";
+      KbdInteractiveAuthentication = false;
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+      PubkeyAuthentication = true;
+    };
+  };
+
+  users.users."${vars.user}".openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGogIJ4uaReEMnM8eRedZh0OVq/4AAs4H8xdiWjvf6YF"
   ];
 
   fileSystems = {
