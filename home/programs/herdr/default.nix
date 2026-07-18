@@ -480,6 +480,11 @@ in
     lib.hm.dag.entryBetween [ "linkGeneration" ] [ "installPackages" ]
       ''
         run install -Dm0644 ${lib.escapeShellArg pluginRegistryFile} "$HOME/.config/herdr/plugins.json"
-        run ${lib.escapeShellArg (lib.getExe pkgs.herdr)} plugin link ${lib.escapeShellArg (toString manifest)}
+
+        # Notify a running Herdr server, but do not fail activation when it is not
+        # running (its stale socket makes the CLI return connection refused).
+        if ! run ${lib.escapeShellArg (lib.getExe pkgs.herdr)} plugin link ${lib.escapeShellArg (toString manifest)}; then
+          verboseEcho "Herdr is not running; it will load the generated plugin registry on next start"
+        fi
       '';
 }
