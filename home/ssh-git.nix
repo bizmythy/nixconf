@@ -100,6 +100,13 @@ in
         IdentityFile ${publicKeyFiles.hetzner}
         IdentityAgent ${onePassPath}
 
+    Host igneous
+        HostName 192.168.1.123
+        User drew
+        IdentityFile ${publicKeyFiles.hetzner}
+        IdentitiesOnly yes
+        IdentityAgent ${onePassPath}
+
     Host *
         IdentityAgent ${onePassPath}
   '';
