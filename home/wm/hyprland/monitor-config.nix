@@ -58,6 +58,15 @@ let
             scale = 1.0;
           };
         };
+        kvm = {
+          desc = "GLI GLKVM 891247";
+          workspace = 4;
+          settings = {
+            mode = "1920x1080@60";
+            position = "auto-left";
+            scale = 1.0;
+          };
+        };
         tv = {
           desc = "LG Electronics LG TV SSCR2 0x01010101";
           workspace = 10;
@@ -77,6 +86,10 @@ let
         tv = {
           defaultAudioOutputAlsaName = "LG TV SSCR2";
           enabledOutputs = [ "tv" ];
+          useTablet = false;
+        };
+        kvm = {
+          enabledOutputs = [ "kvm" ];
           useTablet = false;
         };
         desktop = {
