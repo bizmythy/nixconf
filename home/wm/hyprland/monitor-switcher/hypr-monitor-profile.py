@@ -98,7 +98,8 @@ def queue_profile_request(label: str) -> None:
     required=True,
     help="JSON file describing available monitor profiles",
 )
-def main(profiles_json: Path) -> None:
+@click.argument("profile_label", required=False)
+def main(profiles_json: Path, profile_label: str | None) -> None:
     setup_logging()
     config = load_config(profiles_json)
     profiles = {profile["label"]: profile for profile in config["profiles"]}
@@ -111,7 +112,7 @@ def main(profiles_json: Path) -> None:
         os.environ.get("XDG_RUNTIME_DIR", ""),
     )
 
-    choice = choose_profile(labels)
+    choice = profile_label or choose_profile(labels)
     if choice is None:
         return
 
