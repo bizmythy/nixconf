@@ -7,7 +7,6 @@ let
       monitors = {
         main = {
           desc = "Samsung Electric Company Odyssey G5 HNBL300886";
-          workspace = 2;
           settings = {
             mode = "2560x1440@59.95";
             position = "0x0";
@@ -16,7 +15,6 @@ let
         };
         right = {
           desc = "LG Electronics LG SDQHD 409NTTQ8K433";
-          workspace = 1;
           settings = {
             mode = "2560x2880@60";
             position = "auto-right";
@@ -25,7 +23,6 @@ let
         };
         top = {
           desc = "Acer Technologies KA272 TJ0AA00785SJ";
-          workspace = 8;
           settings = {
             mode = "1920x1080@60";
             position = "575x-1080";
@@ -41,7 +38,6 @@ let
       monitors = {
         main = {
           desc = "Microstep MSI MAG322UPF";
-          workspace = 2;
           settings = {
             mode = "3840x2160@160";
             position = "0x0";
@@ -51,7 +47,6 @@ let
         };
         top = {
           desc = "ViewSonic Corporation VX2418-P FHD WFK231321682";
-          workspace = 1;
           settings = {
             mode = "1920x1080@60";
             position = "575x-1080";
@@ -60,7 +55,6 @@ let
         };
         kvm = {
           desc = "GLI GLKVM 891247";
-          workspace = 4;
           settings = {
             mode = "1920x1080@60";
             position = "auto-left";
@@ -69,7 +63,6 @@ let
         };
         tv = {
           desc = "LG Electronics LG TV SSCR2 0x01010101";
-          workspace = 10;
           settings = {
             mode = "3840x2160@120";
             position = "auto-right";
@@ -106,7 +99,6 @@ let
       monitors = {
         laptop = {
           desc = "AU Optronics 0x323D";
-          workspace = 1;
           settings = {
             mode = "1920x1080@60.05";
             position = "0x0";

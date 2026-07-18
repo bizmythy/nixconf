@@ -10,7 +10,6 @@ local state = {
 	active_profile = default_label,
 	sunshine_pid = nil,
 }
-local debounce_timer = nil
 local last_profile_request_id = nil
 
 local function state_path()
@@ -202,19 +201,6 @@ local function apply_monitor(output, settings, overrides)
 	hl.monitor(spec)
 end
 
-local function apply_workspace_rules()
-	for _, key in ipairs(monitor_names()) do
-		local monitor = host_config.monitors[key]
-		if monitor.workspace ~= nil then
-			hl.workspace_rule({
-				workspace = tostring(monitor.workspace),
-				monitor = resolve_output(host_config.monitors, key),
-				default = true,
-			})
-		end
-	end
-end
-
 local function find_sunshine_output_index(output_name)
 	-- Sunshine's Linux output_name is its zero-based Wayland monitor list index,
 	-- not Hyprland's monitor ID.
@@ -338,15 +324,6 @@ function M.choose_profile_command()
 	return generated.commands.monitorProfileSelector
 end
 
-local function debounce_reapply()
-	if debounce_timer ~= nil then
-		debounce_timer:set_enabled(false)
-	end
-	debounce_timer = hl.timer(function()
-		M.apply_profile(state.active_profile)
-	end, { timeout = 500, type = "oneshot" })
-end
-
 local function poll_profile_request()
 	local request_id, label = read_profile_request()
 	if request_id == nil or request_id == last_profile_request_id then
@@ -360,11 +337,8 @@ end
 if host_config ~= nil then
 	load_state()
 	load_desired_profile()
-	apply_workspace_rules()
 	M.apply_profile(state.active_profile)
 	M.profile_request_timer = hl.timer(poll_profile_request, { timeout = 250, type = "repeat" })
-	hl.on("monitor.added", debounce_reapply)
-	hl.on("monitor.removed", debounce_reapply)
 end
 
 return M
