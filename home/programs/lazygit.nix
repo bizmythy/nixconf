@@ -1,6 +1,11 @@
 {
+  lib,
+  vars,
   ...
 }:
+let
+  isAndroid = vars.isAndroid or false;
+in
 {
   programs.lazygit = {
     enable = true;
@@ -18,7 +23,7 @@
       notARepository = "quit";
 
       os = {
-        editPreset = "zed";
+        editPreset = if isAndroid then "nvim" else "zed";
 
         # https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#custom-command-for-copying-to-and-pasting-from-clipboard
         copyToClipboardCmd = ''
@@ -57,16 +62,16 @@
           loadingText = "Running nix fmt";
           output = "log";
         }
-        {
-          # Lazygit accepts control bindings only with lowercase letters.
-          key = "<c-g>";
-          context = "global";
-          command = "mask generate";
-          description = "Run mask generate";
-          loadingText = "Running mask generate";
-          output = "log";
-        }
-      ];
+      ]
+      ++ lib.optional (!isAndroid) {
+        # Lazygit accepts control bindings only with lowercase letters.
+        key = "<c-g>";
+        context = "global";
+        command = "mask generate";
+        description = "Run mask generate";
+        loadingText = "Running mask generate";
+        output = "log";
+      };
     };
   };
 

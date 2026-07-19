@@ -1,10 +1,12 @@
 {
   inputs,
+  lib,
   pkgs,
   vars,
   ...
 }:
 let
+  isAndroid = vars.isAndroid or false;
   genKeyFile =
     name: value:
     pkgs.writeTextFile {
@@ -73,58 +75,62 @@ let
   weaveAttributes = map (extension: "*.${extension} merge=weave") weaveExtensions;
 in
 {
-  home.packages = [ weavePackage ];
+  home.packages = lib.optional (!isAndroid) weavePackage;
 
   # -------SSH CONFIGURATION-------
   # home manager version adds several extra options i do not want
   # set github.com to be dirac key by default to get private flake inputs working
   # this default is replaced in the git ssh command configuration
-  home.file.".ssh/config".text = ''
-    Host dirac-github
-        HostName github.com
-        User git
-        IdentityFile ${publicKeyFiles.diracGitHub}
-        IdentitiesOnly yes
-        IdentityAgent ${onePassPath}
+  home.file = lib.optionalAttrs (!isAndroid) {
+    ".ssh/config".text = ''
+      Host dirac-github
+          HostName github.com
+          User git
+          IdentityFile ${publicKeyFiles.diracGitHub}
+          IdentitiesOnly yes
+          IdentityAgent ${onePassPath}
 
-    Host diraclocalserver
-        HostName 192.168.1.244
-        User diraclocalserver
-        IdentityFile ${publicKeyFiles.diraclocalserver}
-        IdentityAgent ${onePassPath}
+      Host diraclocalserver
+          HostName 192.168.1.244
+          User diraclocalserver
+          IdentityFile ${publicKeyFiles.diraclocalserver}
+          IdentityAgent ${onePassPath}
 
-    Host hetzner
-        HostName 178.156.186.220
-        Port 52681
-        User drew
-        IdentityFile ${publicKeyFiles.hetzner}
-        IdentityAgent ${onePassPath}
+      Host hetzner
+          HostName 178.156.186.220
+          Port 52681
+          User drew
+          IdentityFile ${publicKeyFiles.hetzner}
+          IdentityAgent ${onePassPath}
 
-    Host igneous
-        HostName 192.168.1.123
-        User drew
-        IdentityFile ${publicKeyFiles.hetzner}
-        IdentitiesOnly yes
-        IdentityAgent ${onePassPath}
+      Host igneous
+          HostName 192.168.1.123
+          User drew
+          IdentityFile ${publicKeyFiles.hetzner}
+          IdentitiesOnly yes
+          IdentityAgent ${onePassPath}
 
-    Host *
-        IdentityAgent ${onePassPath}
-  '';
+        Host *
+            IdentityAgent ${onePassPath}
+    '';
+  };
 
   # You can test the available keys and their order of attempt by running:
   #  SSH_AUTH_SOCK=~/.1password/agent.sock ssh-add -l
-  xdg.configFile."1Password/ssh/agent.toml".text =
-    builtins.readFile (
-      (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml" {
-        "ssh-keys" = map (item: { inherit item; }) [
-          "wtjniyvaszfbfdt567snocygqq" # dirac github
-          "tf64ipw7poybpzazfzz3geyefu" # personal github
-          "te6zz2ycolprvsfedj4iqd3jja" # diraclocalserver
-          "av5h4r2kyfwueck7e7jq7gw5cu" # hetzner
-        ];
-      }
-    )
-    + "\n"; # needs to end with newline or we get strange undefined behavior
+  xdg.configFile = lib.optionalAttrs (!isAndroid) {
+    "1Password/ssh/agent.toml".text =
+      builtins.readFile (
+        (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml" {
+          "ssh-keys" = map (item: { inherit item; }) [
+            "wtjniyvaszfbfdt567snocygqq" # dirac github
+            "tf64ipw7poybpzazfzz3geyefu" # personal github
+            "te6zz2ycolprvsfedj4iqd3jja" # diraclocalserver
+            "av5h4r2kyfwueck7e7jq7gw5cu" # hetzner
+          ];
+        }
+      )
+      + "\n"; # needs to end with newline or we get strange undefined behavior
+  };
 
   # delta for git diff viewer
   programs.delta = {
@@ -139,12 +145,14 @@ in
   programs.git =
     let
       # configuration for each git account
-      personalConfig = {
+      personalIdentity = {
         user = {
           name = "bizmythy";
           email = "andrew.p.council@gmail.com";
-          signingkey = publicKeys.personalGitHub;
         };
+      };
+      personalConfig = lib.recursiveUpdate personalIdentity {
+        user.signingkey = publicKeys.personalGitHub;
         core.sshCommand = "ssh -i ${publicKeyFiles.personalGitHub}";
       };
       diracConfig = {
@@ -158,9 +166,9 @@ in
     in
     {
       enable = true;
-      attributes = weaveAttributes;
+      attributes = lib.optionals (!isAndroid) weaveAttributes;
       lfs.enable = true;
-      signing = {
+      signing = lib.optionalAttrs (!isAndroid) {
         format = "ssh";
         # should be declared deterministically, but can't get same pkg as in nixos config
         signer = "/run/current-system/sw/bin/op-ssh-sign";
@@ -169,11 +177,6 @@ in
         # preferences
         init.defaultBranch = "main";
         push.autoSetupRemote = true;
-        merge.weave = {
-          name = "Entity-level semantic merge";
-          driver = "weave-driver %O %A %B %L %P";
-        };
-        core.hooksPath = ".githooks";
         core.editor = vars.defaults.termEditor;
 
         # speed up large Git LFS uploads/downloads
@@ -190,12 +193,18 @@ in
           };
         };
 
-        # 1password ssh commit signing
+      }
+      // lib.optionalAttrs (!isAndroid) {
+        merge.weave = {
+          name = "Entity-level semantic merge";
+          driver = "weave-driver %O %A %B %L %P";
+        };
+        core.hooksPath = ".githooks";
         commit.gpgsign = true;
       }
-      // personalConfig; # set default to personal
+      // (if isAndroid then personalIdentity else personalConfig); # set default to personal
 
-      includes = [
+      includes = lib.optionals (!isAndroid) [
         # dirac-specific git setup
         # need to `git init` in ~/dirac for this to work properly
         {

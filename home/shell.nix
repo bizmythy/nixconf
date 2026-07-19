@@ -1,35 +1,36 @@
 {
+  lib,
   pkgs,
   vars,
   ...
 }:
 let
+  isAndroid = vars.isAndroid or false;
   mySessionVariables = {
     EDITOR = vars.defaults.termEditor;
-    # VISUAL = vars.defaults.editor;
     BROWSER = vars.defaults.browser;
-    NH_NO_CHECKS = 1;
     NIXPKGS_ALLOW_UNFREE = 1;
     PAGER = "bat";
+  }
+  // lib.optionalAttrs (!isAndroid) {
+    NH_NO_CHECKS = 1;
     OP_ACCOUNT = "PLU4HO2JCJF23NNQK2ERWIYIZI"; # default to work account
     USE_DEPOT = "true"; # enable depot builds (temp)
   };
   myShellAliases = {
     cdn = "cd ${vars.flakePath}";
-
-    zed = "zeditor";
     e = "${vars.defaults.editor} .";
-    cx = "codex";
-
-    ld = "lazydocker";
     hmclean = "fd '${vars.hmBackupFileExtension}' ~ -u -x rm";
-    dcd = "docker compose down";
-    # "??" = "gh copilot suggest -t shell"; # don't use copilot anymore
     cg = "cargo";
+  }
+  // lib.optionalAttrs (!isAndroid) {
+    zed = "zeditor";
+    cx = "codex";
+    ld = "lazydocker";
+    dcd = "docker compose down";
 
     # dirac
     cdb = "cd ${vars.home}/dirac/buildos-web";
-
     msr = "zsh -c 'mask services reset && lazydocker'";
     msu = "zsh -c 'mask services build && mask services up && lazydocker'";
     mtix = "mask start-ticket";
@@ -101,25 +102,31 @@ in
           # pkgs.nu-plugin-toon # custom plugin for TOON support
         ];
         shellAliases = myShellAliases;
-        environmentVariables = mySessionVariables // {
-          PROMPT_INDICATOR_VI_INSERT = "";
-          AWS_PROFILE = "dev";
-        };
+        environmentVariables =
+          mySessionVariables
+          // {
+            PROMPT_INDICATOR_VI_INSERT = "";
+          }
+          // lib.optionalAttrs (!isAndroid) {
+            AWS_PROFILE = "dev";
+          };
         settings = {
           show_banner = false; # don't show startup help text
           buffer_editor = vars.defaults.termEditor;
           edit_mode = "vi"; # vi line edit mode
         };
         extraConfig =
-          formatCompletions [
-            "cargo"
-            "curl"
-            "less"
-            "make"
-            "man"
-            "op"
-            "tar"
-          ]
+          formatCompletions (
+            [
+              "cargo"
+              "curl"
+              "less"
+              "make"
+              "man"
+              "tar"
+            ]
+            ++ lib.optional (!isAndroid) "op"
+          )
           + ''
 
             source ${./utils.nu};
@@ -137,7 +144,7 @@ in
       enableZshIntegration = true;
       enableNushellIntegration = true;
 
-      config = {
+      config = lib.optionalAttrs (!isAndroid) {
         whitelist = {
           prefix = [
             "~/buildos-web"

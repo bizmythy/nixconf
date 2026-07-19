@@ -11,6 +11,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Nix environment for Android devices
+    nix-on-droid = {
+      url = "github:nix-community/nix-on-droid";
+      inputs.home-manager.follows = "home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # secrets management through 1Password
     opnix.url = "github:brizzbuzz/opnix";
 
@@ -75,7 +82,6 @@
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.systems.follows = "systems";
     };
 
     # work configuration modules
@@ -233,9 +239,36 @@
       ] getServerConfig;
 
       configs = pcConfigs // serverConfigs;
+
+      androidVars = vars // {
+        home = "/data/data/com.termux.nix/files/home";
+        flakePath = "${androidVars.home}/nixconf";
+        isAndroid = true;
+        defaults = vars.defaults // {
+          browser = "xdg-open";
+          editor = "nvim";
+          tty = "";
+        };
+      };
+
+      androidPkgs = import nixpkgs {
+        system = "aarch64-linux";
+        config = nixpkgsSettings.config;
+        overlays = [ inputs.nix-on-droid.overlays.default ] ++ nixpkgsSettings.overlays;
+      };
     in
     {
       nixosConfigurations = configs;
+
+      nixOnDroidConfigurations.default = inputs.nix-on-droid.lib.nixOnDroidConfiguration {
+        pkgs = androidPkgs;
+        home-manager-path = inputs.home-manager.outPath;
+        extraSpecialArgs = {
+          inherit inputs;
+          vars = androidVars;
+        };
+        modules = [ ./android/nix-on-droid.nix ];
+      };
 
       packages = eachSystem (pkgs: {
         nvim = inputs.nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim (
