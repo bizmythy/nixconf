@@ -72,6 +72,7 @@
         tdx # markdown todo manager
         linear-cli # Linear issue tracker CLI
         s-tui # cpu stress test/monitor
+        secretspec # declarative secrets management
         atop # another top tool, shows lots of data
         iftop # show network interface usage
         iotop # show disk bandwidth usage
