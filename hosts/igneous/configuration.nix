@@ -11,6 +11,9 @@
   ];
 
   boot = {
+    # Allow this x86_64 host to build and test Android/aarch64 configurations.
+    binfmt.emulatedSystems = [ "aarch64-linux" ];
+
     # start amd driver at boot
     initrd.kernelModules = [ "amdgpu" ];
     # Enable AMDGPU HDMI 2.1 FRL once using Linux 7.2+.
