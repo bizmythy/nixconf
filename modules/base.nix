@@ -72,9 +72,8 @@ in
   # Enable networking
   networking.networkmanager.enable = true;
 
-  # Make Tailscale available on personal machines without starting it at boot.
+  # Make Tailscale available on personal machines.
   services.tailscale.enable = lib.mkIf (vars.isPersonal config) true;
-  systemd.services.tailscaled.wantedBy = lib.mkIf (vars.isPersonal config) (lib.mkForce [ ]);
 
   # set DNS servers on non-work machines only
   networking.nameservers = lib.mkIf (vars.isPersonal config) [
