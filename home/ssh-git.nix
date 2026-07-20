@@ -12,15 +12,16 @@ let
       text = value;
     };
 
+  vcs = import ./vcs-settings.nix { inherit vars; };
   publicKeys = {
-    personalGitHub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOjbUnES0AUVvsqNzMdCix3Qp+XRpKiS7tm6PR6u7WTY";
-    diracGitHub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPIrRXpZt/U8OkMsWoft9+2JiITBsUyGVxuhZJhl+Xpm";
+    personalGitHub = vcs.identities.personal.sshPublicKey;
+    diracGitHub = vcs.identities.dirac.sshPublicKey;
     diraclocalserver = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEoZXGhcmj8ZUFPWWGw3fZAd0FOCZKXnKelZKaGD9Tq4";
     hetzner = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGogIJ4uaReEMnM8eRedZh0OVq/4AAs4H8xdiWjvf6YF";
   };
   publicKeyFiles = builtins.mapAttrs genKeyFile publicKeys;
 
-  onePassPath = "${vars.home}/.1password/agent.sock";
+  onePassPath = vcs.onePassword.agentSocket;
   weavePackage = inputs.weave.packages.${pkgs.stdenv.hostPlatform.system}.default;
   weaveExtensions = [
     "ts"
@@ -138,23 +139,15 @@ in
   # git configuration
   programs.git =
     let
-      # configuration for each git account
-      personalConfig = {
+      mkIdentityConfig = identity: publicKeyFile: {
         user = {
-          name = "bizmythy";
-          email = "andrew.p.council@gmail.com";
-          signingkey = publicKeys.personalGitHub;
+          inherit (identity) name email;
+          signingkey = identity.sshPublicKey;
         };
-        core.sshCommand = "ssh -i ${publicKeyFiles.personalGitHub}";
+        core.sshCommand = "ssh -i ${publicKeyFile}";
       };
-      diracConfig = {
-        user = {
-          name = "drew-dirac";
-          email = "drew@diracinc.com";
-          signingkey = publicKeys.diracGitHub;
-        };
-        core.sshCommand = "ssh -i ${publicKeyFiles.diracGitHub}";
-      };
+      personalConfig = mkIdentityConfig vcs.identities.personal publicKeyFiles.personalGitHub;
+      diracConfig = mkIdentityConfig vcs.identities.dirac publicKeyFiles.diracGitHub;
     in
     {
       enable = true;
@@ -163,7 +156,7 @@ in
       signing = {
         format = "ssh";
         # should be declared deterministically, but can't get same pkg as in nixos config
-        signer = "/run/current-system/sw/bin/op-ssh-sign";
+        signer = vcs.onePassword.sshSigner;
       };
       settings = {
         # preferences
@@ -199,7 +192,7 @@ in
         # dirac-specific git setup
         # need to `git init` in ~/dirac for this to work properly
         {
-          condition = "gitdir:${vars.home}/dirac/";
+          condition = "gitdir:${vcs.identities.dirac.repositoryRoot}/";
           contentSuffix = ".dirac.gitconfig";
           contents = diracConfig; # apply dirac in this condition
         }

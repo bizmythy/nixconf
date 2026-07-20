@@ -14,6 +14,7 @@
     ./glow.nix
     ./helix.nix
     ./herdr
+    ./jujutsu.nix
     ./lazydocker.nix
     ./lazygit.nix
     ./nvim.nix
