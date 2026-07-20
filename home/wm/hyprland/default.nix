@@ -33,6 +33,7 @@ let
 
   generatedLua = {
     host = osConfig.networking.hostName;
+    laptop = osConfig.laptop.enable;
     nvidia = osConfig.nvidiaEnable;
     defaults = {
       inherit (vars.defaults)
