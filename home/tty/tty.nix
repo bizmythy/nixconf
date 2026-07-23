@@ -106,7 +106,7 @@ in
         # Temporarily disabled: glow/bloom shader is distracting.
         # custom-shader = "${ghosttyShaders}/bloom.glsl";
       };
-      enableBashIntegration = true;
+      enableBashIntegration = false;
       enableZshIntegration = true;
       enableFishIntegration = true;
       installBatSyntax = true;
@@ -119,7 +119,10 @@ in
       name = fontFamily;
       size = fontSize;
     };
-    shellIntegration.enableZshIntegration = true;
+    shellIntegration = {
+      enableBashIntegration = false;
+      enableZshIntegration = true;
+    };
 
     settings = {
       copy_on_select = "clipboard";

@@ -55,7 +55,10 @@ in
       autosuggestion.enable = true;
     };
 
-    bash.enable = true;
+    bash = {
+      enable = true;
+      enableCompletion = false;
+    };
 
     nushell =
       let
@@ -133,7 +136,7 @@ in
       enable = true;
       nix-direnv.enable = true;
 
-      enableBashIntegration = true;
+      enableBashIntegration = false;
       enableZshIntegration = true;
       enableNushellIntegration = true;
 
@@ -174,7 +177,7 @@ in
       enableZshIntegration = true;
       enableFishIntegration = true;
       enableNushellIntegration = true;
-      enableBashIntegration = true;
+      enableBashIntegration = false;
 
       shellWrapperName = "y";
     };
