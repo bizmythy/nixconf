@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
 
     # set up config files and user settings
     home-manager = {
@@ -43,14 +43,6 @@
     t3code = {
       url = "github:bizmythy/t3code";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # my manix fork
-    manix = {
-      url = "github:bizmythy/manix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.inputs.systems.follows = "systems";
-      inputs.naersk.inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # markdown todo manager

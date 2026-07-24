@@ -73,7 +73,6 @@ in
         mkdir -p "$out/bin"
         ln -s "${self.herdr-keybinds}/bin/lg-herdr-watch" "$out/bin/lg-herdr-watch"
       '';
-  manix = inputs.manix.packages.${super.stdenv.hostPlatform.system}.manix;
   t3code = inputs.t3code.packages.${super.stdenv.hostPlatform.system}.default;
   # Upstream currently hard-codes macOS pbcopy/pbpaste; use Wayland wl-clipboard.
   tdx = inputs.tdx.packages.${super.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
