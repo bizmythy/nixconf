@@ -95,7 +95,7 @@ in
           # hcl # load hashicorp config lang files, incompatible version
           # highlight # highlight source code
           # net # list network interfaces, broken
-          polars # dataframe operations
+          # polars # dataframe operations, broken with Rust 1.97
           query # query sql, json, etc
           # semver # work with semantic versions
           # skim # integrates `sk` fuzzy finder
