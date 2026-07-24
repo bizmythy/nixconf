@@ -79,14 +79,6 @@
       inputs.llm-agents.follows = "llm-agents";
     };
 
-    dirac-workspaces = {
-      type = "git";
-      url = "ssh://git@dirac-github/drew-dirac/dirac-workspaces.git";
-      ref = "main";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.inputs.systems.follows = "systems";
-    };
-
     systems.url = "github:nix-systems/x86_64-linux";
     # formatter
     treefmt-nix.url = "github:numtide/treefmt-nix";
@@ -187,7 +179,6 @@
           # conditionally include dirac module (set vars.enableDirac = false when bootstrapping)
           ++ lib.optionals buildConfig.flags.enableDirac [
             inputs.dirac.nixosModules.linux
-            inputs.dirac-workspaces.nixosModules.default
             ./dirac.nix
           ]
           ++ [
