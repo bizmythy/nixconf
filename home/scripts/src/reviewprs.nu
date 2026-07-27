@@ -2,11 +2,13 @@
 
 const JSON_FLAG = "--json=number,title,url,author"
 
-def open_prs []: list<any> -> nothing {
+def require_herdr [] {
   if (($env.HERDR_ENV? | default "0") != "1") {
     error make {msg: "reviewprs.nu must be run inside Herdr (HERDR_ENV=1)"}
   }
+}
 
+def open_prs []: list<any> -> nothing {
   # Open each PR in a new Herdr tab.
   $in | each {|pr|
     let tab = (herdr tab create --label $pr.title --no-focus | from json)
@@ -16,6 +18,7 @@ def open_prs []: list<any> -> nothing {
 }
 
 def main [count: int = 30 --noslop] {
+  require_herdr
   cd ~/dirac/buildos-web
 
   let search_results = (
@@ -78,6 +81,7 @@ def load_pr [ref: string] {
 }
 
 def "main urls" [] {
+  require_herdr
   cd ~/dirac/buildos-web
 
   let tempfile = (mktemp --suffix .txt)
