@@ -34,7 +34,7 @@
 
     # semantic git merge driver
     weave = {
-      url = "github:Ataraxy-Labs/weave";
+      url = "github:bizmythy/weave/fix/rust-multiline-use-merge";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
     };
