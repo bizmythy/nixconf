@@ -12,6 +12,12 @@
 
   environment.systemPackages =
     let
+      # Nix `azure-cli` uses a Python without `pip`, so `az extension add` fails at runtime with
+      # "No module named pip". Pre-vendor extensions here instead.
+      az-cli = pkgs.azure-cli.withExtensions [
+        pkgs.azure-cli.extensions."azure-firewall"
+      ];
+
       nixSourcced = with pkgs; [
         nushell
         # coreutils rust rewrite, testing it out
@@ -103,6 +109,7 @@
         (aspellWithDicts (ps: with ps; [ en ])) # spell check text files
 
         graphite-cli
+        az-cli
 
         # document tools
         typst # latex-killer, create documents in expressive language
