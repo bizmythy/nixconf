@@ -212,10 +212,10 @@ func (c *client) finishBuildos(workspaceID string, newDir string, setupTabID str
 
 	// Open tabs without focus so a long-running setup does not yank the user
 	// away if they already switched back to another workspace.
-	if err := c.ensureWorkspaceTab(workspaceID, newDir, "ws", false); err != nil {
+	if err := c.ensureWorkspaceTab(workspaceID, newDir, "1", false); err != nil {
 		return err
 	}
-	if err := c.ensureWorkspaceTab(workspaceID, newDir, "1", false); err != nil {
+	if err := c.ensureWorkspaceTab(workspaceID, newDir, "2", false); err != nil {
 		return err
 	}
 	if setupTabID != "" {
