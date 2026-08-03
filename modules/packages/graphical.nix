@@ -186,7 +186,7 @@ in
   services = {
     mullvad-vpn = lib.mkIf (vars.isPersonal config) {
       enable = true;
-      package = pkgs.mullvad-vpn;
+      gui.enable = true;
     };
 
     # web ui for ollama and similar
