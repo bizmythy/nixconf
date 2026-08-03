@@ -63,8 +63,6 @@ in
 
         slack
         postman
-        # zoom-us
-
         pcloud # cloud storage
         localsend # local file sharing between devices
         wireshark # packet monitoring
@@ -89,10 +87,9 @@ in
 
         # code editors
         # t3code
-        code-cursor
         zed-editor # preferred code editor
         zed # alias
-        vscode
+        vscodium
 
         # failing to build, never use anyways
         # warp-terminal
@@ -180,7 +177,6 @@ in
       users = [ vars.user ];
     };
 
-    zoom-us.enable = true;
   };
 
   services = {
