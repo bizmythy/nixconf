@@ -11,10 +11,11 @@
   ];
 
   boot = {
+    # Test the initial AMDGPU HDMI 2.1 FRL support in Linux 7.2.
+    kernelPackages = pkgs.linuxPackages_testing;
+    kernelParams = [ "amdgpu.dcfeaturemask=0x400" ];
     # start amd driver at boot
     initrd.kernelModules = [ "amdgpu" ];
-    # Enable AMDGPU HDMI 2.1 FRL once using Linux 7.2+.
-    # kernelParams = [ "amdgpu.dc_feature_mask=0x400" ];
     # enable kernel for disc drive
     kernelModules = [ "sg" ];
     # support ntfs for mounting windows partition
