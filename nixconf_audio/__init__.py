@@ -130,9 +130,29 @@ def set_default_sink(sink_id: int, *, run: RunCommand = run_command) -> None:
     run(["wpctl", "set-default", str(sink_id)])
 
 
+def set_card_profile(
+    card_name: str,
+    profile_name: str,
+    *,
+    run: RunCommand = run_command,
+) -> None:
+    run(["pactl", "set-card-profile", card_name, profile_name])
+
+
 def switch_default_sink_by_alsa_name(
-    alsa_name: str, *, run: RunCommand = run_command
+    alsa_name: str,
+    *,
+    card_name: str | None = None,
+    card_profile: str | None = None,
+    run: RunCommand = run_command,
 ) -> AudioSink:
+    if (card_name is None) != (card_profile is None):
+        raise AudioCommandError(
+            "card_name and card_profile must be specified together"
+        )
+    if card_name is not None and card_profile is not None:
+        set_card_profile(card_name, card_profile, run=run)
+
     sink = get_sink_by_alsa_name(alsa_name, run=run)
     set_default_sink(sink.id, run=run)
     return sink

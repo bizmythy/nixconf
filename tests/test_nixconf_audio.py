@@ -143,3 +143,55 @@ def test_get_sink_by_alsa_name_errors_with_duplicates() -> None:
         match="multiple audio sinks matched",
     ):
         module.get_sink_by_alsa_name("USB Audio", run=run)
+
+
+def test_switch_sink_activates_card_profile_first() -> None:
+    module = load_nixconf_audio_module()
+    commands: list[list[str]] = []
+
+    def run(command: list[str]) -> subprocess.CompletedProcess[str]:
+        commands.append(command)
+        if command == ["pactl", "--format=json", "info"]:
+            return make_completed_process('{"default_sink_name":"sink.usb"}')
+        if command == ["pactl", "--format=json", "list", "sinks"]:
+            return make_completed_process(
+                """
+                [
+                  {
+                    "name": "sink.tv",
+                    "description": "TV",
+                    "properties": {
+                      "object.id": "77",
+                      "alsa.name": "HDMI 3"
+                    }
+                  }
+                ]
+                """
+            )
+        return make_completed_process("")
+
+    sink = module.switch_default_sink_by_alsa_name(
+        "HDMI 3",
+        card_name="alsa_card.pci-0000_03_00.1",
+        card_profile="output:hdmi-stereo-extra3",
+        run=run,
+    )
+
+    assert sink.name == "sink.tv"
+    assert commands[0] == [
+        "pactl",
+        "set-card-profile",
+        "alsa_card.pci-0000_03_00.1",
+        "output:hdmi-stereo-extra3",
+    ]
+    assert commands[-1] == ["wpctl", "set-default", "77"]
+
+
+def test_switch_sink_requires_complete_card_profile() -> None:
+    module = load_nixconf_audio_module()
+
+    with pytest.raises(module.AudioCommandError, match="specified together"):
+        module.switch_default_sink_by_alsa_name(
+            "HDMI 3",
+            card_name="alsa_card.pci-0000_03_00.1",
+        )

@@ -238,8 +238,12 @@ end
 
 local function switch_audio(profile)
 	local alsa_name = nil
+	local card_name = nil
+	local card_profile = nil
 	if profile ~= nil then
 		alsa_name = profile.defaultAudioOutputAlsaName
+		card_name = profile.audioCardName
+		card_profile = profile.audioCardProfile
 	end
 	if alsa_name == nil then
 		alsa_name = host_config.defaultAudioOutputAlsaName
@@ -248,7 +252,15 @@ local function switch_audio(profile)
 		return
 	end
 
-	hl.exec_cmd(generated.commands.switchaudio .. " --alsa-name " .. util.shell_quote(alsa_name))
+	local command = generated.commands.switchaudio .. " --alsa-name " .. util.shell_quote(alsa_name)
+	if card_name ~= nil and card_profile ~= nil then
+		command = command
+			.. " --card-name "
+			.. util.shell_quote(card_name)
+			.. " --card-profile "
+			.. util.shell_quote(card_profile)
+	end
+	hl.exec_cmd(command)
 end
 
 function M.apply_profile(label)

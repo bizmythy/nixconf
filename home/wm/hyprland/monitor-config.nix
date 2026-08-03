@@ -77,7 +77,9 @@ let
           useTablet = true;
         };
         tv = {
-          defaultAudioOutputAlsaName = "LG TV SSCR2";
+          audioCardName = "alsa_card.pci-0000_03_00.1";
+          audioCardProfile = "output:hdmi-stereo-extra3";
+          defaultAudioOutputAlsaName = "HDMI 3";
           enabledOutputs = [ "tv" ];
           useTablet = false;
         };

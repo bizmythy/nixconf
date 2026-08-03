@@ -8,9 +8,9 @@ from nixconf_audio import (
     AudioCommandError,
     AudioSink,
     get_default_sink_name,
-    get_sink_by_alsa_name,
     list_sinks,
     set_default_sink,
+    switch_default_sink_by_alsa_name,
 )
 
 
@@ -74,22 +74,29 @@ def pick_sink() -> int | None:
     return index
 
 
-def switch_sink_by_alsa_name(alsa_name: str) -> None:
-    sink = get_sink_by_alsa_name(alsa_name)
-    set_default_sink(sink.id)
-
-
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--alsa-name",
         help="Switch to the sink whose PipeWire ALSA name matches.",
     )
+    parser.add_argument(
+        "--card-name",
+        help="Activate this PipeWire card before selecting the sink.",
+    )
+    parser.add_argument(
+        "--card-profile",
+        help="Activate this PipeWire card profile before selecting the sink.",
+    )
     args = parser.parse_args()
 
     try:
         if args.alsa_name is not None:
-            switch_sink_by_alsa_name(args.alsa_name)
+            switch_default_sink_by_alsa_name(
+                args.alsa_name,
+                card_name=args.card_name,
+                card_profile=args.card_profile,
+            )
         else:
             pick_sink()
     except AudioCommandError as error:
