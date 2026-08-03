@@ -12,7 +12,6 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

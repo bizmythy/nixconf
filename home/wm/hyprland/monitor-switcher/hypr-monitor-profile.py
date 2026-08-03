@@ -13,7 +13,6 @@ from typing import Any
 
 import click
 
-
 PROMPT = "Monitors> "
 REQUEST_FILE = "hyprmonitor-profile-request"
 LOG_FILE = "hypr-monitor-profile.log"

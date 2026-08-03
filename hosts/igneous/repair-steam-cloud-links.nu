@@ -6,7 +6,7 @@ const games = [
     name: "The Witness"
     save_path: "AppData/Roaming/The Witness"
     links: [
-      {path: "Application Data", target: "AppData/Roaming"}
+      {path: "Application Data" target: "AppData/Roaming"}
     ]
   }
   {
@@ -14,7 +14,7 @@ const games = [
     name: "Cuphead"
     save_path: "AppData/Roaming/Cuphead"
     links: [
-      {path: "Application Data", target: "AppData/Roaming"}
+      {path: "Application Data" target: "AppData/Roaming"}
     ]
   }
   {
@@ -30,12 +30,12 @@ const games = [
   }
 ]
 
-def steamuser-dir [steam_library: path, app_id: string] {
+def steamuser-dir [steam_library: path app_id: string] {
   $steam_library
   | path join "steamapps" "compatdata" $app_id "pfx" "drive_c" "users" "steamuser"
 }
 
-def link-state [link_path: path, expected_target: string] {
+def link-state [link_path: path expected_target: string] {
   if not ($link_path | path exists) {
     return "missing"
   }
@@ -53,11 +53,13 @@ def link-state [link_path: path, expected_target: string] {
     return $"unexpected-($kind)"
   }
 
-  let magic = (try {
-    open --raw $link_path | bytes at 0..6 | decode
-  } catch {
-    ""
-  })
+  let magic = (
+    try {
+      open --raw $link_path | bytes at 0..6 | decode
+    } catch {
+      ""
+    }
+  )
 
   if $magic == "IntxLNK" {
     "legacy-intxlnk"

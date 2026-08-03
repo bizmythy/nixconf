@@ -18,7 +18,6 @@ import click
 import zstandard
 from tqdm import tqdm
 
-
 CHUNK_SIZE = 1024 * 1024
 ZIP_EXT = ".zip"
 TAR_GZ_EXT = ".tar.gz"
@@ -36,7 +35,7 @@ class ArchiveType(Enum):
         self.label = label
 
     @classmethod
-    def from_path(cls, path: Path) -> "ArchiveType":
+    def from_path(cls, path: Path) -> ArchiveType:
         lower_name = path.name.lower()
         for archive_type in cls:
             if lower_name.endswith(archive_type.extension):
@@ -48,7 +47,7 @@ class ArchiveType(Enum):
         )
 
     @classmethod
-    def from_extension_shorthand(cls, value: str) -> "ArchiveType":
+    def from_extension_shorthand(cls, value: str) -> ArchiveType:
         for archive_type in cls:
             if value == archive_type.extension:
                 return archive_type
@@ -654,13 +653,12 @@ def extract_tar_member(
             f"unable to extract file data for {member.name}"
         )
 
-    with extracted:
-        with destination.open("wb") as dest_file:
-            while True:
-                chunk = extracted.read(CHUNK_SIZE)
-                if not chunk:
-                    break
-                dest_file.write(chunk)
+    with extracted, destination.open("wb") as dest_file:
+        while True:
+            chunk = extracted.read(CHUNK_SIZE)
+            if not chunk:
+                break
+            dest_file.write(chunk)
     apply_permissions(destination, member.mode)
 
 

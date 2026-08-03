@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-# ruff: noqa: E402
 """
 xhisper Toggle Button
 A simple floating toggle button for xhisper dictation.
 Works on any desktop including COSMIC/Wayland.
 """
 
-import gi
 import subprocess
 import sys
 from pathlib import Path
 
+import gi
+
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GLib, Gdk
+from gi.repository import Gdk, GLib, Gtk
 
 XHISPER_DIR = Path(__file__).parent
 LOGFILE = Path("/tmp/xhisper.log")
