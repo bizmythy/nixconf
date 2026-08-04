@@ -11,6 +11,7 @@ local state = {
 	sunshine_pid = nil,
 }
 local last_profile_request_id = nil
+local monitor_settle_timer = nil
 
 local function state_path()
 	local runtime_dir = os.getenv("XDG_RUNTIME_DIR") or "/tmp"
@@ -201,6 +202,37 @@ local function apply_monitor(output, settings, overrides)
 	hl.monitor(spec)
 end
 
+local function settle_monitor_layout(profile, enabled_outputs, overrides)
+	if monitor_settle_timer ~= nil then
+		monitor_settle_timer:set_enabled(false)
+	end
+
+	monitor_settle_timer = hl.timer(function()
+		-- Reapply enabled outputs after disabled outputs have finished moving
+		-- their layers and workspaces. This gives layer-shell clients one final
+		-- arrangement against the completed monitor layout.
+		for _, key in ipairs(monitor_names()) do
+			local monitor = host_config.monitors[key]
+			local output = resolve_output(host_config.monitors, key)
+			if enabled_outputs[output] then
+				apply_monitor(output, monitor.settings, overrides[output] or {})
+			end
+		end
+
+		if profile ~= nil and profile.useTablet then
+			hl.monitor({
+				output = headless.name,
+				mode = tostring(math.floor(headless.width / headless.downsample)) .. "x" .. tostring(
+					math.floor(headless.height / headless.downsample)
+				),
+				position = headless.position,
+				scale = tostring(headless.scale),
+				disabled = false,
+			})
+		end
+	end, { timeout = 250, type = "oneshot" })
+end
+
 local function find_sunshine_output_index(output_name)
 	-- Sunshine's Linux output_name is its zero-based Wayland monitor list index,
 	-- not Hyprland's monitor ID.
@@ -305,6 +337,7 @@ function M.apply_profile(label)
 
 	state.active_profile = label
 	save_state()
+	settle_monitor_layout(profile, enabled_outputs, overrides)
 	switch_audio(profile)
 end
 
