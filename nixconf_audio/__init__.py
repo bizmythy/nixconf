@@ -11,6 +11,10 @@ class AudioCommandError(RuntimeError):
     pass
 
 
+class AudioSinkNotFoundError(AudioCommandError):
+    pass
+
+
 RunCommand = Callable[[list[str]], subprocess.CompletedProcess[str]]
 
 
@@ -116,7 +120,7 @@ def get_sink_by_alsa_name(
         sink for sink in list_sinks(run=run) if sink.alsa_name == alsa_name
     ]
     if not matches:
-        raise AudioCommandError(
+        raise AudioSinkNotFoundError(
             f"no audio sink found with alsa.name {alsa_name!r}"
         )
     if len(matches) > 1:

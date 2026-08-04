@@ -284,7 +284,7 @@ local function switch_audio(profile)
 		return
 	end
 
-	local command = generated.commands.switchaudio .. " --alsa-name " .. util.shell_quote(alsa_name)
+	local command = generated.commands.switchaudio .. " --wait 120 --alsa-name " .. util.shell_quote(alsa_name)
 	if card_name ~= nil and card_profile ~= nil then
 		command = command
 			.. " --card-name "

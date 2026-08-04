@@ -21,6 +21,19 @@ def load_nixconf_audio_module():
     return module
 
 
+def load_switchaudio_module():
+    module_path = ROOT / "home/wm/switchaudio/main.py"
+    spec = importlib.util.spec_from_file_location(
+        "switchaudio_main_test", module_path
+    )
+    if spec is None or spec.loader is None:
+        raise AssertionError("unable to load switchaudio module")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 def make_completed_process(stdout: str) -> subprocess.CompletedProcess[str]:
     return subprocess.CompletedProcess(args=[], returncode=0, stdout=stdout)
 
@@ -195,3 +208,79 @@ def test_switch_sink_requires_complete_card_profile() -> None:
             "HDMI 3",
             card_name="alsa_card.pci-0000_03_00.1",
         )
+
+
+def test_wait_for_requested_sink_retries_until_sink_appears(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = load_switchaudio_module()
+    attempts = 0
+
+    def switch(alsa_name: str, **_kwargs) -> None:
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            raise module.AudioSinkNotFoundError(alsa_name)
+
+    monkeypatch.setattr(module, "runtime_dir", lambda: tmp_path)
+    monkeypatch.setattr(module, "switch_default_sink_by_alsa_name", switch)
+    monkeypatch.setattr(module.time, "sleep", lambda _seconds: None)
+    request_id = module.queue_pending_switch()
+
+    switched = module.wait_for_requested_sink(
+        request_id,
+        "USB Audio",
+        wait_seconds=10,
+    )
+
+    assert switched is True
+    assert attempts == 2
+    assert module.read_pending_switch() is None
+
+
+def test_manual_cancellation_stops_pending_retry(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = load_switchaudio_module()
+    attempts = 0
+
+    def unavailable(alsa_name: str, **_kwargs) -> None:
+        nonlocal attempts
+        attempts += 1
+        raise module.AudioSinkNotFoundError(alsa_name)
+
+    monkeypatch.setattr(module, "runtime_dir", lambda: tmp_path)
+    monkeypatch.setattr(
+        module, "switch_default_sink_by_alsa_name", unavailable
+    )
+    monkeypatch.setattr(
+        module.time,
+        "sleep",
+        lambda _seconds: module.clear_pending_switch(),
+    )
+    request_id = module.queue_pending_switch()
+
+    switched = module.wait_for_requested_sink(
+        request_id,
+        "USB Audio",
+        wait_seconds=10,
+    )
+
+    assert switched is False
+    assert attempts == 1
+
+
+def test_interactive_switch_cancels_pending_retry_first(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = load_switchaudio_module()
+    events: list[str] = []
+
+    monkeypatch.setattr(sys, "argv", ["switchaudio"])
+    monkeypatch.setattr(
+        module, "clear_pending_switch", lambda _request_id=None: events.append("cancel")
+    )
+    monkeypatch.setattr(module, "pick_sink", lambda: events.append("pick"))
+
+    assert module.main() == 0
+    assert events == ["cancel", "pick"]
