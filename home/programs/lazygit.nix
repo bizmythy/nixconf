@@ -39,7 +39,8 @@
         overrideGpg = true;
         pagers = [
           {
-            externalDiffCommand = "difft --color=always --display=inline --syntax-highlight=on";
+            colorArg = "always";
+            pager = "delta --dark --paging=never";
           }
         ];
         # parseEmoji = true;

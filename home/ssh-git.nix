@@ -127,14 +127,13 @@ in
     )
     + "\n"; # needs to end with newline or we get strange undefined behavior
 
-  # Syntax-aware diffs for Git and other VCS tools.
-  programs.difftastic = {
+  # delta for git diff viewer
+  programs.delta = {
     enable = true;
-    options.display = "inline";
-    git = {
-      enable = true;
-      mode = "external";
+    options = {
+      side-by-side = false;
     };
+    enableGitIntegration = true;
   };
 
   # git configuration
@@ -163,11 +162,6 @@ in
         # preferences
         init.defaultBranch = "main";
         push.autoSetupRemote = true;
-        alias = {
-          ddiff = "diff";
-          dshow = "show --ext-diff";
-          dlog = "log --ext-diff";
-        };
         merge.weave = {
           name = "Entity-level semantic merge";
           driver = "weave-driver %O %A %B %L %P";

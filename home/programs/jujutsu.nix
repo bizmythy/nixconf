@@ -45,7 +45,8 @@ in
     };
   };
 
-  programs.difftastic.jujutsu.enable = true;
+  # Use delta for jj's pager and Git-format diffs.
+  programs.delta.enableJujutsuIntegration = true;
 
   # jjui is the closest feature-rich Jujutsu equivalent to Lazygit.
   home.packages = [ pkgs.jjui ];
