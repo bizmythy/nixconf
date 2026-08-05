@@ -23,7 +23,6 @@
   programs.gh-dash = {
     enable = true;
     settings = {
-      pager.diff = "delta";
       repoPaths = {
         "diracq/*" = "~/dirac/*";
       };

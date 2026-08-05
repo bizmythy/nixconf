@@ -127,13 +127,14 @@ in
     )
     + "\n"; # needs to end with newline or we get strange undefined behavior
 
-  # delta for git diff viewer
-  programs.delta = {
+  # Syntax-aware diffs for Git and other VCS tools.
+  programs.difftastic = {
     enable = true;
-    options = {
-      side-by-side = false;
+    options.display = "inline";
+    git = {
+      enable = true;
+      mode = "external";
     };
-    enableGitIntegration = true;
   };
 
   # git configuration
@@ -162,6 +163,11 @@ in
         # preferences
         init.defaultBranch = "main";
         push.autoSetupRemote = true;
+        alias = {
+          ddiff = "diff";
+          dshow = "show --ext-diff";
+          dlog = "log --ext-diff";
+        };
         merge.weave = {
           name = "Entity-level semantic merge";
           driver = "weave-driver %O %A %B %L %P";
