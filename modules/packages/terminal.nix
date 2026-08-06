@@ -145,15 +145,7 @@
         cargo
         rustfmt
         nodejs
-        (writeShellApplication {
-          name = "pi-npm";
-          text = ''
-            exec ${nodejs}/bin/npm \
-              --prefix ${vars.home}/.pi/npm \
-              --cache ${vars.home}/.pi/npm-cache \
-              "$@"
-          '';
-        })
+        bun
 
         # nix tools
         nix-output-monitor
