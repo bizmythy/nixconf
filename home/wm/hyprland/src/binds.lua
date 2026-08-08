@@ -37,9 +37,33 @@ local function workspace_is_empty(workspace)
 	return workspace == nil or #workspace:get_windows() == 0
 end
 
+local function cursor_is_over_layer_surface(monitor)
+	local cursor = hl.get_cursor_pos()
+	if cursor == nil then
+		return false
+	end
+
+	local monitor_position = monitor.position
+	for _, layer in ipairs(hl.get_layers({ monitor = monitor })) do
+		-- Background-layer surfaces are wallpapers, so they count as desktop.
+		if
+			layer.mapped
+			and layer.layer > 0
+			and cursor.x >= monitor_position.x + layer.x
+			and cursor.x < monitor_position.x + layer.x + layer.w
+			and cursor.y >= monitor_position.y + layer.y
+			and cursor.y < monitor_position.y + layer.y + layer.h
+		then
+			return true
+		end
+	end
+
+	return false
+end
+
 local function open_launcher_on_empty_desktop()
 	local monitor = hl.get_monitor_at_cursor()
-	if monitor == nil then
+	if monitor == nil or cursor_is_over_layer_surface(monitor) then
 		return
 	end
 
