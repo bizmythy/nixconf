@@ -1,6 +1,12 @@
 {
+  config,
+  lib,
+  pkgs,
   ...
 }:
+let
+  mkLazyAppConfigValidation = import ./lazy-app-validation.nix { inherit lib pkgs; };
+in
 {
   programs.lazygit = {
     enable = true;
@@ -68,6 +74,15 @@
         }
       ];
     };
+  };
+
+  home.activation.validateLazygitConfig = mkLazyAppConfigValidation {
+    arguments = [ "__home_manager_validate_config__" ];
+    displayName = "Lazygit";
+    expectedFailure = "Invalid git arg value: '__home_manager_validate_config__'";
+    package = config.programs.lazygit.package;
+    program = "lazygit";
+    settings = config.programs.lazygit.settings;
   };
 
   catppuccin.lazygit.enable = true;
