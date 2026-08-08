@@ -202,34 +202,22 @@ local function apply_monitor(output, settings, overrides)
 	hl.monitor(spec)
 end
 
-local function settle_monitor_layout(profile, enabled_outputs, overrides)
+local function settle_monitor_layout()
 	if monitor_settle_timer ~= nil then
 		monitor_settle_timer:set_enabled(false)
 	end
 
 	monitor_settle_timer = hl.timer(function()
-		-- Reapply enabled outputs after disabled outputs have finished moving
-		-- their layers and workspaces. This gives layer-shell clients one final
-		-- arrangement against the completed monitor layout.
-		for _, key in ipairs(monitor_names()) do
-			local monitor = host_config.monitors[key]
-			local output = resolve_output(host_config.monitors, key)
-			if enabled_outputs[output] then
-				apply_monitor(output, monitor.settings, overrides[output] or {})
+		-- Mapping a layer-shell surface makes Hyprland arrange every layer on
+		-- that output. Poke each active physical output after the monitor rules
+		-- settle, then immediately remove the transparent surfaces.
+		local command = generated.commands.monitorLayoutPoke
+		for _, monitor in ipairs(hl.get_monitors()) do
+			if monitor.name ~= headless.name then
+				command = command .. " " .. util.shell_quote(monitor.name)
 			end
 		end
-
-		if profile ~= nil and profile.useTablet then
-			hl.monitor({
-				output = headless.name,
-				mode = tostring(math.floor(headless.width / headless.downsample)) .. "x" .. tostring(
-					math.floor(headless.height / headless.downsample)
-				),
-				position = headless.position,
-				scale = tostring(headless.scale),
-				disabled = false,
-			})
-		end
+		hl.exec_cmd(command)
 	end, { timeout = 250, type = "oneshot" })
 end
 
@@ -337,7 +325,7 @@ function M.apply_profile(label)
 
 	state.active_profile = label
 	save_state()
-	settle_monitor_layout(profile, enabled_outputs, overrides)
+	settle_monitor_layout()
 	switch_audio(profile)
 end
 

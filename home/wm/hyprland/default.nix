@@ -8,6 +8,16 @@
 let
   switchaudio = import ../switchaudio/package.nix { inherit pkgs; };
   monitorConfig = import ./monitor-config.nix;
+  monitorLayoutPoke = pkgs.writeShellApplication {
+    name = "hypr-monitor-layout-poke";
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.fuzzel
+      pkgs.gnugrep
+      pkgs.hyprland
+    ];
+    text = builtins.readFile ./monitor-switcher/poke-layer-layout.sh;
+  };
   hyprlandPackage = pkgs.hyprland;
   hyprlandPortalPackage = pkgs.xdg-desktop-portal-hyprland;
   toLua = lib.generators.toLua { };
@@ -47,6 +57,7 @@ let
     };
     commands = {
       kwalletInit = "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init";
+      monitorLayoutPoke = lib.getExe monitorLayoutPoke;
       monitorProfileSelector = "hypr-monitor-profile";
       switchaudio = lib.getExe switchaudio;
     };
