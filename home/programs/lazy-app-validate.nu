@@ -30,6 +30,7 @@ def main [
       CONFIG_DIR: $config_dir
       LG_CONFIG_FILE: $candidate_config
       DOCKER_HOST: $"unix://($validation_dir | path join 'missing-docker.sock')"
+      TERM: "dumb"
     } {
       hide-env --ignore-errors GIT_DIR GIT_WORK_TREE
       do { ^$setsid --fork --wait $executable ...$arguments } | complete

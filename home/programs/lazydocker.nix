@@ -35,7 +35,7 @@ in
 
   home.activation.validateLazydockerConfig = mkLazyAppConfigValidation {
     displayName = "Lazydocker";
-    expectedFailure = "open /dev/tty: no such device or address";
+    expectedFailure = "terminal not cursor addressable";
     package = config.programs.lazydocker.package;
     program = "lazydocker";
     settings = config.programs.lazydocker.settings;
