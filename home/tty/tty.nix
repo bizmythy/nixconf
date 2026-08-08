@@ -6,21 +6,13 @@
 }:
 
 let
-  terminalSettings = import ./settings.nix;
-  inherit (terminalSettings)
-    backgroundOpacity
-    fontFamily
-    fontSize
-    scrollback
-    ;
-  inherit (terminalSettings) colors;
+  fontFamily = "JetBrainsMono Nerd Font";
+  fontSize = 12;
+  backgroundOpacity = 0.9;
+  scrollback = 10000;
   kittyHyprNav = import ../wm/kitty-hypr-nav/package.nix { inherit lib pkgs; };
 in
 {
-  # Use the shared palette below instead of generating a separate Ghostty
-  # theme, so ghostty-web receives exactly the same colors.
-  catppuccin.ghostty.enable = false;
-
   programs.alacritty = {
     enable = true;
     settings = {
@@ -101,13 +93,6 @@ in
         font-family = fontFamily;
         font-size = fontSize;
         background-opacity = backgroundOpacity;
-        background = colors.background;
-        foreground = colors.foreground;
-        cursor-color = colors.cursor;
-        cursor-text = colors.cursorAccent;
-        selection-background = colors.selectionBackground;
-        selection-foreground = colors.selectionForeground;
-        palette = lib.imap0 (index: color: "${toString index}=${color}") colors.palette;
         cursor-style = "bar";
         cursor-style-blink = false;
         adjust-cursor-thickness = 2;
