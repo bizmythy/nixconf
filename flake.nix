@@ -130,7 +130,7 @@
           sha256 = "1w3biszx1iy9qavr2cvl4gxrlf3lbrjpp50bp8wbi3rdpzjgv4kl";
         };
         defaults = {
-          tty = "kitty";
+          tty = "ghostty";
           fileManager = "dolphin";
           browser = "zen-beta";
           calculator = "qalculate-qt";
