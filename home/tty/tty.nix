@@ -97,6 +97,10 @@ in
         cursor-style-blink = false;
         adjust-cursor-thickness = 2;
         shell-integration-features = "no-cursor";
+        keybind = [
+          "ctrl+enter=unbind"
+          "ctrl+shift+enter=unbind"
+        ];
 
         copy-on-select = "clipboard";
         app-notifications = "no-clipboard-copy";
