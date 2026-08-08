@@ -45,8 +45,6 @@ in
 
     clipboard = "unnamedplus"; # yank to and from system clipboard
 
-    colorcolumn = "80"; # show color column at 80 characters
-
     # show special characters
     list = true;
     listchars = "tab:▸▸,trail:·"; # show tabs and trailing whitespace
