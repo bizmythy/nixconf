@@ -51,9 +51,16 @@
     ];
   };
 
-  networking.firewall.allowedTCPPorts = [
-    41707 # pi remote-control
-  ];
+  # ghostty-web provides a real shell without login authentication, so this
+  # port must only be reachable from the trusted LAN.
+  services.herdr-web.enable = true;
+
+  networking.firewall = {
+    enable = lib.mkForce true;
+    allowedTCPPorts = [
+      41707 # pi remote-control
+    ];
+  };
 
   # Temporarily keep Tailscale from starting during remote activation.
   systemd.services.tailscaled.wantedBy = lib.mkForce [ ];
