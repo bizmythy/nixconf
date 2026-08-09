@@ -4,6 +4,7 @@ local defaults = generated.defaults
 local commands = generated.commands
 local mod = "SUPER"
 local launcher_timers = {}
+local launcher_armed = false
 
 ---@enum NavAction
 local NavAction = {
@@ -29,8 +30,20 @@ local kitty_nav_keys = {
 	[NavAction.NewTab] = "t",
 }
 
+-- Any action while Super is held turns the launcher gesture into a chord.
+local function bind(keys, dispatcher, opts)
+	return hl.bind(keys, function()
+		launcher_armed = false
+		if type(dispatcher) == "function" then
+			dispatcher()
+		else
+			hl.dispatch(dispatcher)
+		end
+	end, opts)
+end
+
 local function bind_exec(keys, command, opts)
-	hl.bind(keys, hl.dsp.exec_cmd(command), opts)
+	bind(keys, hl.dsp.exec_cmd(command), opts)
 end
 
 local function workspace_is_empty(workspace)
@@ -108,7 +121,7 @@ local function send_active_keypress(key)
 end
 
 local function navigate(keys, action)
-	return hl.bind(keys, function()
+	return bind(keys, function()
 		local kitty_key = kitty_nav_keys[action]
 		if active_window_class() == "kitty" and kitty_key ~= nil then
 			send_active_keypress(kitty_key)
@@ -134,13 +147,28 @@ bind_exec(mod .. " + EQUAL", defaults.calculator)
 
 bind_exec(mod .. " + Z", defaults.editor)
 bind_exec(mod .. " + D", defaults.editor .. " " .. defaults.home .. "/dirac/buildos-web")
-hl.bind(mod .. " + SHIFT + D", function()
+bind(mod .. " + SHIFT + D", function()
 	run_workspace_launcher(generated.launchers.launchwork)
 end)
 bind_exec(mod .. " + N", defaults.editor .. " " .. defaults.home .. "/nixconf")
 navigate(mod .. " + T", NavAction.NewTab)
 
-bind_exec(mod .. " + SUPER_L", "fuzzel")
+hl.bind(mod .. " + SUPER_L", function()
+	launcher_armed = true
+end, { non_consuming = true })
+hl.bind(mod .. " + SUPER_L", function()
+	if launcher_armed then
+		hl.dispatch(hl.dsp.exec_cmd("fuzzel"))
+	end
+	launcher_armed = false
+end, { release = true })
+-- Also disarm for keys that do not have their own binding.
+hl.define_submap("launcher-guard", function()
+	hl.bind("catchall", function()
+		launcher_armed = false
+	end, { ignore_mods = true, non_consuming = true, submap_universal = true })
+end)
+
 hl.bind("mouse:273", open_launcher_on_empty_desktop, { click = true, non_consuming = true })
 bind_exec(mod .. " + V", "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy")
 bind_exec(mod .. " + SLASH", "bemoji -t")
@@ -150,9 +178,9 @@ bind_exec(mod .. " + PERIOD", "playerctl next")
 bind_exec(mod .. " + SPACE", "playerctl play-pause")
 
 navigate(mod .. " + W", NavAction.Close)
-hl.bind(mod .. " + SHIFT + W", hl.dsp.window.close())
-hl.bind(mod .. " + F", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mod .. " + SHIFT + M", hl.dsp.window.fullscreen())
+bind(mod .. " + SHIFT + W", hl.dsp.window.close())
+bind(mod .. " + F", hl.dsp.window.float({ action = "toggle" }))
+bind(mod .. " + SHIFT + M", hl.dsp.window.fullscreen())
 bind_exec(mod .. " + M", commands.monitorProfileSelector)
 
 navigate(mod .. " + left", NavAction.Left)
@@ -164,41 +192,41 @@ navigate(mod .. " + K", NavAction.Up)
 navigate(mod .. " + down", NavAction.Down)
 navigate(mod .. " + J", NavAction.Down)
 
-hl.bind(mod .. " + ALT + left", hl.dsp.window.resize({ x = -80, y = 0, relative = true }))
-hl.bind(mod .. " + ALT + H", hl.dsp.window.resize({ x = -80, y = 0, relative = true }))
-hl.bind(mod .. " + ALT + right", hl.dsp.window.resize({ x = 80, y = 0, relative = true }))
-hl.bind(mod .. " + ALT + L", hl.dsp.window.resize({ x = 80, y = 0, relative = true }))
-hl.bind(mod .. " + ALT + up", hl.dsp.window.resize({ x = 0, y = -60, relative = true }))
-hl.bind(mod .. " + ALT + K", hl.dsp.window.resize({ x = 0, y = -60, relative = true }))
-hl.bind(mod .. " + ALT + down", hl.dsp.window.resize({ x = 0, y = 60, relative = true }))
-hl.bind(mod .. " + ALT + J", hl.dsp.window.resize({ x = 0, y = 60, relative = true }))
+bind(mod .. " + ALT + left", hl.dsp.window.resize({ x = -80, y = 0, relative = true }))
+bind(mod .. " + ALT + H", hl.dsp.window.resize({ x = -80, y = 0, relative = true }))
+bind(mod .. " + ALT + right", hl.dsp.window.resize({ x = 80, y = 0, relative = true }))
+bind(mod .. " + ALT + L", hl.dsp.window.resize({ x = 80, y = 0, relative = true }))
+bind(mod .. " + ALT + up", hl.dsp.window.resize({ x = 0, y = -60, relative = true }))
+bind(mod .. " + ALT + K", hl.dsp.window.resize({ x = 0, y = -60, relative = true }))
+bind(mod .. " + ALT + down", hl.dsp.window.resize({ x = 0, y = 60, relative = true }))
+bind(mod .. " + ALT + J", hl.dsp.window.resize({ x = 0, y = 60, relative = true }))
 
-hl.bind(mod .. " + Tab", function()
+bind(mod .. " + Tab", function()
 	hl.dispatch(hl.dsp.window.cycle_next())
 	hl.dispatch(hl.dsp.window.bring_to_top())
 end)
 
 for workspace = 1, 10 do
 	local key = tostring(workspace % 10)
-	hl.bind(mod .. " + " .. key, hl.dsp.focus({ workspace = workspace, on_current_monitor = true }))
-	hl.bind(mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = workspace }))
+	bind(mod .. " + " .. key, hl.dsp.focus({ workspace = workspace, on_current_monitor = true }))
+	bind(mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = workspace }))
 end
 
-hl.bind(mod .. " + CONTROL + H", hl.dsp.focus({ workspace = "e-1" }))
-hl.bind(mod .. " + CONTROL + L", hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mod .. " + CONTROL + left", hl.dsp.focus({ workspace = "e-1" }))
-hl.bind(mod .. " + CONTROL + right", hl.dsp.focus({ workspace = "e+1" }))
+bind(mod .. " + CONTROL + H", hl.dsp.focus({ workspace = "e-1" }))
+bind(mod .. " + CONTROL + L", hl.dsp.focus({ workspace = "e+1" }))
+bind(mod .. " + CONTROL + left", hl.dsp.focus({ workspace = "e-1" }))
+bind(mod .. " + CONTROL + right", hl.dsp.focus({ workspace = "e+1" }))
 
-hl.bind(mod .. " + SHIFT + H", hl.dsp.window.move({ workspace = "e-1" }))
-hl.bind(mod .. " + SHIFT + L", hl.dsp.window.move({ workspace = "e+1" }))
-hl.bind(mod .. " + SHIFT + left", hl.dsp.window.move({ workspace = "e-1" }))
-hl.bind(mod .. " + SHIFT + right", hl.dsp.window.move({ workspace = "e+1" }))
+bind(mod .. " + SHIFT + H", hl.dsp.window.move({ workspace = "e-1" }))
+bind(mod .. " + SHIFT + L", hl.dsp.window.move({ workspace = "e+1" }))
+bind(mod .. " + SHIFT + left", hl.dsp.window.move({ workspace = "e-1" }))
+bind(mod .. " + SHIFT + right", hl.dsp.window.move({ workspace = "e+1" }))
 
-hl.bind(mod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
+bind(mod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+bind(mod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
-hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
-hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
+bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 bind_exec("XF86AudioMute", "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")
 bind_exec("XF86AudioRaiseVolume", "wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%+", { repeating = true })
