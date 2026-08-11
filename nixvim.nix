@@ -159,11 +159,30 @@ in
       },
     })
 
-    -- Wrap Markdown at word boundaries instead of mid-word
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = "markdown",
+    -- Wrap Markdown at whitespace instead of punctuation within words
+    local default_breakat = vim.o.breakat
+    local markdown_wrap_group = vim.api.nvim_create_augroup("MarkdownWrap", { clear = true })
+
+    vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
+      group = markdown_wrap_group,
+      pattern = "*",
       callback = function()
-        vim.opt_local.linebreak = true
+        if vim.bo.filetype == "markdown" then
+          vim.opt_local.linebreak = true
+          vim.o.breakat = " \t"
+        else
+          vim.o.breakat = default_breakat
+        end
+      end,
+    })
+
+    vim.api.nvim_create_autocmd("BufLeave", {
+      group = markdown_wrap_group,
+      pattern = "*",
+      callback = function()
+        if vim.bo.filetype == "markdown" then
+          vim.o.breakat = default_breakat
+        end
       end,
     })
 
