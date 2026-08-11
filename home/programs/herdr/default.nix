@@ -314,7 +314,7 @@ let
         # herdr = show in-app toasts
         # terminal = ask the outer terminal to show a desktop notification
         # system = ask the OS notification service directly
-        # delivery = "off";
+        delivery = "herdr";
         # delay_seconds = 1;
 
         herdr = {
