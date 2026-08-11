@@ -159,6 +159,14 @@ in
       },
     })
 
+    -- Wrap Markdown at word boundaries instead of mid-word
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "markdown",
+      callback = function()
+        vim.opt_local.linebreak = true
+      end,
+    })
+
     -- Baleia Setup
     vim.g.baleia = require("baleia").setup({ })
 
