@@ -161,11 +161,6 @@ in
   programs = {
     steam = lib.mkIf (vars.isPersonal config) {
       enable = true;
-      package = pkgs.steam.override {
-        # Keep Steam's Chromium UI off Xwayland. This is still experimental
-        # upstream, so remove this override if Wayland-specific issues occur.
-        extraArgs = "--enable-features=UseOzonePlatform --ozone-platform=wayland";
-      };
       extest.enable = true;
       extraPackages = with pkgs; [
         hidapi
