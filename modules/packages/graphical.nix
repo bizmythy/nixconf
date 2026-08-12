@@ -119,7 +119,7 @@ in
           [
             qbittorrent
 
-            # logseq # markdown note-taking
+            logseq # markdown note-taking
 
             # jellyfin-mpv-shim
 
