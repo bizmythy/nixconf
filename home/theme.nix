@@ -1,6 +1,8 @@
 {
   config,
+  lib,
   pkgs,
+  platform,
   ...
 }:
 
@@ -13,16 +15,12 @@ let
 in
 {
   fonts.fontconfig.enable = true;
-
-  # Theming
+}
+// lib.optionalAttrs platform.isLinux {
   catppuccin = {
     enable = true;
     autoEnable = true;
     flavor = "mocha";
-    # kvantum = {
-    #   enable = true;
-    #   apply = true;
-    # };
     mako.enable = false;
   };
 
@@ -45,16 +43,10 @@ in
     platformTheme.name = "kvantum";
     style.name = "kvantum";
 
-    # fixes for kvantum and icon theme to be applied to kde apps
-    kde.settings = {
-      "kdeglobals" = {
-        "UiSettings" = {
-          "ColorScheme" = "Kvantum";
-        };
-        "Icons" = {
-          "Theme" = "Papirus-Dark";
-        };
-      };
+    # Fixes for Kvantum and the icon theme in KDE applications.
+    kde.settings.kdeglobals = {
+      UiSettings.ColorScheme = "Kvantum";
+      Icons.Theme = "Papirus-Dark";
     };
   };
 }

@@ -1,187 +1,38 @@
 {
   pkgs,
-  inputs,
-  vars,
   ...
 }:
 
 {
-  # Enable zsh and make default
+  # Register zsh system-wide and make it the default login shell.
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
-  environment.systemPackages =
-    let
-      # Nix `azure-cli` uses a Python without `pip`, so `az extension add` fails at runtime with
-      # "No module named pip". Pre-vendor extensions here instead.
-      az-cli = pkgs.azure-cli.withExtensions [
-        pkgs.azure-cli.extensions."azure-firewall"
-      ];
+  # Keep privileged machine-administration tools in the system profile so they
+  # remain available through sudo's restricted PATH. User tools live in Home
+  # Manager under home/packages/terminal.nix.
+  environment.systemPackages = with pkgs; [
+    hwinfo
+    lshw
+    traceroute
+    atop
+    iftop
+    iotop
+    sysdig
+    perf
+    exfatprogs
+    linuxConsoleTools
+    caligula
+  ];
 
-      nixSourcced = with pkgs; [
-        nushell
-        # coreutils rust rewrite, testing it out
-        uutils-coreutils-noprefix
-        # terminal tools
-        wget
-        git
-        git-lfs
-        ripgrep
-        fd
-        bat
-        eza
-        unzip # unzip .zip
-        zip # manage .zip
-        _7zz # cli 7zip
-        btop
-        htop
-        hwinfo
-        lshw
-        gh
-        gitea
-        lazygit
-        lazydocker
-        cht-sh
-        nerdfetch
-        fastfetch
-        ffmpeg
-        imagemagick # image conversion
-        ghostscript # pdf reading for image conversion
-        zstd
-        nmap
-        traceroute
-        rclone
-        lsof
-        jc
-        dig
-        jq
-        yq
-        cowsay
-        tetris
-        xh # curl replacement, http requests
-        dust # disk usage, more intuative du
-        dua # interactive disk usage
-        hyperfine # benchmarking tool
-        fselect # SQL queries for files
-        ripgrep-all # ripgrep lots of file types
-        tokei # count ammount of code by language
-        wiki-tui # wikipedia search
-        just # modern make replacement
-        mask # self-documenting command runner
-        mprocs # tui for running multiple processes
-        presenterm # terminal presentation
-        repgrep # find replace with confirmation
-        serie # git log with tree
-        rainfrog # postgres (and other db) tui viewer
-        netscanner # scan for wifi and devices
-        atac # postman from tui
-        tdx # markdown todo manager
-        linear-cli # Linear issue tracker CLI
-        s-tui # cpu stress test/monitor
-        secretspec # declarative secrets management
-        atop # another top tool, shows lots of data
-        iftop # show network interface usage
-        iotop # show disk bandwidth usage
-        sysdig # container process inspection
-        perf # performance inspection
-        wavemon # wifi monitoring
-        nvtop-appimage # gpu monitoring
-        clinfo # check opencl devices
-        rust-stakeholder # for very productive and serious work
-        file # determine type of FILEs
-        exfatprogs # exfat support
-        linuxConsoleTools # includes `jstest`, a tool for testing joystick inputs
-        caligula # disk imaging/flashing
-        pastel # command-line tool to generate, analyze, convert and manipulate colors
-        termshot # take screenshots of colored terminal output
-        aha # get html of terminal output
-        asciinema # lightweight terminal session recordings
-        asciiquarium-transparent # silly fish swimming around
-        aria2 # download files fast and in parallel
-        yt-dlp # dowload internet video
-        xxd # hex/binary viewing
-        archivemount # mounting tar archives
-        presenterm # terminal presentations
-        screen # run commands in background
-        glow # view markdown in terminal
-        herdr # terminal multiplexer with agent integrations
-        lg-herdr-watch # lazygit window synced to focused Herdr workspace
-        (aspellWithDicts (ps: with ps; [ en ])) # spell check text files
-
-        graphite-cli
-        az-cli
-
-        # document tools
-        typst # latex-killer, create documents in expressive language
-        mermaid-cli # generate diagrams and flowcharts from Mermaid markdown
-        d2 # generate diagrams from declarative text files
-
-        # docker tools
-        docker-buildx
-        dive
-        traefik # reverse proxy and load balancer
-
-        # go tools
-        go
-        gopls
-        golangci-lint
-        golangci-lint-langserver
-
-        # python tools
-        pyright
-        uv
-        ruff
-        ty
-
-        # language tools
-        markdown-oxide
-        shellcheck
-        protobuf-language-server
-        buf
-        zig
-        odin
-        ols # odin language server
-        rustc
-        cargo
-        rustfmt
-        nodejs
-        bun
-
-        # nix tools
-        nix-output-monitor
-        nixfmt
-        nurl
-        manix
-        nix-search-cli
-        nil
-        nixd
-        cachix
-
-        # ssm-session-manager-plugin
-      ];
-
-      aiTools =
-        # claude-code comes from the overlay (overlays.nix), which bumps it
-        # ahead of the version pinned in the llm-agents.nix input.
-        [ pkgs.claude-code ]
-        ++ (with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
-          codex
-          pi
-          # gemini-cli
-        ]);
-    in
-    (nixSourcced ++ aiTools);
-
-  # https://github.com/viperML/nh
+  # Preserve root-level scheduled cleanup without installing nh into the system
+  # profile; Home Manager owns the interactive command and default flake.
   programs.nh = {
-    enable = true;
     package = pkgs.nh-cachix;
     clean.enable = true;
     clean.extraArgs = "--keep-since 10d";
-    flake = vars.flakePath;
   };
 
-  # Set up docker
   virtualisation = {
     docker = {
       enable = true;
@@ -190,9 +41,7 @@
         setSocketVariable = true;
       };
 
-      daemon.settings = {
-        insecure-registries = [ "192.168.1.244:5000" ];
-      };
+      daemon.settings.insecure-registries = [ "192.168.1.244:5000" ];
     };
     podman = {
       enable = true;

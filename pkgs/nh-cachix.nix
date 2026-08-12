@@ -11,7 +11,7 @@ writeShellApplication {
   name = "nh";
   excludeShellChecks = [ "SC2016" ];
   text = ''
-    if [[ "''${1-}" != "os" ]]; then
+    if [[ "''${1-}" != "os" && "''${1-}" != "darwin" ]]; then
       exec ${lib.getExe nh} "$@"
     fi
 
@@ -60,7 +60,7 @@ writeShellApplication {
   '';
 
   meta = {
-    description = "nh with automatic Cachix uploads for NixOS commands";
+    description = "nh with automatic Cachix uploads for NixOS and nix-darwin commands";
     inherit (nh.meta) homepage license;
     mainProgram = "nh";
   };

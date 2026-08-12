@@ -66,7 +66,7 @@ in
         meta = with super.lib; {
           description = "Restart lazygit when the focused Herdr workspace changes";
           license = licenses.mit;
-          platforms = platforms.linux;
+          platforms = platforms.unix;
           mainProgram = "lg-herdr-watch";
         };
       }
@@ -75,15 +75,23 @@ in
         ln -s "${self.herdr-keybinds}/bin/lg-herdr-watch" "$out/bin/lg-herdr-watch"
       '';
   t3code = inputs.t3code.packages.${super.stdenv.hostPlatform.system}.default;
-  # Upstream currently hard-codes macOS pbcopy/pbpaste; use Wayland wl-clipboard.
-  tdx = inputs.tdx.packages.${super.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-    patches = (oldAttrs.patches or [ ]) ++ [ ./pkgs/tdx-clipboard-linux.patch ];
-    nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ super.makeWrapper ];
-    postInstall = (oldAttrs.postInstall or "") + ''
-      wrapProgram $out/bin/tdx \
-        --prefix PATH : ${super.lib.makeBinPath [ super.wl-clipboard ]}
-    '';
-  });
+  tdx =
+    let
+      package = inputs.tdx.packages.${super.stdenv.hostPlatform.system}.default;
+    in
+    if super.stdenv.isLinux then
+      # Upstream uses macOS pbcopy/pbpaste; replace it with Wayland clipboard
+      # commands only on Linux.
+      package.overrideAttrs (oldAttrs: {
+        patches = (oldAttrs.patches or [ ]) ++ [ ./pkgs/tdx-clipboard-linux.patch ];
+        nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ super.makeWrapper ];
+        postInstall = (oldAttrs.postInstall or "") + ''
+          wrapProgram $out/bin/tdx \
+            --prefix PATH : ${super.lib.makeBinPath [ super.wl-clipboard ]}
+        '';
+      })
+    else
+      package;
   tuicr = inputs.tuicr.packages.${super.stdenv.hostPlatform.system}.default;
   xhisper-local = super.callPackage ./pkgs/xhisper-local.nix {
     whisperCpp = super.whisper-cpp;
@@ -108,6 +116,7 @@ in
     in
     super.appimageTools.wrapType2 {
       inherit pname version src;
+      meta.platforms = [ "x86_64-linux" ];
     };
 
   # this package takes an *extremely* long time to check through all the files

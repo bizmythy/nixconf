@@ -31,7 +31,7 @@ pkgs.buildGo126Module {
   meta = with lib; {
     description = "Control Herdr extensions from the command line";
     license = licenses.mit;
-    platforms = platforms.linux;
+    platforms = platforms.unix;
     mainProgram = "herdrctl";
   };
 }

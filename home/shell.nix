@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   vars,
   ...
@@ -16,27 +17,26 @@ let
   };
   myShellAliases = {
     cdn = "cd ${vars.flakePath}";
-
-    zed = "zeditor";
     e = "${vars.defaults.editor} .";
     cx = "codex";
 
     ld = "lazydocker";
     hmclean = "fd '${vars.hmBackupFileExtension}' ~ -u -x rm";
     dcd = "docker compose down";
-    # "??" = "gh copilot suggest -t shell"; # don't use copilot anymore
     cg = "cargo";
+  }
+  // lib.optionalAttrs pkgs.stdenv.isLinux {
+    zed = "zeditor";
 
-    # dirac
+    # Dirac and its service helpers are not used by the macOS profile.
     cdb = "cd ${vars.home}/dirac/buildos-web";
-
     msr = "zsh -c 'mask services reset && lazydocker'";
     msu = "zsh -c 'mask services build && mask services up && lazydocker'";
     mtix = "mask start-ticket";
     msb = "mask services build";
     gen = "mask generate";
     savelogs = "mask services savelogs";
-    diraclocalserver = "ssh diraclocalserver -t 'nu'"; # connect and use nushell
+    diraclocalserver = "ssh diraclocalserver -t 'nu'";
   };
 
 in
@@ -142,7 +142,7 @@ in
 
       config = {
         whitelist = {
-          prefix = [
+          prefix = lib.optionals pkgs.stdenv.isLinux [
             "~/buildos-web"
             "~/dirac"
           ];

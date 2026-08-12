@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  platform,
   ...
 }:
 
@@ -9,7 +10,11 @@ let
 in
 {
   xdg.configFile."glow/glow.yml".source = yaml.generate "glow.yml" {
-    style = "${config.catppuccin.sources.glamour}/catppuccin-${config.catppuccin.flavor}.json";
+    style =
+      if platform.isLinux then
+        "${config.catppuccin.sources.glamour}/catppuccin-${config.catppuccin.flavor}.json"
+      else
+        "dark";
     width = 100;
   };
 }

@@ -1,76 +1,68 @@
 {
-  description = "Nixos config flake";
+  description = "NixOS, nix-darwin, and Home Manager configuration";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
 
-    # set up config files and user settings
     home-manager = {
       url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # secrets management through 1Password
     opnix.url = "github:brizzbuzz/opnix";
 
-    # catppuccin theming for all applications
     catppuccin.url = "github:catppuccin/nix";
-
-    # Hyprland packages from upstream flake
     hyprland.url = "github:hyprwm/Hyprland";
-
-    # flakpak installation management
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
 
-    # latest zen browser, patched over prebuilt firefox
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # precompiled AI tools
     llm-agents.url = "github:numtide/llm-agents.nix";
 
-    # semantic git merge driver
     weave = {
       url = "github:bizmythy/weave/fix/rust-multiline-use-merge";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # my t3code fork with a nix build output flake
     t3code = {
       url = "github:bizmythy/t3code";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # markdown todo manager
     tdx = {
       url = "github:niklas-heer/tdx";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # code review TUI fork with large PR diff fixes
     tuicr = {
       url = "github:bizmythy/tuicr/bizmythy-tweaks";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # database of nixpkgs for searching
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # neovim configured in nix
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
     };
 
-    # work configuration modules
+    # Work-only input. Nothing in darwinConfigurations.macos references it, so
+    # lazy flake input evaluation does not require Dirac SSH access on macOS.
     dirac = {
       type = "git";
       url = "ssh://git@dirac-github/diracq/buildos-web.git";
@@ -79,9 +71,11 @@
       inputs.llm-agents.follows = "llm-agents";
     };
 
-    systems.url = "github:nix-systems/x86_64-linux";
+    systems = {
+      url = "path:./flake.systems.nix";
+      flake = false;
+    };
 
-    # Nushell formatter and treefmt integration
     topiary-nushell = {
       url = "github:bizmythy/topiary-nushell-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -96,7 +90,6 @@
       lib = nixpkgs.lib;
 
       nixpkgsSettings = {
-        # Allow unfree packages and Logseq's Electron runtime
         config.allowUnfree = true;
         config.permittedInsecurePackages = [
           "electron-39.8.10"
@@ -106,7 +99,6 @@
         ];
       };
 
-      # Small tool to iterate over each systems
       eachSystem =
         f:
         lib.genAttrs (import inputs.systems) (
@@ -121,7 +113,6 @@
           )
         );
 
-      # Eval the treefmt modules from ./treefmt.nix
       treefmtEval = eachSystem (
         pkgs:
         inputs.treefmt-nix.lib.evalModule pkgs {
@@ -134,15 +125,25 @@
 
       buildConfig = builtins.fromJSON (builtins.readFile ./build_config.json);
 
-      vars = rec {
-        user = "drew";
-        home = "/home/${user}";
-        flakePath = "${home}/nixconf";
-        hmBackupFileExtension = "hmbackup";
-        lockScreenPic = builtins.fetchurl {
-          url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/lockscreen.png";
-          sha256 = "1w3biszx1iy9qavr2cvl4gxrlf3lbrjpp50bp8wbi3rdpzjgv4kl";
+      mkVars =
+        {
+          home,
+          defaults,
+        }:
+        rec {
+          user = "drew";
+          inherit home defaults;
+          flakePath = "${home}/nixconf";
+          hmBackupFileExtension = "hmbackup";
+          lockScreenPic = builtins.fetchurl {
+            url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/lockscreen.png";
+            sha256 = "1w3biszx1iy9qavr2cvl4gxrlf3lbrjpp50bp8wbi3rdpzjgv4kl";
+          };
+          isPersonal = config: !(lib.strings.hasInfix "dirac" config.networking.hostName);
         };
+
+      linuxVars = mkVars {
+        home = "/home/drew";
         defaults = {
           tty = "ghostty";
           fileManager = "dolphin";
@@ -152,33 +153,67 @@
           termEditor = "nvim";
           shell = "nu";
         };
-
-        # function that will give whether the config refers to a personal machine
-        isPersonal = config: !(lib.strings.hasInfix "dirac" config.networking.hostName);
       };
 
-      home = {
-        home-manager = {
-          extraSpecialArgs = { inherit inputs vars; };
-          backupFileExtension = vars.hmBackupFileExtension;
-          users."${vars.user}" = {
-            nixpkgs = nixpkgsSettings;
-            imports = [
-              inputs.opnix.homeManagerModules.default
-              inputs.catppuccin.homeModules.catppuccin
-              inputs.nix-index-database.homeModules.default
-              inputs.nixvim.homeModules.nixvim
-              ./home
-            ];
+      darwinVars = mkVars {
+        home = "/Users/drew";
+        defaults = {
+          tty = "Terminal";
+          fileManager = "open";
+          browser = "open";
+          calculator = "open -a Calculator";
+          editor = "nvim";
+          termEditor = "nvim";
+          shell = "nu";
+        };
+      };
 
+      mkHomeManager =
+        {
+          isLinux,
+          vars,
+        }:
+        {
+          home-manager = {
+            extraSpecialArgs = {
+              inherit inputs vars;
+              platform = {
+                inherit isLinux;
+                isDarwin = !isLinux;
+              };
+            };
+            backupFileExtension = vars.hmBackupFileExtension;
+            users.${vars.user} = {
+              nixpkgs = nixpkgsSettings;
+              imports = [
+                inputs.nix-index-database.homeModules.default
+                inputs.nixvim.homeModules.nixvim
+                ./home
+              ]
+              ++ lib.optionals isLinux [
+                inputs.catppuccin.homeModules.catppuccin
+                inputs.opnix.homeManagerModules.default
+              ];
+            };
           };
         };
+
+      linuxHome = mkHomeManager {
+        isLinux = true;
+        vars = linuxVars;
+      };
+      darwinHome = mkHomeManager {
+        isLinux = false;
+        vars = darwinVars;
       };
 
       getPcConfig =
         hostname:
         lib.nixosSystem {
-          specialArgs = { inherit inputs vars; };
+          specialArgs = {
+            inherit inputs;
+            vars = linuxVars;
+          };
           modules = [
             {
               nixpkgs = nixpkgsSettings // {
@@ -190,19 +225,15 @@
             inputs.catppuccin.nixosModules.catppuccin
             inputs.nix-flatpak.nixosModules.nix-flatpak
           ]
-          # conditionally include dirac module (set vars.enableDirac = false when bootstrapping)
           ++ lib.optionals buildConfig.flags.enableDirac [
             inputs.dirac.nixosModules.linux
             ./dirac.nix
           ]
           ++ [
-            # my nixos configuration
             ./modules/base.nix
             ./hosts/${hostname}/configuration.nix
-
-            # home-manager module and my home-manager config
             inputs.home-manager.nixosModules.home-manager
-            home
+            linuxHome
           ];
         };
 
@@ -210,8 +241,11 @@
 
       getServerConfig =
         hostname:
-        nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs vars; };
+        lib.nixosSystem {
+          specialArgs = {
+            inherit inputs;
+            vars = linuxVars;
+          };
           modules = [
             {
               nixpkgs = nixpkgsSettings // {
@@ -225,28 +259,59 @@
           ];
         };
 
-      serverConfigs = lib.genAttrs [
-        "nixos-0"
-      ] getServerConfig;
-
+      serverConfigs = lib.genAttrs [ "nixos-0" ] getServerConfig;
       configs = pcConfigs // serverConfigs;
+
+      darwinConfig = inputs.nix-darwin.lib.darwinSystem {
+        specialArgs = {
+          inherit inputs;
+          vars = darwinVars;
+        };
+        modules = [
+          {
+            nixpkgs = nixpkgsSettings // {
+              hostPlatform = "aarch64-darwin";
+            };
+          }
+          ./hosts/macos/configuration.nix
+          inputs.home-manager.darwinModules.home-manager
+          darwinHome
+        ];
+      };
     in
     {
       nixosConfigurations = configs;
+      darwinConfigurations.macos = darwinConfig;
 
-      packages = eachSystem (pkgs: {
-        nvim = inputs.nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim (
-          import ./nixvim.nix { inherit pkgs; }
-        );
-        topiary-nushell = inputs.topiary-nushell.packages.${pkgs.stdenv.hostPlatform.system}.default;
-        xhisper-local = pkgs.xhisper-local;
-        linear-cli = pkgs.linear-cli;
-      });
+      packages = eachSystem (
+        pkgs:
+        {
+          nvim = inputs.nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim (
+            import ./nixvim.nix { inherit pkgs; }
+          );
+          topiary-nushell = inputs.topiary-nushell.packages.${pkgs.stdenv.hostPlatform.system}.default;
+          linear-cli = pkgs.linear-cli;
+        }
+        // lib.optionalAttrs pkgs.stdenv.isLinux {
+          xhisper-local = pkgs.xhisper-local;
+        }
+      );
 
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
 
-      checks = eachSystem (pkgs: {
-        formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
-      });
+      checks = eachSystem (
+        pkgs:
+        {
+          formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
+          linear-cli = pkgs.runCommand "linear-cli-check" { nativeBuildInputs = [ pkgs.linear-cli ]; } ''
+            linear --version > "$out"
+          '';
+        }
+        // lib.optionalAttrs pkgs.stdenv.isDarwin {
+          darwin-system = darwinConfig.config.system.build.toplevel;
+          home-manager = darwinConfig.config.home-manager.users.${darwinVars.user}.home.activationPackage;
+          herdr-keybinds = pkgs.herdr-keybinds;
+        }
+      );
     };
 }

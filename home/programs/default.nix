@@ -1,4 +1,6 @@
 {
+  lib,
+  platform,
   ...
 }:
 {
@@ -7,9 +9,6 @@
     ./archive
     ./bat.nix
     ./btop.nix
-    ./chromium.nix
-    ./feh.nix
-    ./firefox.nix
     ./gh.nix
     ./glow.nix
     ./helix.nix
@@ -18,11 +17,17 @@
     ./lazydocker.nix
     ./lazygit.nix
     ./nvim.nix
+    ./tuicr
+    # keep-sorted end
+  ]
+  ++ lib.optionals platform.isLinux [
+    # Desktop applications and opnix secrets depend on NixOS/Wayland state.
+    ./chromium.nix
+    ./feh.nix
+    ./firefox.nix
     ./op.nix
     ./spotify-player.nix
-    ./tuicr
     ./vesktop.nix
-    # keep-sorted end
   ];
 
   programs = {

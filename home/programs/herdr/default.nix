@@ -408,7 +408,10 @@ let
     version = "0.1.0";
     min_herdr_version = "0.7.0";
     description = "Directional pane, tab, and workspace navigation for Herdr.";
-    platforms = [ "linux" ];
+    platforms = [
+      "linux"
+      "macos"
+    ];
 
     actions = keybindPluginActions;
 
@@ -477,7 +480,9 @@ in
   home.activation.herdrPluginRegistry =
     lib.hm.dag.entryBetween [ "linkGeneration" ] [ "installPackages" ]
       ''
-        run install -Dm0644 ${lib.escapeShellArg pluginRegistryFile} "$HOME/.config/herdr/plugins.json"
+        run mkdir -p "$HOME/.config/herdr"
+        run cp ${lib.escapeShellArg pluginRegistryFile} "$HOME/.config/herdr/plugins.json"
+        run chmod 0644 "$HOME/.config/herdr/plugins.json"
 
         # Notify a running Herdr server, but do not fail activation when it is not
         # running (its stale socket makes the CLI return connection refused).

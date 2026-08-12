@@ -1,4 +1,6 @@
 {
+  lib,
+  platform,
   vars,
   ...
 }:
@@ -6,15 +8,18 @@
 {
   imports = [
     # keep-sorted start
+    ./packages/terminal.nix
     ./programs
     ./scripts
     ./shell.nix
     ./ssh-git.nix
     ./theme.nix
+    # keep-sorted end
+  ]
+  ++ lib.optionals platform.isLinux [
     ./tty/tty.nix
     ./wm
     ./xdg-mime.nix
-    # keep-sorted end
   ];
 
   home =

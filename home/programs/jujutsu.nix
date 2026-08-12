@@ -4,7 +4,7 @@
   ...
 }:
 let
-  vcs = import ../vcs-settings.nix { inherit vars; };
+  vcs = import ../vcs-settings.nix { inherit pkgs vars; };
   inherit (vcs.identities) personal dirac;
   jjIdentity = identity: {
     inherit (identity) name email;

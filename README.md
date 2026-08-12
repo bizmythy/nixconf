@@ -14,6 +14,14 @@ It is themed heavily with [Catppuccin](https://catppuccin.com/) Mocha (mauve acc
 Each computer hostname has a folder in `hosts` and an entry in the `flake.nix` file. These can then import various host-specific modules.
 For now, all computers also import the `home/home.nix` module to use for home manager.
 
+## macOS
+
+The Apple-silicon configuration is `darwinConfigurations.macos`. It expects the official Nix installer, the native 1Password app, and this repository at `/Users/drew/nixconf`.
+
+```sh
+nix run github:nix-darwin/nix-darwin -- switch --flake .#macos
+```
+
 ## Other Notes
 
 This config uses [catppuccin-nix](https://github.com/catppuccin/nix) to automatically theme most applications.

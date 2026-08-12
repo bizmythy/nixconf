@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  platform,
   ...
 }:
 let
@@ -24,14 +25,14 @@ in
       notARepository = "quit";
 
       os = {
-        editPreset = "zed";
+        editPreset = if platform.isDarwin then "nvim" else "zed";
 
-        # https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#custom-command-for-copying-to-and-pasting-from-clipboard
+        # Use a newline-free pipeline supported by both GNU and BSD base64.
         copyToClipboardCmd = ''
           if [[ "$TERM" =~ ^(screen|tmux) ]]; then
-            printf "\033Ptmux;\033\033]52;c;$(printf {{text}} | base64 -w 0)\a\033\\" > /dev/tty
+            printf "\033Ptmux;\033\033]52;c;$(printf {{text}} | base64 | tr -d '\n')\a\033\\" > /dev/tty
           else
-            printf "\033]52;c;$(printf {{text}} | base64 -w 0)\a" > /dev/tty
+            printf "\033]52;c;$(printf {{text}} | base64 | tr -d '\n')\a" > /dev/tty
           fi
         '';
       };
@@ -76,16 +77,17 @@ in
     };
   };
 
-  home.activation.validateLazygitConfig = mkLazyAppConfigValidation {
+  home.activation.validateLazygitConfig = lib.mkIf platform.isLinux (mkLazyAppConfigValidation {
     arguments = [ "__home_manager_validate_config__" ];
     displayName = "Lazygit";
     expectedFailure = "Invalid git arg value: '__home_manager_validate_config__'";
     package = config.programs.lazygit.package;
     program = "lazygit";
     settings = config.programs.lazygit.settings;
-  };
-
-  catppuccin.lazygit.enable = true;
+  });
 
   programs.gitui.enable = false;
+}
+// lib.optionalAttrs platform.isLinux {
+  catppuccin.lazygit.enable = true;
 }

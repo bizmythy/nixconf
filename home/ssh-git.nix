@@ -12,7 +12,7 @@ let
       text = value;
     };
 
-  vcs = import ./vcs-settings.nix { inherit vars; };
+  vcs = import ./vcs-settings.nix { inherit pkgs vars; };
   publicKeys = {
     personalGitHub = vcs.identities.personal.sshPublicKey;
     diracGitHub = vcs.identities.dirac.sshPublicKey;
@@ -86,46 +86,44 @@ in
         User git
         IdentityFile ${publicKeyFiles.diracGitHub}
         IdentitiesOnly yes
-        IdentityAgent ${onePassPath}
+        IdentityAgent "${onePassPath}"
 
     Host diraclocalserver
         HostName 192.168.1.244
         User diraclocalserver
         IdentityFile ${publicKeyFiles.diraclocalserver}
-        IdentityAgent ${onePassPath}
+        IdentityAgent "${onePassPath}"
 
     Host hetzner
         HostName 178.156.186.220
         Port 52681
         User drew
         IdentityFile ${publicKeyFiles.hetzner}
-        IdentityAgent ${onePassPath}
+        IdentityAgent "${onePassPath}"
 
     Host igneous
         HostName 192.168.1.123
         User drew
         IdentityFile ${publicKeyFiles.hetzner}
         IdentitiesOnly yes
-        IdentityAgent ${onePassPath}
+        IdentityAgent "${onePassPath}"
 
     Host *
-        IdentityAgent ${onePassPath}
+        IdentityAgent "${onePassPath}"
   '';
 
   # You can test the available keys and their order of attempt by running:
   #  SSH_AUTH_SOCK=~/.1password/agent.sock ssh-add -l
-  xdg.configFile."1Password/ssh/agent.toml".text =
-    builtins.readFile (
-      (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml" {
+  xdg.configFile."1Password/ssh/agent.toml".source =
+    (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml"
+      {
         "ssh-keys" = map (item: { inherit item; }) [
           "wtjniyvaszfbfdt567snocygqq" # dirac github
           "tf64ipw7poybpzazfzz3geyefu" # personal github
           "te6zz2ycolprvsfedj4iqd3jja" # diraclocalserver
           "av5h4r2kyfwueck7e7jq7gw5cu" # hetzner
         ];
-      }
-    )
-    + "\n"; # needs to end with newline or we get strange undefined behavior
+      };
 
   # delta for git diff viewer
   programs.delta = {

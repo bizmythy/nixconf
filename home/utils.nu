@@ -26,21 +26,36 @@ export def pjp [] {
   $in | to json | bat -l json
 }
 
-# Copy pipeline input to the Wayland clipboard, or paste clipboard contents with no input.
+# Copy pipeline input to the system clipboard, or paste clipboard contents with no input.
 export def clip []: [nothing -> any any -> nothing] {
   let input = $in
+  let is_macos = ($nu.os-info.name == "macos")
 
   if ($input == null) {
-    ^wl-paste
+    if $is_macos {
+      ^pbpaste
+    } else {
+      ^wl-paste
+    }
   } else {
     let input_type = ($input | describe)
-
-    if (($input_type == "string") or ($input_type == "binary")) {
-      $input | ^wl-copy
+    let clipboard_input = if (($input_type == "string") or ($input_type == "binary")) {
+      $input
     } else {
-      $input | to json | ^wl-copy
+      $input | to json
+    }
+
+    if $is_macos {
+      $clipboard_input | ^pbcopy
+    } else {
+      $clipboard_input | ^wl-copy
     }
   }
+}
+
+# Copy the current directory to the system clipboard.
+export def cwd [] {
+  pwd | clip
 }
 
 # Copy the previous shell command to the system clipboard.
@@ -56,16 +71,7 @@ export def copy-last-command [] {
     | first
   )
 
-  if ((which wl-copy | length) > 0) {
-    $command | wl-copy
-  } else if ((which xclip | length) > 0) {
-    $command | xclip -selection clipboard
-  } else if ((which pbcopy | length) > 0) {
-    $command | pbcopy
-  } else {
-    error make {msg: "No clipboard command found: install wl-copy, xclip, or pbcopy"}
-  }
-
+  $command | clip
   print $"Copied: (ansi cyan)($command)(ansi reset)"
 }
 
