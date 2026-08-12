@@ -103,7 +103,7 @@ func (c *client) fallbackTab(ctx context, dir Direction) error {
 	return c.call("tab.focus", map[string]any{"tab_id": target.focusID()}, nil)
 }
 
-// fallbackWorkspace moves up or down by workspace number at pane layout edges.
+// fallbackWorkspace moves up or down in the workspace sidebar order.
 func (c *client) fallbackWorkspace(ctx context, dir Direction) error {
 	workspaces, err := c.workspaces()
 	if err != nil {
@@ -114,7 +114,7 @@ func (c *client) fallbackWorkspace(ctx context, dir Direction) error {
 	if !ok {
 		return nil
 	}
-	target, ok := adjacentByNumber(workspaces, current, dir == directionDown)
+	target, ok := adjacentInOrder(workspaces, current, dir == directionDown)
 	if !ok {
 		return nil
 	}

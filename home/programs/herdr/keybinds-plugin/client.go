@@ -212,7 +212,7 @@ func (c *client) tabs(workspaceID string) ([]tabInfo, error) {
 	return result.Tabs, nil
 }
 
-// workspaces lists all workspaces sorted by workspace number.
+// workspaces lists all workspaces in the order shown in Herdr's sidebar.
 func (c *client) workspaces() ([]workspaceInfo, error) {
 	var result struct {
 		Type       string          `json:"type"`
@@ -222,8 +222,7 @@ func (c *client) workspaces() ([]workspaceInfo, error) {
 		return nil, err
 	}
 
-	sortByNumber(result.Workspaces)
-	return result.Workspaces, nil
+	return orderWorkspacesForNavigation(result.Workspaces), nil
 }
 
 // createWorkspace creates a focused Herdr workspace and returns its metadata.

@@ -53,6 +53,53 @@ func sortByNumber[T numberedFocusable](items []T) {
 	})
 }
 
+// orderWorkspacesForNavigation matches the sidebar's repository grouping. Herdr
+// numbers workspaces globally, but renders linked worktrees immediately after
+// their main checkout rather than at that global position.
+func orderWorkspacesForNavigation(items []workspaceInfo) []workspaceInfo {
+	sorted := append([]workspaceInfo(nil), items...)
+	sortByNumber(sorted)
+
+	roots := make(map[string]workspaceInfo)
+	for _, workspace := range sorted {
+		if workspace.Worktree != nil &&
+			workspace.Worktree.RepoKey != "" &&
+			!workspace.Worktree.IsLinkedWorktree {
+			roots[workspace.Worktree.RepoKey] = workspace
+		}
+	}
+
+	ordered := make([]workspaceInfo, 0, len(sorted))
+	emittedRepos := make(map[string]bool)
+	for _, workspace := range sorted {
+		if workspace.Worktree == nil || workspace.Worktree.RepoKey == "" {
+			ordered = append(ordered, workspace)
+			continue
+		}
+
+		repoKey := workspace.Worktree.RepoKey
+		if emittedRepos[repoKey] {
+			continue
+		}
+		if root, ok := roots[repoKey]; ok {
+			if root.WorkspaceID != workspace.WorkspaceID {
+				continue
+			}
+			ordered = append(ordered, root)
+		}
+		emittedRepos[repoKey] = true
+		for _, candidate := range sorted {
+			if candidate.Worktree != nil &&
+				candidate.Worktree.RepoKey == repoKey &&
+				candidate.Worktree.IsLinkedWorktree {
+				ordered = append(ordered, candidate)
+			}
+		}
+	}
+
+	return ordered
+}
+
 // currentItem returns the focused item, falling back to a matching ID.
 func currentItem[T numberedFocusable](items []T, id string) (T, bool) {
 	for _, item := range items {
@@ -97,4 +144,25 @@ func adjacentByNumber[T numberedFocusable](items []T, current T, forward bool) (
 		}
 	}
 	return target, found
+}
+
+// adjacentInOrder returns the neighboring item in an already ordered slice.
+func adjacentInOrder[T numberedFocusable](items []T, current T, forward bool) (T, bool) {
+	for index, item := range items {
+		if item.focusID() != current.focusID() {
+			continue
+		}
+
+		targetIndex := index - 1
+		if forward {
+			targetIndex = index + 1
+		}
+		if targetIndex >= 0 && targetIndex < len(items) {
+			return items[targetIndex], true
+		}
+		break
+	}
+
+	var zero T
+	return zero, false
 }
