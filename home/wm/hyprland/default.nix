@@ -115,6 +115,20 @@ in
     ];
   };
 
+  systemd.user.services.sunshine-tablet = {
+    Unit = {
+      Description = "Sunshine tablet stream";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+      Conflicts = [ "sunshine.service" ];
+    };
+    Service = {
+      ExecStart = "${lib.getExe pkgs.sunshine} capture=wlr output_name=${monitorConfig.tabletHeadless.name}";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+  };
+
   # Write portal config file
   home.file.".config/xdg-desktop-portal/hyprland-portals.conf".text = ''
     [preferred]

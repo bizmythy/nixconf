@@ -8,7 +8,6 @@ local headless = generated.monitor.tabletHeadless
 local host_config = generated.monitor.hosts[generated.host]
 local state = {
 	active_profile = default_label,
-	sunshine_pid = nil,
 }
 local last_profile_request_id = nil
 local monitor_settle_timer = nil
@@ -32,7 +31,6 @@ local function load_state()
 	local ok, loaded = pcall(chunk)
 	if ok and type(loaded) == "table" then
 		state.active_profile = loaded.active_profile or state.active_profile
-		state.sunshine_pid = loaded.sunshine_pid
 	end
 end
 
@@ -77,11 +75,6 @@ local function save_state()
 
 	file:write("return {\n")
 	file:write("  active_profile = " .. string.format("%q", state.active_profile) .. ",\n")
-	if state.sunshine_pid ~= nil then
-		file:write("  sunshine_pid = " .. tostring(state.sunshine_pid) .. ",\n")
-	else
-		file:write("  sunshine_pid = nil,\n")
-	end
 	file:write("}\n")
 	file:close()
 end
@@ -173,10 +166,11 @@ local function profile_overrides(profile)
 end
 
 local function stop_sunshine()
-	if state.sunshine_pid ~= nil then
-		util.run("kill " .. tostring(state.sunshine_pid) .. " >/dev/null 2>&1")
-		state.sunshine_pid = nil
-	end
+	-- Sunshine used to be launched as an untracked background process. Stop
+	-- both units and any legacy process so an old instance cannot keep serving
+	-- the wrong output after a profile switch or Lua config reload.
+	util.run("systemctl --user stop sunshine-tablet.service sunshine.service >/dev/null 2>&1")
+	util.run("pkill -KILL -x sunshine >/dev/null 2>&1")
 end
 
 local function apply_monitor(output, settings, overrides)
@@ -221,39 +215,19 @@ local function settle_monitor_layout()
 	end, { timeout = 250, type = "oneshot" })
 end
 
-local function find_sunshine_output_index(output_name)
-	-- Sunshine's Linux output_name is its zero-based Wayland monitor list index,
-	-- not Hyprland's monitor ID.
-	for index, monitor in ipairs(hl.get_monitors()) do
-		if monitor.name == output_name then
-			return index - 1
-		end
-	end
-
-	return nil
-end
-
 local function start_sunshine()
-	local output_index = nil
 	for _ = 1, 30 do
-		output_index = find_sunshine_output_index(headless.name)
-		if output_index ~= nil then
-			break
+		if hl.get_monitor(headless.name) ~= nil then
+			-- The service forces wlr capture and targets the stable Wayland
+			-- output name. This bypasses the XDG portal picker and cannot drift
+			-- when physical outputs are enabled, disabled, or reordered.
+			util.run("systemctl --user restart sunshine-tablet.service")
+			return
 		end
 		util.run("sleep 0.1")
 	end
 
-	if output_index == nil then
-		util.notify("hyprmonitor", "unable to find tablet headless output")
-		return
-	end
-
-	local pid = util.capture(
-		"sh -c " .. util.shell_quote("sunshine output_name=" .. tostring(output_index) .. " >/dev/null 2>&1 & echo $!")
-	)
-	if pid ~= nil then
-		state.sunshine_pid = tonumber(pid:match("%d+"))
-	end
+	util.notify("hyprmonitor", "unable to find tablet headless output")
 end
 
 local function switch_audio(profile)
