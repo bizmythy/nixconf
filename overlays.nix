@@ -90,7 +90,6 @@ in
   };
 
   nu-plugin-toon = super.callPackage ./pkgs/nu_plugin_toon.nix { };
-  topiary-nushell = super.callPackage ./pkgs/topiary-nushell.nix { };
   linear-cli = super.callPackage ./pkgs/linear-cli.nix { };
   nh-cachix = super.callPackage ./pkgs/nh-cachix.nix { };
 

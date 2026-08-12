@@ -80,7 +80,13 @@
     };
 
     systems.url = "github:nix-systems/x86_64-linux";
-    # formatter
+
+    # Nushell formatter and treefmt integration
+    topiary-nushell = {
+      url = "github:bizmythy/topiary-nushell-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+    };
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
@@ -116,7 +122,15 @@
         );
 
       # Eval the treefmt modules from ./treefmt.nix
-      treefmtEval = eachSystem (pkgs: inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
+      treefmtEval = eachSystem (
+        pkgs:
+        inputs.treefmt-nix.lib.evalModule pkgs {
+          imports = [
+            inputs.topiary-nushell.treefmtModules.default
+            ./treefmt.nix
+          ];
+        }
+      );
 
       buildConfig = builtins.fromJSON (builtins.readFile ./build_config.json);
 
@@ -224,7 +238,7 @@
         nvim = inputs.nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim (
           import ./nixvim.nix { inherit pkgs; }
         );
-        topiary-nushell = pkgs.topiary-nushell;
+        topiary-nushell = inputs.topiary-nushell.packages.${pkgs.stdenv.hostPlatform.system}.default;
         xhisper-local = pkgs.xhisper-local;
         linear-cli = pkgs.linear-cli;
       });

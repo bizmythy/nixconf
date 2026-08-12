@@ -1,8 +1,4 @@
-{
-  lib,
-  pkgs,
-  ...
-}:
+{ ... }:
 {
   projectRootFile = "flake.nix";
   programs.nixfmt.enable = true;
@@ -28,8 +24,5 @@
   };
   programs.gofmt.enable = true;
 
-  settings.formatter.nufmt = {
-    command = lib.getExe pkgs.topiary-nushell;
-    includes = [ "*.nu" ];
-  };
+  programs.topiary-nushell.enable = true;
 }
