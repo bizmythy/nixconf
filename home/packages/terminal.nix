@@ -77,6 +77,7 @@ let
     az-cli
 
     # Document tools
+    glow
     typst
     mermaid-cli
     d2
