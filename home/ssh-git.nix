@@ -15,8 +15,6 @@ let
   vcs = import ./vcs-settings.nix { inherit pkgs vars; };
   publicKeys = {
     personalGitHub = vcs.identities.personal.sshPublicKey;
-    diracGitHub = vcs.identities.dirac.sshPublicKey;
-    diraclocalserver = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEoZXGhcmj8ZUFPWWGw3fZAd0FOCZKXnKelZKaGD9Tq4";
     hetzner = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGogIJ4uaReEMnM8eRedZh0OVq/4AAs4H8xdiWjvf6YF";
   };
   publicKeyFiles = builtins.mapAttrs genKeyFile publicKeys;
@@ -78,22 +76,7 @@ in
 
   # -------SSH CONFIGURATION-------
   # home manager version adds several extra options i do not want
-  # set github.com to be dirac key by default to get private flake inputs working
-  # this default is replaced in the git ssh command configuration
   home.file.".ssh/config".text = ''
-    Host dirac-github
-        HostName github.com
-        User git
-        IdentityFile ${publicKeyFiles.diracGitHub}
-        IdentitiesOnly yes
-        IdentityAgent "${onePassPath}"
-
-    Host diraclocalserver
-        HostName 192.168.1.244
-        User diraclocalserver
-        IdentityFile ${publicKeyFiles.diraclocalserver}
-        IdentityAgent "${onePassPath}"
-
     Host hetzner
         HostName 178.156.186.220
         Port 52681
@@ -118,9 +101,7 @@ in
     (pkgs.formats.toml { }).generate "1Password-ssh-agent.toml"
       {
         "ssh-keys" = map (item: { inherit item; }) [
-          "wtjniyvaszfbfdt567snocygqq" # dirac github
           "tf64ipw7poybpzazfzz3geyefu" # personal github
-          "te6zz2ycolprvsfedj4iqd3jja" # diraclocalserver
           "av5h4r2kyfwueck7e7jq7gw5cu" # hetzner
         ];
       };
@@ -145,7 +126,6 @@ in
         core.sshCommand = "ssh -i ${publicKeyFile}";
       };
       personalConfig = mkIdentityConfig vcs.identities.personal publicKeyFiles.personalGitHub;
-      diracConfig = mkIdentityConfig vcs.identities.dirac publicKeyFiles.diracGitHub;
     in
     {
       enable = true;
@@ -185,15 +165,5 @@ in
         commit.gpgsign = true;
       }
       // personalConfig; # set default to personal
-
-      includes = [
-        # dirac-specific git setup
-        # need to `git init` in ~/dirac for this to work properly
-        {
-          condition = "gitdir:${vcs.identities.dirac.repositoryRoot}/";
-          contentSuffix = ".dirac.gitconfig";
-          contents = diracConfig; # apply dirac in this condition
-        }
-      ];
     };
 }

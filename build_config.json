@@ -1,15 +1,7 @@
 {
-  "flags": {
-    "enableDirac": true
-  },
   "hosts": [
     "xps",
     "igneous",
-    "theseus",
-    "drewdirac",
-    "drewdiracpc",
-    "drewdiracframework",
-    "drewdiracthinkpad",
     "theseus"
   ]
 }

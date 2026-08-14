@@ -146,10 +146,6 @@ bind_exec(mod .. " + P", "hyprpicker -a")
 bind_exec(mod .. " + EQUAL", defaults.calculator)
 
 bind_exec(mod .. " + Z", defaults.editor)
-bind_exec(mod .. " + D", defaults.editor .. " " .. defaults.home .. "/dirac/buildos-web")
-bind(mod .. " + SHIFT + D", function()
-	run_workspace_launcher(generated.launchers.launchwork)
-end)
 bind_exec(mod .. " + N", defaults.editor .. " " .. defaults.home .. "/nixconf")
 navigate(mod .. " + T", NavAction.NewTab)
 

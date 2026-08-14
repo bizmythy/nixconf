@@ -40,8 +40,6 @@
         enable = true;
         setSocketVariable = true;
       };
-
-      daemon.settings.insecure-registries = [ "192.168.1.244:5000" ];
     };
     podman = {
       enable = true;

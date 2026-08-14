@@ -6,11 +6,6 @@
   ...
 }:
 let
-  # Nix's azure-cli uses a Python without pip, so pre-vendor extensions.
-  az-cli = pkgs.azure-cli.withExtensions [
-    pkgs.azure-cli.extensions."azure-firewall"
-  ];
-
   portablePackages = with pkgs; [
     # General terminal tools
     uutils-coreutils-noprefix
@@ -72,9 +67,6 @@ let
     screen
     herdr
     (aspellWithDicts (dictionaries: with dictionaries; [ en ]))
-
-    graphite-cli
-    az-cli
 
     # Document tools
     glow

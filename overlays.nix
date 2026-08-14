@@ -25,11 +25,6 @@ in
   # which lags Anthropic's `/latest` release pointer. Override the upstream
   # package's version + binary src so we get the newest build (needed for new
   # model availability, e.g. Sonnet 5). Remove this once llm-agents catches up.
-  #
-  # hiPrio: the dirac module also installs claude-code (from the same
-  # llm-agents input, via lib.mkBefore) at the pinned version, so both land in
-  # environment.systemPackages. Without a priority bump that older build would
-  # win the /bin/claude collision. hiPrio makes this newer one win.
   claude-code =
     let
       version = "2.1.220";
@@ -47,15 +42,13 @@ in
       };
       system = super.stdenv.hostPlatform.system;
     in
-    super.lib.hiPrio (
-      inputs.llm-agents.packages.${system}.claude-code.overrideAttrs (_: {
-        inherit version;
-        src = super.fetchurl {
-          url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/${version}/${platformMap.${system}}/claude";
-          hash = hashes.${system};
-        };
-      })
-    );
+    inputs.llm-agents.packages.${system}.claude-code.overrideAttrs (_: {
+      inherit version;
+      src = super.fetchurl {
+        url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/${version}/${platformMap.${system}}/claude";
+        hash = hashes.${system};
+      };
+    });
 
   protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
   herdr-keybinds = super.callPackage ./home/programs/herdr/keybinds-plugin/package.nix { };

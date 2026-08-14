@@ -35,16 +35,8 @@ let
       url = "https://linear.app";
     }
     {
-      name = "Notion";
-      url = "https://www.notion.so";
-    }
-    {
       name = "GitHub";
       url = "https://github.com";
-    }
-    {
-      name = "BuildOS";
-      url = "http://localhost:5173";
     }
     {
       name = "Google Calendar";

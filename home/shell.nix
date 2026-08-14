@@ -12,8 +12,6 @@ let
     NH_NO_CHECKS = 1;
     NIXPKGS_ALLOW_UNFREE = 1;
     PAGER = "bat";
-    OP_ACCOUNT = "PLU4HO2JCJF23NNQK2ERWIYIZI"; # default to work account
-    USE_DEPOT = "true"; # enable depot builds (temp)
   };
   myShellAliases = {
     cdn = "cd ${vars.flakePath}";
@@ -27,16 +25,6 @@ let
   }
   // lib.optionalAttrs pkgs.stdenv.isLinux {
     zed = "zeditor";
-
-    # Dirac and its service helpers are not used by the macOS profile.
-    cdb = "cd ${vars.home}/dirac/buildos-web";
-    msr = "zsh -c 'mask services reset && lazydocker'";
-    msu = "zsh -c 'mask services build && mask services up && lazydocker'";
-    mtix = "mask start-ticket";
-    msb = "mask services build";
-    gen = "mask generate";
-    savelogs = "mask services savelogs";
-    diraclocalserver = "ssh diraclocalserver -t 'nu'";
   };
 
 in
@@ -106,7 +94,6 @@ in
         shellAliases = myShellAliases;
         environmentVariables = mySessionVariables // {
           PROMPT_INDICATOR_VI_INSERT = "";
-          AWS_PROFILE = "dev";
         };
         settings = {
           show_banner = false; # don't show startup help text
@@ -139,15 +126,6 @@ in
       enableBashIntegration = false;
       enableZshIntegration = true;
       enableNushellIntegration = true;
-
-      config = {
-        whitelist = {
-          prefix = lib.optionals pkgs.stdenv.isLinux [
-            "~/buildos-web"
-            "~/dirac"
-          ];
-        };
-      };
     };
 
     eza = {

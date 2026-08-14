@@ -18,7 +18,6 @@ pkgs.buildGo126Module {
       --prefix PATH : "${
         lib.makeBinPath [
           pkgs.fzf
-          pkgs.nushell
           pkgs.zoxide
         ]
       }"

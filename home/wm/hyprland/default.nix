@@ -22,25 +22,6 @@ let
   hyprlandPortalPackage = pkgs.xdg-desktop-portal-hyprland;
   toLua = lib.generators.toLua { };
 
-  launchworkDirectives = [
-    {
-      command = "${vars.defaults.tty} -e herdr";
-      workspace = 2;
-    }
-    {
-      command = vars.defaults.browser;
-      workspace = 3;
-    }
-    {
-      command = "slack";
-      workspace = 8;
-    }
-    {
-      command = "${vars.defaults.tty} -e btop";
-      workspace = 10;
-    }
-  ];
-
   generatedLua = {
     host = osConfig.networking.hostName;
     laptop = osConfig.laptop.enable;
@@ -65,9 +46,6 @@ let
       mauve = "rgba(cba6f7ff)";
       pink = "rgba(f5c2e7ff)";
       accent = "mauve";
-    };
-    launchers = {
-      launchwork = launchworkDirectives;
     };
     monitor = monitorConfig;
   };
