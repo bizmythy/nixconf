@@ -141,16 +141,6 @@ def df-fancy [] {
   df -h -P | detect columns --guess | where "Filesystem" != "tmpfs" | update "Size" {|| into filesize } | update "Used" {|| into filesize } | update "Avail" {|| into filesize }
 }
 
-def clogs [] {
-  let name = (gh repo view --json name -q ".name")
-  if ($name != "buildos-web") {
-    error make {msg: $"($name) is not buildos-web repo"}
-  }
-  mask services savelogs
-  let log = (fd .log ./docker_compose_logs/ | fzf)
-  nvim $log
-}
-
 def fopen [search: string] {
   let file = (fd $search ./ | fzf | str trim)
   if ($file | is-not-empty) {

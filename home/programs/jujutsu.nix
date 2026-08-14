@@ -5,7 +5,7 @@
 }:
 let
   vcs = import ../vcs-settings.nix { inherit pkgs vars; };
-  inherit (vcs.identities) personal dirac;
+  inherit (vcs.identities) personal;
   jjIdentity = identity: {
     inherit (identity) name email;
   };
@@ -34,14 +34,6 @@ in
         key = personal.sshPublicKey;
         backends.ssh.program = vcs.onePassword.sshSigner;
       };
-
-      "--scope" = [
-        {
-          "--when".repositories = [ dirac.repositoryRoot ];
-          user = jjIdentity dirac;
-          signing.key = dirac.sshPublicKey;
-        }
-      ];
     };
   };
 

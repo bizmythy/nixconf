@@ -24,9 +24,6 @@
     enable = true;
     settings = {
       pager.diff = "delta";
-      repoPaths = {
-        "diracq/*" = "~/dirac/*";
-      };
       prSections =
         let
           needReview = "is:open draft:false review:required";

@@ -63,7 +63,7 @@ def "main install" [] {
   say $"copying hardware configuration to ($hardware_config)"
   cp --force /etc/nixos/hardware-configuration.nix $hardware_config
 
-  # disable private flake pull, add hostname
+  # add hostname to the generated configurations
   let config_file = ($conf | path join "build_config.json")
   let old_config = (open $config_file)
   let existing_hosts = ($old_config | get hosts)
@@ -74,7 +74,6 @@ def "main install" [] {
   }
   (
     $old_config
-    | update flags.enableDirac false
     | update hosts $updated_hosts
     | save --force $config_file
   )
@@ -102,13 +101,8 @@ def "main configure" [] {
   cd ~/nixconf
   git remote set-url origin git@github.com:bizmythy/nixconf.git
 
-  def read [ref: string work: bool = false] {
-    let account = if $work {
-      "PLU4HO2JCJF23NNQK2ERWIYIZI"
-    } else {
-      "L23KMYOBNVHLPGSIPDX7BAQ5LA"
-    }
-    ^op --account $account read $ref
+  def read [ref: string] {
+    ^op --account L23KMYOBNVHLPGSIPDX7BAQ5LA read $ref
   }
 
   say "setting up atuin"
@@ -132,13 +126,6 @@ def "main configure" [] {
   say "setting up codex"
   cd ~
   git clone git@github.com:bizmythy/codex-config.git .codex
-
-  say "setting up dirac"
-  cd ~
-  mkdir dirac
-  cd dirac
-  git init
-  git clone git@github.com:diracq/buildos-web.git
 }
 
 def main [] {

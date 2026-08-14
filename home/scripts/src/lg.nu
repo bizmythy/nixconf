@@ -8,11 +8,6 @@ if (not $is_git_dir) {
   exit 1
 }
 
-if ($dir == ($nu.home-dir | path join "dirac")) {
-  print "tried to open ~/dirac git dir, should not edit this git folder."
-  exit 1
-}
-
 (
   # problematic environment variables should be hidden
   ["LD_LIBRARY_PATH"] | each {|env_var|

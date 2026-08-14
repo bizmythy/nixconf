@@ -36,7 +36,7 @@ func (c *client) newWorkspacePicker(fzf string) error {
 		return err
 	}
 
-	choices, err := workspaceChoicesFor(home, []string{"personal", "dirac"}, extraWorkspaceChoices(home))
+	choices, err := workspaceChoicesFor(home, []string{"personal"}, extraWorkspaceChoices(home))
 	if err != nil {
 		return err
 	}
@@ -70,9 +70,6 @@ func extraWorkspaceChoices(home string) []workspaceChoice {
 // workspaceLabelForPath returns the compact label used for picker-created workspaces.
 func workspaceLabelForPath(path string) string {
 	label := filepath.Base(path)
-	if strings.HasPrefix(label, buildosWorkspacePrefix) {
-		return buildosWorkspaceLabelPrefix + strings.TrimPrefix(label, buildosWorkspacePrefix)
-	}
 	for _, workspace := range extraWorkspaceDefinitions {
 		if label == filepath.Base(workspace.RelativePath) {
 			return workspace.LabelPrefix + " " + workspace.RelativePath

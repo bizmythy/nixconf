@@ -61,8 +61,6 @@ in
 
         qalculate-qt # calculator
 
-        slack
-        postman
         pcloud # cloud storage
         localsend # local file sharing between devices
         wireshark # packet monitoring

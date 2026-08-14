@@ -61,16 +61,6 @@
       inputs.systems.follows = "systems";
     };
 
-    # Work-only input. Nothing in darwinConfigurations.macos references it, so
-    # lazy flake input evaluation does not require Dirac SSH access on macOS.
-    dirac = {
-      type = "git";
-      url = "ssh://git@dirac-github/diracq/buildos-web.git";
-      ref = "main";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.llm-agents.follows = "llm-agents";
-    };
-
     systems = {
       url = "path:./flake.systems.nix";
       flake = false;
@@ -139,7 +129,7 @@
             url = "https://filedn.com/l0xkAHTdfcEJNc2OW7dfBny/lockscreen.png";
             sha256 = "1w3biszx1iy9qavr2cvl4gxrlf3lbrjpp50bp8wbi3rdpzjgv4kl";
           };
-          isPersonal = config: !(lib.strings.hasInfix "dirac" config.networking.hostName);
+          isPersonal = _: true;
         };
 
       linuxVars = mkVars {
@@ -224,10 +214,6 @@
 
             inputs.catppuccin.nixosModules.catppuccin
             inputs.nix-flatpak.nixosModules.nix-flatpak
-          ]
-          ++ lib.optionals buildConfig.flags.enableDirac [
-            inputs.dirac.nixosModules.linux
-            ./dirac.nix
           ]
           ++ [
             ./modules/base.nix

@@ -94,7 +94,7 @@ let
     {
       id = "new-workspace";
       key = "prefix+d";
-      title = "New buildos workspace";
+      title = "New workspace";
       command = keybindsCommand "new-workspace-popup" [ ];
     }
   ];
@@ -434,13 +434,12 @@ let
           ];
         }
         {
-          id = "new-buildos";
-          title = "New buildos workspace";
+          id = "new-workspace-creator";
+          title = "New workspace";
           placement = "overlay";
           command = [
             (lib.getExe keybindsPlugin)
             "new-workspace"
-            (lib.getExe pkgs.nushell)
           ];
         }
       ];

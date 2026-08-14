@@ -115,16 +115,12 @@ func newRootCommand() *cobra.Command {
 			},
 		},
 		&cobra.Command{
-			Use:   "new-workspace [nu]",
-			Short: "Prompt for and create a fresh buildos-web workspace",
-			Args:  cobra.MaximumNArgs(1),
-			RunE: func(_ *cobra.Command, args []string) error {
-				nu := "nu"
-				if len(args) == 1 {
-					nu = args[0]
-				}
+			Use:   "new-workspace",
+			Short: "Create a new workspace",
+			Args:  cobra.NoArgs,
+			RunE: func(_ *cobra.Command, _ []string) error {
 				return runWithClient(func(c *client) error {
-					return c.newBuildos(nu)
+					return c.newWorkspace()
 				})
 			},
 		},
@@ -146,29 +142,7 @@ func newRootCommand() *cobra.Command {
 			Hidden: true,
 			RunE: func(_ *cobra.Command, _ []string) error {
 				return runWithClient(func(c *client) error {
-					return c.openNewBuildos()
-				})
-			},
-		},
-		&cobra.Command{
-			Use:    "finish-buildos <workspace-id> <directory> <setup-tab-id>",
-			Short:  "Finish buildos workspace setup after repository creation",
-			Args:   cobra.ExactArgs(3),
-			Hidden: true,
-			RunE: func(_ *cobra.Command, args []string) error {
-				return runWithClient(func(c *client) error {
-					return c.finishBuildos(args[0], args[1], args[2])
-				})
-			},
-		},
-		&cobra.Command{
-			Use:    "notify-buildos-failed <workspace-name>",
-			Short:  "Notify that buildos workspace setup failed",
-			Args:   cobra.ExactArgs(1),
-			Hidden: true,
-			RunE: func(_ *cobra.Command, args []string) error {
-				return runWithClient(func(c *client) error {
-					return c.notifyBuildosFailed(args[0])
+					return c.openNewWorkspace()
 				})
 			},
 		},

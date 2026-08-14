@@ -3,35 +3,6 @@ let
 
   # Primary edit surface: define monitor/profile intent per host here.
   hosts = {
-    drewdiracframework = {
-      monitors = {
-        main = {
-          desc = "Samsung Electric Company Odyssey G5 HNBL300886";
-          settings = {
-            mode = "2560x1440@59.95";
-            position = "0x0";
-            scale = 1.0;
-          };
-        };
-        right = {
-          desc = "LG Electronics LG SDQHD 409NTTQ8K433";
-          settings = {
-            mode = "2560x2880@60";
-            position = "auto-right";
-            scale = 1.333333;
-          };
-        };
-        top = {
-          desc = "Acer Technologies KA272 TJ0AA00785SJ";
-          settings = {
-            mode = "1920x1080@60";
-            position = "575x-1080";
-            scale = 1.0;
-          };
-        };
-      };
-    };
-
     igneous = {
       defaultAudioOutputAlsaName = "USB Audio";
 
@@ -93,19 +64,6 @@ let
             "top"
           ];
           useTablet = false;
-        };
-      };
-    };
-
-    drewdiracthinkpad = {
-      monitors = {
-        laptop = {
-          desc = "AU Optronics 0x323D";
-          settings = {
-            mode = "1920x1080@60.05";
-            position = "0x0";
-            scale = 1.0;
-          };
         };
       };
     };
