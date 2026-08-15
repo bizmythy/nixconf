@@ -1,12 +1,17 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i nu
+#! nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/0954f7ee2f6bb3dc7d4e3d0d8bcb8fd4bde4cfc5.tar.gz
 #! nix-shell -p nushell wineWow64Packages.stagingFull curl
 
+# Wine 11.14 returns a malformed OpenGL extension string that crashes Kivy when
+# the client displays a connection error. Keep using the last working Wine
+# release (11.12) until that regression is fixed upstream.
 const mwgg_version = "0.7.263"
 const mwgg_installer_url = "https://github.com/MultiworldGG/MultiworldGG/releases/download/0.7.263/Setup.MultiworldGG.0.7.263.exe"
 const mwgg_installer_sha256 = "5c4d9694ab36ac01971933a6eac44863bac4182afb742a1db15107c372e5b532"
 const default_game_dir = "~/.local/share/Steam/steamapps/common/Animal Well"
-const default_connection = "mwgg://multiworld.gg:54143"
+const port = "54143"
+let default_connection = $"mwgg://multiworld.gg:($port)"
 const default_slot = "bizmyth"
 
 def wine-prefix [] {
@@ -23,9 +28,22 @@ def installer-path [] {
   $cache_home | path join $"animal-well-mwgg/Setup.MultiworldGG.($mwgg_version).exe"
 }
 
-def run-in-prefix [executable: string, ...args: string] {
+def log-path [name: string] {
+  let state_home = ($env.XDG_STATE_HOME? | default ($env.HOME | path join ".local/state"))
+  let log_dir = ($state_home | path join "animal-well-mwgg")
+  mkdir $log_dir
+  $log_dir | path join $"($name).log"
+}
+
+def new-log [name: string] {
+  let log = (log-path $name)
+  $"Started (date now)\n" | save --force $log
+  $log
+}
+
+def run-in-prefix [log: path, executable: string, ...args: string] {
   with-env {WINEPREFIX: (wine-prefix)} {
-    ^$executable ...$args
+    ^$executable ...$args o+e>> $log
   }
 }
 
@@ -35,7 +53,7 @@ def require-file [file: path, description: string] {
   }
 }
 
-def verified-installer [] {
+def verified-installer [log: path] {
   let installer = (installer-path)
   mkdir ($installer | path dirname)
 
@@ -47,7 +65,7 @@ def verified-installer [] {
 
   if $existing_hash != $mwgg_installer_sha256 {
     print $"Downloading MultiworldGG ($mwgg_version)..."
-    ^curl --fail --location --output $installer $mwgg_installer_url
+    ^curl --fail --location --output $installer $mwgg_installer_url o+e>> $log
   }
 
   let actual_hash = (^sha256sum $installer | split row " " | first)
@@ -62,18 +80,23 @@ def start-client [connection?: string] {
   let launcher = (mwgg-launcher)
   require-file $launcher "MultiworldGG launcher"
   let connection = ($connection | default $default_connection)
+  let log = (new-log "client")
 
-  print $"Connecting to multiworld.gg:54143; enter slot `($default_slot)` when prompted."
-  run-in-prefix wine $launcher "ANIMAL WELL Client" $connection
+  print $"Connecting to multiworld.gg:($port); enter slot `($default_slot)` when prompted."
+  print $"MultiworldGG output: ($log)"
+  cd ($launcher | path dirname)
+  run-in-prefix $log wine $launcher "ANIMAL WELL Client" $connection
 }
 
 # Download and silently install the Windows MultiworldGG build in an isolated
 # Wine prefix. Re-run this after changing the pinned version above.
 def "main install" [] {
-  let installer = (verified-installer)
+  let log = (new-log "install")
+  let installer = (verified-installer $log)
   mkdir (wine-prefix)
-  run-in-prefix wineboot -- --init
-  run-in-prefix wine $installer /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-
+  print $"Installer output: ($log)"
+  run-in-prefix $log wineboot -- --init
+  run-in-prefix $log wine $installer /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-
 
   require-file (mwgg-launcher) "MultiworldGG launcher"
   print $"MultiworldGG ($mwgg_version) is installed in (wine-prefix)."
@@ -83,7 +106,10 @@ def "main install" [] {
 def "main launcher" [] {
   let launcher = (mwgg-launcher)
   require-file $launcher "MultiworldGG launcher (run `animal-well-mwgg.nu install` first)"
-  run-in-prefix wine $launcher
+  let log = (new-log "launcher")
+  print $"MultiworldGG output: ($log)"
+  cd ($launcher | path dirname)
+  run-in-prefix $log wine $launcher
 }
 
 # Open only the ANIMAL WELL client. You can optionally pass the room's
@@ -102,8 +128,10 @@ def main [
   require-file $game "ANIMAL WELL executable"
   require-file (mwgg-launcher) "MultiworldGG launcher (run `animal-well-mwgg.nu install` first)"
 
+  let game_log = (new-log "game")
+  print $"Animal Well output: ($game_log)"
   cd $game_dir
-  run-in-prefix wine start /unix $game
+  run-in-prefix $game_log wine start /unix $game
   sleep 2sec
   start-client $connection
 }
