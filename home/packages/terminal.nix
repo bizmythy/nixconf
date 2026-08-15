@@ -65,7 +65,8 @@ let
     xxd
     archivemount
     screen
-    herdr
+    herdr # fancy terminal multiplexer
+    tmux # simple terminal multiplexer
     (aspellWithDicts (dictionaries: with dictionaries; [ en ]))
 
     # Document tools
