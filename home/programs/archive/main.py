@@ -262,6 +262,8 @@ def ensure_output_target(path: Path, *, force: bool, kind_label: str) -> None:
 def basename_for_directory(path: Path) -> str:
     return path.resolve().name
 
+def style_path(path: Path) -> str:
+    return click.style(path.as_posix(), fg="cyan")
 
 def resolve_compression_request(
     directory_name: str,
@@ -292,13 +294,15 @@ def resolve_compression_request(
     archive_type = ArchiveType.from_path(archive_path)
     archive_path = archive_path.resolve(strict=False)
     ensure_output_target(archive_path, force=force, kind_label="archive")
+
+    click.echo(f"Compressing {style_path(source_directory)} to {style_path(archive_path)}")
+
     return CompressionRequest(
         source_directory=source_directory.resolve(),
         archive_path=archive_path,
         archive_type=archive_type,
         force=force,
     )
-
 
 def resolve_extraction_request(
     archive_file: str,
@@ -330,6 +334,9 @@ def resolve_extraction_request(
     ensure_output_target(
         output_directory, force=force, kind_label="output directory"
     )
+
+    click.echo(f"Extracting {style_path(archive_path)} to {style_path(output_directory)}")
+
     return ExtractionRequest(
         archive_path=archive_path,
         output_directory=output_directory,
