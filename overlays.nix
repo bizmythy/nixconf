@@ -21,35 +21,6 @@ in
     }
   );
 
-  # Bump claude-code ahead of the version pinned in the llm-agents.nix input,
-  # which lags Anthropic's `/latest` release pointer. Override the upstream
-  # package's version + binary src so we get the newest build (needed for new
-  # model availability, e.g. Sonnet 5). Remove this once llm-agents catches up.
-  claude-code =
-    let
-      version = "2.1.220";
-      hashes = {
-        x86_64-linux = "sha256-Z09h8g/zBvMQDPkgDkw2xLcCeLW+8ohFSYGblCqJyGM=";
-        aarch64-linux = "sha256-FZ5KUdeW878UZ3V3EA9++4RWEbHOrwwwy9jUZQ2UIYU=";
-        x86_64-darwin = "sha256-3Ke+CqfT2SSDbUQODG2OPUfvPI5h+lgJtUuQFxcM4vM=";
-        aarch64-darwin = "sha256-it3IV/P+ZNWgNor57lAyG1CvtKaRi6PvAYq4T1274IE=";
-      };
-      platformMap = {
-        x86_64-linux = "linux-x64";
-        aarch64-linux = "linux-arm64";
-        x86_64-darwin = "darwin-x64";
-        aarch64-darwin = "darwin-arm64";
-      };
-      system = super.stdenv.hostPlatform.system;
-    in
-    inputs.llm-agents.packages.${system}.claude-code.overrideAttrs (_: {
-      inherit version;
-      src = super.fetchurl {
-        url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/${version}/${platformMap.${system}}/claude";
-        hash = hashes.${system};
-      };
-    });
-
   protobuf-language-server = super.callPackage ./pkgs/protobuf-language-server.nix { };
   herdr-keybinds = super.callPackage ./home/programs/herdr/keybinds-plugin/package.nix { };
   herdr-web = super.callPackage ./pkgs/herdr-web { };

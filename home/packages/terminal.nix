@@ -120,9 +120,6 @@ let
     nixd
     cachix
     nixProjectGenerator
-
-    # claude-code comes from the overlay, which is newer than the input pin.
-    claude-code
   ];
 
   linuxPackages = with pkgs; [
@@ -133,6 +130,7 @@ let
   ];
 
   aiPackages = with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
+    claude-code
     codex
     pi
   ];
