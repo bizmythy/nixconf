@@ -75,13 +75,11 @@ def test_archive_type_helpers(archive_module) -> None:
         archive_type.from_path(Path("example.tar.gz")) is archive_type.TAR_GZ
     )
     assert (
-        archive_type.from_path(Path("example.tar.zst"))
-        is archive_type.TAR_ZST
+        archive_type.from_path(Path("example.tar.zst")) is archive_type.TAR_ZST
     )
     assert archive_type.strip_archive_suffix("example.tar.zst") == "example"
     assert (
-        archive_type.from_extension_shorthand(".tar.gz")
-        is archive_type.TAR_GZ
+        archive_type.from_extension_shorthand(".tar.gz") is archive_type.TAR_GZ
     )
 
     with pytest.raises(Exception, match="unsupported archive extension"):
@@ -95,7 +93,9 @@ def test_default_compress_target_uses_tar_zst(
     source = tmp_path / "sample"
     source.mkdir()
 
-    request = archive_module.resolve_compression_request(str(source), None, False)
+    request = archive_module.resolve_compression_request(
+        str(source), None, False
+    )
 
     assert request.archive_type == archive_module.ArchiveType.TAR_ZST
     assert request.archive_path.name == "sample.tar.zst"
@@ -108,7 +108,9 @@ def test_compress_extension_shorthand_resolves_from_directory_name(
     source = tmp_path / "sample"
     source.mkdir()
 
-    request = archive_module.resolve_compression_request(str(source), ".zip", False)
+    request = archive_module.resolve_compression_request(
+        str(source), ".zip", False
+    )
 
     assert request.archive_type == archive_module.ArchiveType.ZIP
     assert request.archive_path.name == "sample.zip"
@@ -121,7 +123,9 @@ def test_extract_default_output_directory_is_inferred(
     archive = tmp_path / "example.tar.gz"
     archive.write_bytes(b"placeholder")
 
-    request = archive_module.resolve_extraction_request(str(archive), None, False)
+    request = archive_module.resolve_extraction_request(
+        str(archive), None, False
+    )
 
     assert request.output_directory.name == "example"
 
@@ -300,12 +304,14 @@ def test_extract_rejects_unsafe_symlink_entries(
     archive_path = tmp_path / "unsafe.tar.zst"
     writer = io.BytesIO()
     compressor = archive_module.zstandard.ZstdCompressor()
-    with compressor.stream_writer(writer, closefd=False) as compressed:
-        with tarfile.open(fileobj=compressed, mode="w|") as archive:
-            info = tarfile.TarInfo("link.txt")
-            info.type = tarfile.SYMTYPE
-            info.linkname = "../escape.txt"
-            archive.addfile(info)
+    with (
+        compressor.stream_writer(writer, closefd=False) as compressed,
+        tarfile.open(fileobj=compressed, mode="w|") as archive,
+    ):
+        info = tarfile.TarInfo("link.txt")
+        info.type = tarfile.SYMTYPE
+        info.linkname = "../escape.txt"
+        archive.addfile(info)
     archive_path.write_bytes(writer.getvalue())
 
     result = runner.invoke(

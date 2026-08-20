@@ -12,7 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def load_nixconf_audio_module():
     module_path = ROOT / "nixconf_audio/__init__.py"
-    spec = importlib.util.spec_from_file_location("nixconf_audio_module", module_path)
+    spec = importlib.util.spec_from_file_location(
+        "nixconf_audio_module", module_path
+    )
     if spec is None or spec.loader is None:
         raise AssertionError("unable to load nixconf_audio module")
     module = importlib.util.module_from_spec(spec)
@@ -278,7 +280,9 @@ def test_interactive_switch_cancels_pending_retry_first(
 
     monkeypatch.setattr(sys, "argv", ["switchaudio"])
     monkeypatch.setattr(
-        module, "clear_pending_switch", lambda _request_id=None: events.append("cancel")
+        module,
+        "clear_pending_switch",
+        lambda _request_id=None: events.append("cancel"),
     )
     monkeypatch.setattr(module, "pick_sink", lambda: events.append("pick"))
 

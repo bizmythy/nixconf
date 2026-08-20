@@ -262,8 +262,10 @@ def ensure_output_target(path: Path, *, force: bool, kind_label: str) -> None:
 def basename_for_directory(path: Path) -> str:
     return path.resolve().name
 
+
 def style_path(path: Path) -> str:
     return click.style(path.as_posix(), fg="cyan")
+
 
 def resolve_compression_request(
     directory_name: str,
@@ -295,7 +297,9 @@ def resolve_compression_request(
     archive_path = archive_path.resolve(strict=False)
     ensure_output_target(archive_path, force=force, kind_label="archive")
 
-    click.echo(f"Compressing {style_path(source_directory)} to {style_path(archive_path)}")
+    click.echo(
+        f"Compressing {style_path(source_directory)} to {style_path(archive_path)}"
+    )
 
     return CompressionRequest(
         source_directory=source_directory.resolve(),
@@ -303,6 +307,7 @@ def resolve_compression_request(
         archive_type=archive_type,
         force=force,
     )
+
 
 def resolve_extraction_request(
     archive_file: str,
@@ -335,7 +340,9 @@ def resolve_extraction_request(
         output_directory, force=force, kind_label="output directory"
     )
 
-    click.echo(f"Extracting {style_path(archive_path)} to {style_path(output_directory)}")
+    click.echo(
+        f"Extracting {style_path(archive_path)} to {style_path(output_directory)}"
+    )
 
     return ExtractionRequest(
         archive_path=archive_path,
@@ -474,33 +481,35 @@ def write_zip_archive(
     total_size = sum(
         entry.size for entry in entries if entry.kind is EntryKind.FILE
     )
-    with create_progress(total_size, "compress") as progress:
-        with zipfile.ZipFile(
+    with (
+        create_progress(total_size, "compress") as progress,
+        zipfile.ZipFile(
             request.archive_path,
             mode="w",
             compression=zipfile.ZIP_DEFLATED,
             allowZip64=True,
-        ) as archive:
-            for entry in entries:
-                progress.set_postfix_str(entry.archive_name, refresh=False)
-                info = create_zip_info(entry)
-                if entry.kind is EntryKind.DIRECTORY:
-                    archive.writestr(info, b"")
-                    continue
-                if entry.kind is EntryKind.SYMLINK:
-                    assert entry.link_target is not None
-                    archive.writestr(info, entry.link_target.encode("utf-8"))
-                    continue
-                with entry.source_path.open("rb") as source_file:
-                    with archive.open(
-                        info, mode="w", force_zip64=True
-                    ) as dest:
-                        copy_stream(
-                            source_file,
-                            dest,
-                            progress,
-                            entry.relative_path.as_posix(),
-                        )
+        ) as archive,
+    ):
+        for entry in entries:
+            progress.set_postfix_str(entry.archive_name, refresh=False)
+            info = create_zip_info(entry)
+            if entry.kind is EntryKind.DIRECTORY:
+                archive.writestr(info, b"")
+                continue
+            if entry.kind is EntryKind.SYMLINK:
+                assert entry.link_target is not None
+                archive.writestr(info, entry.link_target.encode("utf-8"))
+                continue
+            with (
+                entry.source_path.open("rb") as source_file,
+                archive.open(info, mode="w", force_zip64=True) as dest,
+            ):
+                copy_stream(
+                    source_file,
+                    dest,
+                    progress,
+                    entry.relative_path.as_posix(),
+                )
 
 
 def make_tar_info(entry: ArchiveEntry) -> tarfile.TarInfo:
@@ -528,13 +537,15 @@ def add_entries_to_tar(
         progress.set_postfix_str(entry.archive_name, refresh=False)
         info = make_tar_info(entry)
         if entry.kind is EntryKind.FILE:
-            with entry.source_path.open("rb") as source_file:
-                with CountingReader(
+            with (
+                entry.source_path.open("rb") as source_file,
+                CountingReader(
                     source_file,
                     progress,
                     entry.relative_path.as_posix(),
-                ) as reader:
-                    archive.addfile(info, fileobj=reader)
+                ) as reader,
+            ):
+                archive.addfile(info, fileobj=reader)
             continue
         archive.addfile(info)
 
@@ -545,11 +556,13 @@ def write_tar_gz_archive(
     total_size = sum(
         entry.size for entry in entries if entry.kind is EntryKind.FILE
     )
-    with create_progress(total_size, "compress") as progress:
-        with request.archive_path.open("wb") as raw_file:
-            with gzip.GzipFile(fileobj=raw_file, mode="wb") as gzip_file:
-                with tarfile.open(fileobj=gzip_file, mode="w|") as archive:
-                    add_entries_to_tar(archive, entries, progress)
+    with (
+        create_progress(total_size, "compress") as progress,
+        request.archive_path.open("wb") as raw_file,
+        gzip.GzipFile(fileobj=raw_file, mode="wb") as gzip_file,
+        tarfile.open(fileobj=gzip_file, mode="w|") as archive,
+    ):
+        add_entries_to_tar(archive, entries, progress)
 
 
 def write_tar_zst_archive(
@@ -559,11 +572,13 @@ def write_tar_zst_archive(
         entry.size for entry in entries if entry.kind is EntryKind.FILE
     )
     compressor = zstandard.ZstdCompressor(threads=default_worker_count())
-    with create_progress(total_size, "compress") as progress:
-        with request.archive_path.open("wb") as raw_file:
-            with compressor.stream_writer(raw_file) as zstd_writer:
-                with tarfile.open(fileobj=zstd_writer, mode="w|") as archive:
-                    add_entries_to_tar(archive, entries, progress)
+    with (
+        create_progress(total_size, "compress") as progress,
+        request.archive_path.open("wb") as raw_file,
+        compressor.stream_writer(raw_file) as zstd_writer,
+        tarfile.open(fileobj=zstd_writer, mode="w|") as archive,
+    ):
+        add_entries_to_tar(archive, entries, progress)
 
 
 def apply_permissions(path: Path, mode: int) -> None:
@@ -608,14 +623,16 @@ def extract_zip_archive(request: ExtractionRequest) -> None:
                     continue
 
                 progress.set_postfix_str(info.filename, refresh=False)
-                with archive.open(info, mode="r") as source_file:
-                    with destination.open("wb") as dest_file:
-                        copy_stream(
-                            source_file,
-                            dest_file,
-                            progress,
-                            info.filename,
-                        )
+                with (
+                    archive.open(info, mode="r") as source_file,
+                    destination.open("wb") as dest_file,
+                ):
+                    copy_stream(
+                        source_file,
+                        dest_file,
+                        progress,
+                        info.filename,
+                    )
                 if mode != 0:
                     apply_permissions(destination, mode)
 
@@ -684,27 +701,27 @@ def extract_tar_stream(
 
 def extract_tar_gz_archive(request: ExtractionRequest) -> None:
     total_size = request.archive_path.stat().st_size
-    with create_progress(total_size, "extract") as progress:
-        with request.archive_path.open("rb") as raw_file:
-            with CountingReader(raw_file, progress) as reader:
-                with gzip.GzipFile(fileobj=reader, mode="rb") as gzip_file:
-                    with tarfile.open(fileobj=gzip_file, mode="r|") as archive:
-                        extract_tar_stream(archive, request, progress)
+    with (
+        create_progress(total_size, "extract") as progress,
+        request.archive_path.open("rb") as raw_file,
+        CountingReader(raw_file, progress) as reader,
+        gzip.GzipFile(fileobj=reader, mode="rb") as gzip_file,
+        tarfile.open(fileobj=gzip_file, mode="r|") as archive,
+    ):
+        extract_tar_stream(archive, request, progress)
 
 
 def extract_tar_zst_archive(request: ExtractionRequest) -> None:
     total_size = request.archive_path.stat().st_size
     decompressor = zstandard.ZstdDecompressor()
-    with create_progress(total_size, "extract") as progress:
-        with request.archive_path.open("rb") as raw_file:
-            with CountingReader(raw_file, progress) as reader:
-                with decompressor.stream_reader(
-                    cast(IO[bytes], reader)
-                ) as zstd_reader:
-                    with tarfile.open(
-                        fileobj=zstd_reader, mode="r|"
-                    ) as archive:
-                        extract_tar_stream(archive, request, progress)
+    with (
+        create_progress(total_size, "extract") as progress,
+        request.archive_path.open("rb") as raw_file,
+        CountingReader(raw_file, progress) as reader,
+        decompressor.stream_reader(cast(IO[bytes], reader)) as zstd_reader,
+        tarfile.open(fileobj=zstd_reader, mode="r|") as archive,
+    ):
+        extract_tar_stream(archive, request, progress)
 
 
 def compress_archive(request: CompressionRequest) -> None:
