@@ -29,6 +29,11 @@
 
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    nix-project-generator = {
+      url = "github:bizmythy/nix-project-template";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     weave = {
       url = "github:bizmythy/weave/fix/rust-multiline-use-merge";
       inputs.nixpkgs.follows = "nixpkgs";

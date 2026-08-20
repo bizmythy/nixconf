@@ -6,6 +6,10 @@
   ...
 }:
 let
+  nixProjectGenerator = pkgs.writeShellScriptBin "new-repo" ''
+    exec ${inputs.nix-project-generator.apps.${pkgs.stdenv.hostPlatform.system}.default.program} "$@"
+  '';
+
   portablePackages = with pkgs; [
     # General terminal tools
     uutils-coreutils-noprefix
@@ -115,6 +119,7 @@ let
     nil
     nixd
     cachix
+    nixProjectGenerator
 
     # claude-code comes from the overlay, which is newer than the input pin.
     claude-code
