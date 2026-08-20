@@ -65,3 +65,6 @@ writeShellApplication {
     mainProgram = "nh";
   };
 }
+// {
+  inherit (nh) version;
+}
