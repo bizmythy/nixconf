@@ -57,10 +57,6 @@ in
     else
       package;
   tuicr = inputs.tuicr.packages.${super.stdenv.hostPlatform.system}.default;
-  xhisper-local = super.callPackage ./pkgs/xhisper-local.nix {
-    whisperCpp = super.whisper-cpp;
-  };
-
   nu-plugin-toon = super.callPackage ./pkgs/nu_plugin_toon.nix { };
   linear-cli = super.callPackage ./pkgs/linear-cli.nix { };
   nh-cachix = super.callPackage ./pkgs/nh-cachix.nix { };

@@ -274,19 +274,13 @@
       nixosConfigurations = configs;
       darwinConfigurations.macos = darwinConfig;
 
-      packages = eachSystem (
-        pkgs:
-        {
-          nvim = inputs.nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim (
-            import ./nixvim.nix { inherit pkgs; }
-          );
-          topiary-nushell = inputs.topiary-nushell.packages.${pkgs.stdenv.hostPlatform.system}.default;
-          linear-cli = pkgs.linear-cli;
-        }
-        // lib.optionalAttrs pkgs.stdenv.isLinux {
-          xhisper-local = pkgs.xhisper-local;
-        }
-      );
+      packages = eachSystem (pkgs: {
+        nvim = inputs.nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvim (
+          import ./nixvim.nix { inherit pkgs; }
+        );
+        topiary-nushell = inputs.topiary-nushell.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        linear-cli = pkgs.linear-cli;
+      });
 
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
 
