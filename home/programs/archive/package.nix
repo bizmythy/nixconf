@@ -5,4 +5,5 @@ pkgs.writers.writePython3Bin "archive" {
     tqdm
     zstandard
   ];
+  doCheck = false;
 } (builtins.readFile ./main.py)
