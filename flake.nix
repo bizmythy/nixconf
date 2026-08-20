@@ -292,7 +292,7 @@
             linear --version > "$out"
           '';
         }
-        // lib.optionalAttrs pkgs.stdenv.isDarwin {
+        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
           darwin-system = darwinConfig.config.system.build.toplevel;
           home-manager = darwinConfig.config.home-manager.users.${darwinVars.user}.home.activationPackage;
           herdr-keybinds = pkgs.herdr-keybinds;

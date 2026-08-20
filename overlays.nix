@@ -43,7 +43,7 @@ in
     let
       package = inputs.tdx.packages.${super.stdenv.hostPlatform.system}.default;
     in
-    if super.stdenv.isLinux then
+    if super.stdenv.hostPlatform.isLinux then
       # Upstream uses macOS pbcopy/pbpaste; replace it with Wayland clipboard
       # commands only on Linux.
       package.overrideAttrs (oldAttrs: {

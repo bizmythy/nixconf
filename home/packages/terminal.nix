@@ -136,7 +136,8 @@ let
   ];
 in
 {
-  home.packages = portablePackages ++ aiPackages ++ lib.optionals pkgs.stdenv.isLinux linuxPackages;
+  home.packages =
+    portablePackages ++ aiPackages ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux linuxPackages;
 
   programs.nh = {
     enable = true;

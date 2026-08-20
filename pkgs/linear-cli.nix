@@ -61,7 +61,7 @@ let
     '';
   };
 in
-if stdenv.isLinux then
+if stdenv.hostPlatform.isLinux then
   buildFHSEnv {
     name = "linear";
     pname = "linear-cli";

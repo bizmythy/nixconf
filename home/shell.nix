@@ -23,7 +23,7 @@ let
     dcd = "docker compose down";
     cg = "cargo";
   }
-  // lib.optionalAttrs pkgs.stdenv.isLinux {
+  // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
     zed = "zeditor";
   };
 

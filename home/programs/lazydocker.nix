@@ -33,11 +33,13 @@ in
     };
   };
 
-  home.activation.validateLazydockerConfig = lib.mkIf pkgs.stdenv.isLinux (mkLazyAppConfigValidation {
-    displayName = "Lazydocker";
-    expectedFailure = "terminal not cursor addressable";
-    package = config.programs.lazydocker.package;
-    program = "lazydocker";
-    settings = config.programs.lazydocker.settings;
-  });
+  home.activation.validateLazydockerConfig =
+    lib.mkIf pkgs.stdenv.hostPlatform.isLinux
+      (mkLazyAppConfigValidation {
+        displayName = "Lazydocker";
+        expectedFailure = "terminal not cursor addressable";
+        package = config.programs.lazydocker.package;
+        program = "lazydocker";
+        settings = config.programs.lazydocker.settings;
+      });
 }

@@ -12,7 +12,7 @@ let
     "tabletdisplay.nu"
   ];
   enabledScripts = lib.filter (
-    filename: pkgs.stdenv.isLinux || !(builtins.elem filename linuxOnlyScripts)
+    filename: pkgs.stdenv.hostPlatform.isLinux || !(builtins.elem filename linuxOnlyScripts)
   ) scriptFileNames;
 
   # make a script with binary name based on script name
