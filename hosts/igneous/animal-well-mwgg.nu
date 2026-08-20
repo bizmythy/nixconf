@@ -41,13 +41,13 @@ def new-log [name: string] {
   $log
 }
 
-def run-in-prefix [log: path, executable: string, ...args: string] {
+def run-in-prefix [log: path executable: string ...args: string] {
   with-env {WINEPREFIX: (wine-prefix)} {
     ^$executable ...$args o+e>> $log
   }
 }
 
-def require-file [file: path, description: string] {
+def require-file [file: path description: string] {
   if not ($file | path exists) {
     error make {msg: $"($description) was not found at ($file)"}
   }
