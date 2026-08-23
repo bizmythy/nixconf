@@ -38,8 +38,6 @@ let
             mode = "3840x2160@120";
             position = "auto-right";
             scale = scaleHiDPI;
-            bitdepth = 10;
-            cm = "hdr";
           };
         };
       };
