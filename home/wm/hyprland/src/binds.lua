@@ -146,13 +146,15 @@ bind_exec(mod .. " + EQUAL", defaults.calculator)
 
 bind_exec(mod .. " + Z", defaults.editor)
 bind_exec(mod .. " + N", defaults.editor .. " " .. defaults.home .. "/nixconf")
-bind(mod .. " + G", function()
-	run_workspace_launcher({
-		{ workspace = 2, command = "steam" },
-		{ workspace = 3, command = defaults.browser },
-		{ workspace = 9, command = "vesktop" },
-	})
-end)
+if generated.personal then
+	bind(mod .. " + G", function()
+		run_workspace_launcher({
+			{ workspace = 2, command = "steam" },
+			{ workspace = 3, command = defaults.browser },
+			{ workspace = 9, command = "vesktop" },
+		})
+	end)
+end
 navigate(mod .. " + T", NavAction.NewTab)
 
 hl.bind(mod .. " + SUPER_L", function()
