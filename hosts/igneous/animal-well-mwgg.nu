@@ -10,7 +10,7 @@ const mwgg_version = "0.7.263"
 const mwgg_installer_url = "https://github.com/MultiworldGG/MultiworldGG/releases/download/0.7.263/Setup.MultiworldGG.0.7.263.exe"
 const mwgg_installer_sha256 = "5c4d9694ab36ac01971933a6eac44863bac4182afb742a1db15107c372e5b532"
 const default_game_dir = "~/.local/share/Steam/steamapps/common/Animal Well"
-const port = "54143"
+const port = "56744"
 let default_connection = $"mwgg://multiworld.gg:($port)"
 const default_slot = "bizmyth"
 
