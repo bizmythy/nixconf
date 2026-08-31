@@ -2,7 +2,6 @@
   inputs,
   lib,
   pkgs,
-  vars,
   ...
 }:
 let
@@ -145,6 +144,5 @@ in
   programs.nh = {
     enable = true;
     package = pkgs.nh-cachix;
-    flake = vars.flakePath;
   };
 }
