@@ -67,7 +67,6 @@ let
     aria2
     yt-dlp
     xxd
-    archivemount
     screen
     herdr # fancy terminal multiplexer
     tmux # simple terminal multiplexer
@@ -123,6 +122,7 @@ let
   ];
 
   linuxPackages = with pkgs; [
+    archivemount
     netscanner
     s-tui
     wavemon
