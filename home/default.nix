@@ -14,6 +14,7 @@
     ./shell.nix
     ./ssh-git.nix
     ./theme.nix
+    ./tty/ghostty.nix
     # keep-sorted end
   ]
   ++ lib.optionals platform.isLinux [

@@ -62,61 +62,6 @@ in
     };
   };
 
-  programs.ghostty =
-    let
-      bloomAmmount = "0.03";
-      ghosttyShaders = pkgs.stdenv.mkDerivation {
-        name = "bloom-shader";
-        src = pkgs.fetchFromGitHub {
-          owner = "hackr-sh";
-          repo = "ghostty-shaders";
-          rev = "a17573fb254e618f92a75afe80faa31fd5e09d6f";
-          hash = "sha256-p0speO5BtLZZwGeuRvBFETnHspDYg2r5Uiu0yeqj1iE=";
-        };
-
-        postPatch = ''
-          substituteInPlace bloom.glsl --replace-fail "0.2;" "${bloomAmmount};"
-        '';
-
-        installPhase = ''
-          mkdir -p $out
-          cp -R ./* $out/
-        '';
-      };
-    in
-    {
-      enable = true;
-      settings = {
-        command = vars.defaults.shell;
-        # gtk-single-instance = true;
-
-        font-family = fontFamily;
-        font-size = fontSize;
-        background-opacity = backgroundOpacity;
-        cursor-style = "bar";
-        cursor-style-blink = false;
-        adjust-cursor-thickness = 2;
-        shell-integration-features = "no-cursor";
-        keybind = [
-          "ctrl+enter=unbind"
-          "ctrl+shift+enter=unbind"
-        ];
-
-        copy-on-select = "clipboard";
-        app-notifications = "no-clipboard-copy";
-        confirm-close-surface = false;
-        link-url = true;
-
-        # Temporarily disabled: glow/bloom shader is distracting.
-        # custom-shader = "${ghosttyShaders}/bloom.glsl";
-      };
-      enableBashIntegration = false;
-      enableZshIntegration = true;
-      enableFishIntegration = true;
-      installBatSyntax = true;
-      package = pkgs.ghostty;
-    };
-
   programs.kitty = {
     enable = true;
     font = {
