@@ -56,7 +56,17 @@ in
       })
     else
       package;
-  tuicr = inputs.tuicr.packages.${super.stdenv.hostPlatform.system}.default;
+  tuicr =
+    let
+      naersk = super.callPackage inputs.tuicr.inputs.naersk { };
+    in
+    naersk.buildPackage {
+      src = inputs.tuicr;
+
+      # The crates.io API download endpoint intermittently returns 403. This
+      # mirror implements the same API; Cargo.lock still verifies every crate.
+      cratesDownloadUrl = "https://rsproxy.cn";
+    };
   nu-plugin-toon = super.callPackage ./pkgs/nu_plugin_toon.nix { };
   linear-cli = super.callPackage ./pkgs/linear-cli.nix { };
   nh-cachix = super.callPackage ./pkgs/nh-cachix.nix { };
