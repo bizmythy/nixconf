@@ -1,12 +1,8 @@
 {
-  lib,
   pkgs,
   vars,
   ...
 }:
-let
-  substitutersConfig = builtins.fromJSON (builtins.readFile ../../substituters_config.json);
-in
 {
   networking.hostName = "macos";
 
@@ -22,24 +18,6 @@ in
 
   programs.zsh.enable = true;
 
-  # Manage the official multi-user Nix installation through nix-darwin.
-  nix = {
-    enable = true;
-    settings = {
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-      trusted-users = [
-        "root"
-        vars.user
-        "@admin"
-      ];
-    }
-    // lib.getAttrs [
-      "extra-substituters"
-      "extra-trusted-substituters"
-      "extra-trusted-public-keys"
-    ] substitutersConfig;
-  };
+  # Determinate owns the Nix daemon and its settings.
+  nix.enable = false;
 }
