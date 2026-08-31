@@ -12,6 +12,12 @@ pkgs.buildGo126Module {
 
   nativeBuildInputs = [ pkgs.makeWrapper ];
 
+  # Darwin limits Unix socket paths to 104 bytes. Go's t.TempDir otherwise
+  # inherits Nix's deeply nested build directory and exceeds that limit.
+  preCheck = ''
+    export TMPDIR=/tmp
+  '';
+
   postInstall = ''
     mv "$out/bin/herdr-keybinds" "$out/bin/herdrctl"
     wrapProgram "$out/bin/herdrctl" \
