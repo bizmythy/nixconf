@@ -1,5 +1,7 @@
 {
+  lib,
   pkgs,
+  platform,
   ...
 }:
 
@@ -10,17 +12,22 @@ let
   };
 in
 {
-  services.hyprpaper = {
+  services.hyprpaper = lib.mkIf platform.isLinux {
     enable = true;
     settings = {
       wallpaper = [
         {
           monitor = "";
           path = wallpaper.outPath;
-          # fit_mode = "cover";
         }
       ];
       splash = false;
     };
+  };
+
+  home.activation = lib.mkIf platform.isDarwin {
+    setWallpaper = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run /usr/bin/osascript -e 'tell application "System Events" to tell every desktop to set picture to "${wallpaper}"'
+    '';
   };
 }
