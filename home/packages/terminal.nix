@@ -131,13 +131,16 @@ let
 
   aiPackages = with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
     claude-code
-    codex
     pi
   ];
+
+  linuxAiPackages = with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [ codex ];
 in
 {
   home.packages =
-    portablePackages ++ aiPackages ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux linuxPackages;
+    portablePackages
+    ++ aiPackages
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (linuxPackages ++ linuxAiPackages);
 
   programs.nh = {
     enable = true;
