@@ -115,6 +115,9 @@ in
             # nix-darwin's environment.systemPath only reaches PATH via
             # /etc/zshenv, which nushell never sources.
             $env.PATH = ($env.PATH | append ["/opt/homebrew/bin" "/opt/homebrew/sbin"] | uniq)
+            # herdr exports SHELL=<default_shell> (nu) into panes like tmux's
+            # default-shell; restore the macOS login shell for child processes.
+            $env.SHELL = "/bin/zsh"
           ''
           + ''
 
