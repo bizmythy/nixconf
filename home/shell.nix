@@ -111,6 +111,11 @@ in
             "op"
             "tar"
           ]
+          + lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
+            # nix-darwin's environment.systemPath only reaches PATH via
+            # /etc/zshenv, which nushell never sources.
+            $env.PATH = ($env.PATH | append ["/opt/homebrew/bin" "/opt/homebrew/sbin"] | uniq)
+          ''
           + ''
 
             source ${./utils.nu};
