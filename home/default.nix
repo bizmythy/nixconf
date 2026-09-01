@@ -8,6 +8,7 @@
 {
   imports = [
     # keep-sorted start
+    ../sheer.nix
     ./packages/terminal.nix
     ./programs
     ./scripts
