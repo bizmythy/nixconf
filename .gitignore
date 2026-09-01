@@ -1,5 +1,6 @@
 result
 .codex
 **/*.pyc
+.cache
 
 .agents/skills/hyprland-lua-config/references/hyprland-lua-docs.json
