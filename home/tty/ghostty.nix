@@ -9,7 +9,7 @@
 let
   fontFamily = "JetBrainsMono Nerd Font";
   fontSize = 12;
-  backgroundOpacity = 0.9;
+  backgroundOpacity = if platform.isDarwin then 1.0 else 0.9;
 in
 {
   programs.ghostty = {
