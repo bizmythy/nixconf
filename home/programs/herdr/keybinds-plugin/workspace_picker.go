@@ -36,7 +36,7 @@ func (c *client) newWorkspacePicker(fzf string) error {
 		return err
 	}
 
-	choices, err := workspaceChoicesFor(home, []string{"personal"}, extraWorkspaceChoices(home))
+	choices, err := workspaceChoicesFor(home, []string{"personal", "repos"}, extraWorkspaceChoices(home))
 	if err != nil {
 		return err
 	}
