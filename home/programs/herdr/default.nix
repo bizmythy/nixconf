@@ -24,6 +24,14 @@ let
     ]
     ++ args;
   actionCommand = subcommand: arg: keybindsCommand subcommand [ arg ];
+  # Plugin panes are spawned by the herdr server, so they inherit its
+  # environment instead of the login environment interactive panes get.
+  loginShellCommand = command: [
+    "${pkgs.zsh}/bin/zsh"
+    "-l"
+    "-c"
+    "exec ${lib.escapeShellArgs command}"
+  ];
   # Add popup applications here. Each entry gets its toggle action, keybinding,
   # and overlay pane automatically.
   popupApps = [
@@ -420,14 +428,14 @@ let
         inherit (popup) id;
         title = popup.id;
         placement = "overlay";
-        command = [ (lib.getExe popup.package) ];
+        command = loginShellCommand [ (lib.getExe popup.package) ];
       }) popupApps
       ++ [
         {
           id = "new-workspace-picker";
           title = "New workspace picker";
           placement = "overlay";
-          command = [
+          command = loginShellCommand [
             (lib.getExe keybindsPlugin)
             "open-workspace"
             (lib.getExe pkgs.fzf)
@@ -437,7 +445,7 @@ let
           id = "new-workspace-creator";
           title = "New workspace";
           placement = "overlay";
-          command = [
+          command = loginShellCommand [
             (lib.getExe keybindsPlugin)
             "new-workspace"
           ];
