@@ -6,6 +6,12 @@
 # Wine 11.14 returns a malformed OpenGL extension string that crashes Kivy when
 # the client displays a connection error. Keep using the last working Wine
 # release (11.12) until that regression is fixed upstream.
+
+# Kivy logs this once its render loop draws the first frame. If it never
+# appears, the client window is stuck black (see start-client-checked).
+const kivy_first_frame_marker = "GL: NPOT texture support is available"
+const client_gui_timeout = 30
+const client_max_attempts = 3
 const mwgg_version = "0.7.263"
 const mwgg_installer_url = "https://github.com/MultiworldGG/MultiworldGG/releases/download/0.7.263/Setup.MultiworldGG.0.7.263.exe"
 const mwgg_installer_sha256 = "5c4d9694ab36ac01971933a6eac44863bac4182afb742a1db15107c372e5b532"
@@ -76,6 +82,18 @@ def verified-installer [log: path] {
   $installer
 }
 
+def newest-client-log [] {
+  let dir = (mwgg-launcher | path dirname | path join "logs")
+  let logs = (try { ls $"($dir)/*" | where name =~ "AnimalWellClient_" } catch { [] })
+  if ($logs | is-empty) { null } else { $logs | sort-by modified | reverse | first | get name }
+}
+
+def client-gui-ready [] {
+  let log = (newest-client-log)
+  if $log == null { return false }
+  open --raw $log | str contains $kivy_first_frame_marker
+}
+
 def start-client [connection?: string] {
   let launcher = (mwgg-launcher)
   require-file $launcher "MultiworldGG launcher"
@@ -86,6 +104,53 @@ def start-client [connection?: string] {
   print $"MultiworldGG output: ($log)"
   cd ($launcher | path dirname)
   run-in-prefix $log wine $launcher "ANIMAL WELL Client" $connection
+}
+
+# Launch the client in the background and wait until its window has actually
+# rendered a first frame. Starting the client while the game's Wine dinput
+# thread is enumerating HID devices can deadlock SDL2's joystick init, leaving
+# the client window black; the Kivy first-frame marker in the log proves the
+# window survived that race, so restart the client until it does.
+def start-client-checked [connection: string] {
+  let launcher = (mwgg-launcher)
+  require-file $launcher "MultiworldGG launcher"
+  let log = (new-log "client")
+
+  print $"Connecting to multiworld.gg:($port); enter slot `($default_slot)` when prompted."
+  print $"MultiworldGG output: ($log)"
+  cd ($launcher | path dirname)
+
+  mut attempt = 0
+  while $attempt < $client_max_attempts {
+    $attempt += 1
+    job spawn { run-in-prefix $log wine $launcher "ANIMAL WELL Client" $connection }
+
+    mut ready = false
+    for _ in 1..$client_gui_timeout {
+      sleep 1sec
+      if (client-gui-ready) {
+        $ready = true
+        break
+      }
+    }
+    if $ready { return }
+
+    let attempt_msg = $"attempt ($attempt) of ($client_max_attempts)"
+    print $"Client window failed to initialize (($attempt_msg)); restarting..."
+    ^pkill -f MultiworldGGLauncher o+e>> $log
+    sleep 3sec
+  }
+  print "Warning: client window may be black; close it and run the script again."
+}
+
+def client-running [] {
+  (do { ^pgrep -f MultiworldGGLauncher } | complete).exit_code == 0
+}
+
+# Stay alive until the client exits so the background job is not reaped with
+# this script's shell.
+def wait-for-client [] {
+  while (client-running) { sleep 2sec }
 }
 
 # Download and silently install the Windows MultiworldGG build in an isolated
@@ -118,7 +183,10 @@ def "main client" [connection?: string] {
   start-client $connection
 }
 
-# Start the Steam-installed game and MWGG client in the same Wine prefix.
+# Start the Steam-installed game and MWGG client in the same Wine prefix. The
+# client is started first and only once its window is confirmed drawing does
+# the game launch; the reverse order deadlocks the client's SDL2 joystick init
+# against the game's dinput HID enumeration and renders its window black.
 def main [
   connection?: string
   --game-dir: path = $default_game_dir
@@ -128,10 +196,11 @@ def main [
   require-file $game "ANIMAL WELL executable"
   require-file (mwgg-launcher) "MultiworldGG launcher (run `animal-well-mwgg.nu install` first)"
 
+  start-client-checked ($connection | default $default_connection)
+
   let game_log = (new-log "game")
   print $"Animal Well output: ($game_log)"
   cd $game_dir
   run-in-prefix $game_log wine start /unix $game
-  sleep 2sec
-  start-client $connection
+  wait-for-client
 }
