@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   vars,
   ...
@@ -17,6 +18,21 @@
   };
 
   programs.zsh.enable = true;
+
+  # nix-darwin builds PATH from environment.systemPath alone and never runs
+  # /usr/libexec/path_helper, so nothing in /etc/paths.d ever lands on PATH --
+  # Homebrew's bin dir in particular. Re-add the entries that exist here.
+  #
+  # mkOrder 1100 puts them after the Nix profiles (order 1000, so Nix always
+  # wins a name collision) and before /usr/bin (order 1200).
+  environment.systemPath = lib.mkOrder 1100 [
+    # /etc/paths.d/homebrew; sbin is empty today but is where formulae like
+    # sshd-keygen-wrapper land, and `brew shellenv` always exports both.
+    "/opt/homebrew/bin"
+    "/opt/homebrew/sbin"
+    # Listed in /etc/paths by macOS itself; holds safaridriver.
+    "/System/Cryptexes/App/usr/bin"
+  ];
 
   # Determinate owns the Nix daemon and its settings.
   nix.enable = false;
