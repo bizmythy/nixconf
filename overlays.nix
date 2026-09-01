@@ -38,7 +38,6 @@ in
         mkdir -p "$out/bin"
         ln -s "${self.herdr-keybinds}/bin/lg-herdr-watch" "$out/bin/lg-herdr-watch"
       '';
-  t3code = inputs.t3code.packages.${super.stdenv.hostPlatform.system}.default;
   tdx =
     let
       package = inputs.tdx.packages.${super.stdenv.hostPlatform.system}.default;

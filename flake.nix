@@ -40,11 +40,6 @@
       inputs.rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    t3code = {
-      url = "github:bizmythy/t3code";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     tdx = {
       url = "github:niklas-heer/tdx";
       inputs.nixpkgs.follows = "nixpkgs";

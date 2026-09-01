@@ -84,7 +84,6 @@ in
         pdfarranger
 
         # code editors
-        # t3code
         zed-editor # preferred code editor
         zed # alias
         vscodium
