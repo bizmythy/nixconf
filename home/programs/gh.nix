@@ -10,6 +10,7 @@
       gh-i
       gh-f
       gh-markdown-preview
+      gh-stack
     ];
     settings = {
       git_protocol = "ssh";
