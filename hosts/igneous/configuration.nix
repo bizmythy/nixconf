@@ -27,6 +27,7 @@
   environment.systemPackages = with pkgs; [
     amd-ctk
     amd-container-runtime
+    lumafly
   ];
   virtualisation.docker.daemon.settings.runtimes.amd = {
     path = lib.getExe pkgs.amd-container-runtime;
