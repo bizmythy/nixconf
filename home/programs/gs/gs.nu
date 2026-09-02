@@ -5,12 +5,18 @@ const commands = "@commands@"
 const aliases = "@aliases@"
 
 def pick-subcommand [] {
-  let width = ($commands | get name | each {|name| $name | str length } | math max)
   let selection = (
     $commands
-    | each {|command| $"($command.name | fill -a left -w $width)  ($command.description)" }
+    | each {|command| $"($command.name)(char tab)($command.description)" }
     | str join "\n"
-    | ^fzf --prompt "gh stack > "
+    | (
+      ^fzf
+      --prompt "gh stack > "
+      --delimiter (char tab)
+      --with-nth 1
+      --preview "echo {2}"
+      --preview-window "right,60%,wrap"
+    )
     | complete
   )
 
@@ -18,7 +24,7 @@ def pick-subcommand [] {
     exit $selection.exit_code
   }
 
-  $selection.stdout | str trim | split row " " | first
+  $selection.stdout | str trim | split row (char tab) | first
 }
 
 def main [...args: string] {
