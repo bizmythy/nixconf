@@ -11,6 +11,7 @@
     ./btop.nix
     ./gh.nix
     ./glow.nix
+    ./gs
     ./helix.nix
     ./herdr
     ./jujutsu.nix
