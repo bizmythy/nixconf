@@ -25,7 +25,6 @@ let
     fastfetch
     ffmpeg
     imagemagick
-    ghostscript
     zstd
     nmap
     rclone
