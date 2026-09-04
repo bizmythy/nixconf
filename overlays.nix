@@ -64,7 +64,7 @@ in
 
       # The crates.io API download endpoint intermittently returns 403. This
       # mirror implements the same API; Cargo.lock still verifies every crate.
-      cratesDownloadUrl = "https://rsproxy.cn";
+      cratesDownloadUrl = "https://rsproxy.cn/api/v1/crates";
     };
   nu-plugin-toon = super.callPackage ./pkgs/nu_plugin_toon.nix { };
   linear-cli = super.callPackage ./pkgs/linear-cli.nix { };
