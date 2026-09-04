@@ -84,8 +84,6 @@ let
     # Go tools
     go
     gopls
-    golangci-lint
-    golangci-lint-langserver
 
     # Python tools
     pyright
